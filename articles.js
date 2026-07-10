@@ -7,7 +7,7 @@ const articleTranslations = {
     eyebrow: "Гид по Москве",
     title: "Что посмотреть в Москве",
     lead: "Выберите место по настроению — и добавьте его в маршрут прогулки.",
-    statPlaces: "12 мест",
+    statPlaces: "20 мест",
     statLinks: "Официальные ссылки",
     statRoutes: "Маршрут в один клик",
     searchLabel: "Поиск по местам",
@@ -35,7 +35,7 @@ const articleTranslations = {
     eyebrow: "Moscow guide",
     title: "Things to see in Moscow",
     lead: "Choose a place by mood — then add it to your walking route.",
-    statPlaces: "12 places",
+    statPlaces: "20 places",
     statLinks: "Official links",
     statRoutes: "One-tap routes",
     searchLabel: "Search places",
@@ -56,7 +56,7 @@ const articleTranslations = {
     addressLabel: "Address",
     lightTheme: "Switch to light theme",
     darkTheme: "Switch to dark theme",
-    language: "Переключить на русский",
+    language: "Switch to Russian",
   },
 };
 
@@ -73,28 +73,45 @@ const articles = [
   { category: "parks", title: "ВДНХ и Музей космонавтики", en: "VDNH and the Museum of Cosmonautics", text: "Монументальные павильоны, длинные аллеи и одна из самых узнаваемых городских осей. Для тематического дня добавьте Музей космонавтики и павильон «Космос».", enText: "Monumental pavilions, long avenues and one of the city’s most recognisable ensembles. Add the Museum of Cosmonautics and the Cosmos pavilion for a themed day.", tags: "Парк · космос", enTags: "Park · space", url: "https://vdnh.ru/", filter: "parks" },
   { category: "museums", title: "Коломенское", en: "Kolomenskoye", text: "Бывшая царская усадьба с просторными видами на Москву-реку, садами и памятниками древнерусской архитектуры. Это место лучше закладывать на несколько часов.", enText: "A former royal estate with broad river views, gardens and remarkable early Russian architecture. Allow several hours to explore it properly.", tags: "Усадьба · парк", enTags: "Estate · park", url: "https://mgomz.ru/", filter: "museums" },
   { category: "museums", title: "Царицыно", en: "Tsaritsyno", text: "Неоготический дворцово-парковый ансамбль, пруды и большие прогулочные пространства на юге Москвы. Особенно красиво в сезон цветения и осенью.", enText: "A neo-Gothic palace and park ensemble with ponds and expansive walking paths in the south of Moscow. Especially rewarding during blossom season and autumn.", tags: "Архитектура · парк", enTags: "Architecture · park", url: "https://tsaritsyno-museum.ru/", filter: "museums" },
+  { category: "museums", title: "Новодевичий монастырь и пруды", en: "Novodevichy Convent and Ponds", text: "Тихий исторический ансамбль у воды: стены монастыря, пруды и один из самых приятных маршрутов рядом с Лужниками.", enText: "A peaceful historic ensemble by the water, with monastery walls, ponds and one of the most pleasant walks near Luzhniki.", tags: "История · вода", enTags: "History · waterfront", url: "https://mgomz.ru/", filter: "museums" },
+  { category: "parks", title: "Воробьёвы горы и смотровая площадка", en: "Sparrow Hills and the Viewpoint", text: "Панорама Москвы, лесные дорожки и длинный спуск к Москве-реке. Хороший выбор для прогулки с видами и перепадом высоты.", enText: "A wide Moscow panorama, wooded paths and a long descent towards the river. A strong choice for views and a little elevation.", tags: "Парк · виды", enTags: "Park · views", url: "https://park-gorkogo.com/", filter: "parks" },
+  { category: "parks", title: "Сокольники", en: "Sokolniki Park", text: "Большой парк с прямыми аллеями, прудами и пространством для спокойной прогулки вдали от плотного центра.", enText: "A large park of straight avenues, ponds and open space for a relaxed walk away from the busy centre.", tags: "Парк · аллеи", enTags: "Park · avenues", url: "https://park.sokolniki.com/", filter: "parks" },
+  { category: "parks", title: "Нескучный сад", en: "Neskuchny Garden", text: "Самая камерная часть прогулки вдоль Москвы-реки: старые деревья, дорожки и удобное продолжение маршрута из Парка Горького.", enText: "The quieter stretch of Moscow’s riverside: old trees, winding paths and a natural continuation from Gorky Park.", tags: "Парк · Москва-река", enTags: "Park · Moscow River", url: "https://park-gorkogo.com/", filter: "parks" },
+  { category: "parks", title: "Аптекарский огород", en: "Aptekarsky Ogorod", text: "Небольшой ботанический сад в центре с оранжереями, сезонными цветами и ощущением отдельного зелёного мира.", enText: "A compact botanical garden in the centre, with greenhouses, seasonal blooms and the feeling of a separate green world.", tags: "Сад · центр", enTags: "Garden · centre", url: "https://hortus.ru/", filter: "parks" },
+  { category: "parks", title: "Измайловский парк", en: "Izmaylovo Park", text: "Просторный лесопарк с прудами и длинными дорожками. Подходит для медленной прогулки, велосипеда и отдыха на полдня.", enText: "A spacious woodland park with ponds and long paths. Ideal for a slow walk, cycling or a half-day outdoors.", tags: "Парк · лес", enTags: "Park · woodland", url: "https://izmailovsky-park.ru/", filter: "parks" },
+  { category: "museums", title: "Усадьба Кусково", en: "Kuskovo Estate", text: "Загородная усадьба с дворцом, регулярным парком и прудами. Хороший маршрут для архитектуры, тишины и длинного дня.", enText: "A country estate with a palace, formal gardens and ponds. A rewarding day out for architecture, quiet and open space.", tags: "Усадьба · парк", enTags: "Estate · park", url: "https://kuskovo.ru/", filter: "museums" },
+  { category: "centre", title: "Москва-Сити и набережная Тараса Шевченко", en: "Moscow City and Taras Shevchenko Embankment", text: "Современная Москва с небоскрёбами, видами на реку и контрастом между деловым кварталом и длинной набережной.", enText: "Modern Moscow at its most vertical: skyscrapers, river views and a striking contrast between the business district and the long embankment.", tags: "Архитектура · вода", enTags: "Architecture · waterfront", url: "https://citymoscow.ru/", filter: "centre" },
 ];
 
 const articleMeta = [
-  { image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?auto=format&fit=crop&w=1200&q=84", price: "Бесплатно снаружи · от 1 000 ₽ внутри", enPrice: "Free outside · from ₽1,000 inside", address: "Красная площадь", enAddress: "Red Square", lat: 55.7539, lon: 37.6208, anchor: "alexander-garden", official: "https://www.kremlin.ru/" },
-  { image: "https://images.unsplash.com/photo-1548919973-5cef591cdbc9?auto=format&fit=crop&w=1200&q=84", price: "от 700 ₽", enPrice: "from ₽700", address: "Красная площадь, 2", enAddress: "2 Red Square", lat: 55.7525, lon: 37.6231, anchor: "st-basil", official: "https://cathedral.ru/" },
-  { image: "https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Никольская улица", enAddress: "Nikolskaya Street", lat: 55.7598, lon: 37.6261, anchor: "nikolskaya", official: "https://gum.ru/" },
-  { image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1200&q=84", price: "Парк — бесплатно", enPrice: "Park — free", address: "ул. Варварка, 6", enAddress: "6 Varvarka Street", lat: 55.7517, lon: 37.6286, anchor: "zaryadye", official: "https://www.zaryadye-park.ru/" },
-  { image: "https://images.unsplash.com/photo-1577083288073-40892c0860a4?auto=format&fit=crop&w=1200&q=84", price: "от 300 ₽", enPrice: "from ₽300", address: "Лаврушинский переулок, 10", enAddress: "10 Lavrushinsky Lane", lat: 55.7415, lon: 37.6202, anchor: "tretyakov", official: "https://www.tretyakovgallery.ru/" },
-  { image: "https://images.unsplash.com/photo-1544986581-efac024faf62?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "ул. Волхонка, 15", enAddress: "15 Volkhonka Street", lat: 55.7446, lon: 37.6055, anchor: "cathedral", official: "https://xxc.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Red%20Square,%20Moscow,%20Russia.jpg", price: "Бесплатно снаружи · от 1 000 ₽ внутри", enPrice: "Free outside · from ₽1,000 inside", address: "Красная площадь", enAddress: "Red Square", lat: 55.7539, lon: 37.6208, anchor: "alexander-garden", official: "https://www.kremlin.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Russia-Moscow-Saint%20Basil's%20Cathedral-2.jpg", price: "от 700 ₽", enPrice: "from ₽700", address: "Красная площадь, 2", enAddress: "2 Red Square", lat: 55.7525, lon: 37.6231, anchor: "st-basil", official: "https://cathedral.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/GUM%20w%20Moskwie.JPG", price: "Свободный вход", enPrice: "Free entry", address: "Никольская улица", enAddress: "Nikolskaya Street", lat: 55.7598, lon: 37.6261, anchor: "nikolskaya", official: "https://gum.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Zaryadye%20Park,%20Moscow.jpg", price: "Парк — бесплатно", enPrice: "Park — free", address: "ул. Варварка, 6", enAddress: "6 Varvarka Street", lat: 55.7517, lon: 37.6286, anchor: "zaryadye", official: "https://www.zaryadye-park.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/State%20Tretyakov%20Gallery%20Moscow.jpg", price: "от 300 ₽", enPrice: "from ₽300", address: "Лаврушинский переулок, 10", enAddress: "10 Lavrushinsky Lane", lat: 55.7415, lon: 37.6202, anchor: "tretyakov", official: "https://www.tretyakovgallery.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Cathedral%20of%20Christ%20the%20Saviour,%20Moscow,%20Russia.jpg", price: "Свободный вход", enPrice: "Free entry", address: "ул. Волхонка, 15", enAddress: "15 Volkhonka Street", lat: 55.7446, lon: 37.6055, anchor: "cathedral", official: "https://xxc.ru/" },
   { image: "https://images.unsplash.com/photo-1519288671229-4f5a3b8f6f84?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Большой Патриарший переулок", enAddress: "Bolshoy Patriarchal Lane", lat: 55.7639, lon: 37.5924, anchor: "patriarshiye", official: "https://moscowseasons.com/guide/" },
-  { image: "https://images.unsplash.com/photo-1526495124232-a04e1849168c?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "ул. Арбат", enAddress: "Arbat Street", lat: 55.7522, lon: 37.5915, anchor: "arbat", official: "https://moscowseasons.com/guide/" },
-  { image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Крымский Вал, 9", enAddress: "9 Krymsky Val", lat: 55.7298, lon: 37.6011, anchor: "gorky", official: "https://park-gorkogo.com/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/ArbatMoscow.jpg", price: "Свободный вход", enPrice: "Free entry", address: "ул. Арбат", enAddress: "Arbat Street", lat: 55.7522, lon: 37.5915, anchor: "arbat", official: "https://moscowseasons.com/guide/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Gorky%20Park%20(2013-07-16)%2001.jpg", price: "Свободный вход", enPrice: "Free entry", address: "Крымский Вал, 9", enAddress: "9 Krymsky Val", lat: 55.7298, lon: 37.6011, anchor: "gorky", official: "https://park-gorkogo.com/" },
   { image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=84", price: "Парк бесплатно · музей уточнить", enPrice: "Park free · museum price varies", address: "просп. Мира, 119", enAddress: "119 Mira Avenue", lat: 55.8288, lon: 37.6331, anchor: "vdnh", official: "https://vdnh.ru/" },
-  { image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=84", price: "Парк бесплатно · музей уточнить", enPrice: "Park free · museum price varies", address: "просп. Андропова, 39", enAddress: "39 Andropov Avenue", lat: 55.6712, lon: 37.6697, anchor: "kolomenskoye", official: "https://mgomz.ru/" },
-  { image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=84", price: "Парк бесплатно · дворец 750 ₽", enPrice: "Park free · palace ₽750", address: "ул. Дольская, 1", enAddress: "1 Dolskaya Street", lat: 55.6197, lon: 37.6827, anchor: "tsaritsyno", official: "https://tsaritsyno-museum.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Kolomenskoye,%20Moscow,%20Russia%20-%2030062345825.jpg", price: "Парк бесплатно · музей уточнить", enPrice: "Park free · museum price varies", address: "просп. Андропова, 39", enAddress: "39 Andropov Avenue", lat: 55.6712, lon: 37.6697, anchor: "kolomenskoye", official: "https://mgomz.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Moscow,%20Russia,%20Tsaritsyno%20Palace.jpg", price: "Парк бесплатно · дворец 750 ₽", enPrice: "Park free · palace ₽750", address: "ул. Дольская, 1", enAddress: "1 Dolskaya Street", lat: 55.6197, lon: 37.6827, anchor: "tsaritsyno", official: "https://tsaritsyno-museum.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/2024%20Novodevichy%20Convent%20in%20Moscow.jpg", price: "Парк бесплатно · музей уточнить", enPrice: "Park free · museum price varies", address: "Новодевичий проезд, 1", enAddress: "1 Novodevichy Passage", lat: 55.7264, lon: 37.5578, anchor: "novodevichy", official: "https://mgomz.ru/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Sparrow%20Hills.jpg", price: "Свободный вход", enPrice: "Free entry", address: "Воробьёвы горы", enAddress: "Sparrow Hills", lat: 55.7104, lon: 37.5426, anchor: "sparrow", official: "https://park-gorkogo.com/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Sokolniki%20Park,%20Moskva,%20Russia%20(Unsplash).jpg", price: "Свободный вход", enPrice: "Free entry", address: "Сокольнический Вал, 1", enAddress: "1 Sokolnichesky Val", lat: 55.7958, lon: 37.6758, anchor: "sokolniki", official: "https://park.sokolniki.com/" },
+  { image: "https://commons.wikimedia.org/wiki/Special:FilePath/Gorky%20Park%20(2013-07-16)%2001.jpg", price: "Свободный вход", enPrice: "Free entry", address: "Ленинский проспект, 30", enAddress: "30 Leninsky Avenue", lat: 55.7169, lon: 37.5936, anchor: "neskuchny", official: "https://park-gorkogo.com/" },
+  { image: "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=84", price: "от 500 ₽", enPrice: "from ₽500", address: "просп. Мира, 26", enAddress: "26 Mira Avenue", lat: 55.7798, lon: 37.6327, anchor: "aptekarsky", official: "https://hortus.ru/" },
+  { image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Московский проспект, 57", enAddress: "57 Moskovsky Avenue", lat: 55.7946, lon: 37.7994, anchor: "izmaylovo", official: "https://izmailovsky-park.ru/" },
+  { image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=84", price: "от 400 ₽", enPrice: "from ₽400", address: "ул. Юности, 2", enAddress: "2 Yunosti Street", lat: 55.7353, lon: 37.8131, anchor: "kuskovo", official: "https://kuskovo.ru/" },
+  { image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Пресненская набережная, 2", enAddress: "2 Presnenskaya Embankment", lat: 55.7481, lon: 37.5395, anchor: "moscow-city", official: "https://citymoscow.ru/" },
 ];
 
-const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno"];
+const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno", "novodevichy", "sparrow-hills", "sokolniki", "neskuchny", "aptekarsky-ogorod", "izmaylovo", "kuskovo", "moscow-city"];
 
 const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && localStorage.getItem(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
 let articleTheme = localStorage.getItem(ARTICLE_THEME_KEY) === "light" ? "light" : "dark";
+const initialArticleSearch = articleParams.get("search") || "";
 
 function at(key) { return articleTranslations[articleLanguage][key] || articleTranslations.ru[key] || key; }
 
@@ -110,7 +127,7 @@ function renderArticles(filter = "all") {
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
     <article id="article-${articleSlugs[articles.indexOf(item)]}" class="article-card">
-      <div class="article-image-wrap"><img class="article-image" src="${meta.image}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" onerror="this.closest('.article-image-wrap').classList.add('is-broken')" /><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
+      <div class="article-image-wrap"><img class="article-image" src="${meta.image}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.article-image-wrap').classList.add('is-broken')" /><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
       <div class="article-card-body"><div class="article-card-top"><span class="article-tag">${articleLanguage === "en" ? item.enTags : item.tags}</span></div>
       <h2>${articleLanguage === "en" ? item.en : item.title}</h2>
       <p>${articleLanguage === "en" ? item.enText : item.text}</p>
@@ -123,8 +140,14 @@ function renderArticles(filter = "all") {
 function applyArticleLanguage() {
   document.documentElement.lang = articleLanguage;
   document.title = articleLanguage === "en" ? "Walk Moscow — things to see in Moscow" : "Walk Moscow — что посмотреть в Москве";
+  const description = articleLanguage === "en" ? "Things to see in Moscow: 20 landmarks, parks, museums and walking ideas with short descriptions, maps and official links." : "Что посмотреть в Москве: 20 достопримечательностей, парков, музеев и красивых маршрутов с краткими описаниями, картой и официальными ссылками.";
+  document.querySelector('meta[name="description"]')?.setAttribute("content", description);
+  document.querySelector('meta[property="og:title"]')?.setAttribute("content", document.title);
+  document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
   document.querySelectorAll("[data-i18n]").forEach((node) => { node.textContent = at(node.dataset.i18n); });
   document.querySelectorAll("[data-i18n-placeholder]").forEach((node) => { node.placeholder = at(node.dataset.i18nPlaceholder); });
+  const searchInput = document.querySelector("#articleSearch");
+  if (searchInput && initialArticleSearch && !searchInput.value) searchInput.value = initialArticleSearch;
   document.querySelector("#languageToggle").textContent = articleLanguage === "ru" ? "EN" : "RU";
   document.querySelector("#languageToggle").setAttribute("aria-label", at("language"));
   renderArticles(document.querySelector(".article-filter.is-active")?.dataset.filter || "all");

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Walk Moscow — пешие маршруты по Москве</title>
     <meta name="description" content="Бесплатный генератор пеших маршрутов по Москве. Выберите метро, длину и настроение — получите прогулку с картой, достопримечательностями и временем в пути." />
+    <meta name="author" content="Walk Moscow" />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://znoynext.github.io/moscow-walks/" />
     <link rel="alternate" hreflang="ru" href="https://znoynext.github.io/moscow-walks/?lang=ru" />
@@ -15,6 +16,8 @@
     <meta property="og:description" content="Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени." />
     <meta property="og:url" content="https://znoynext.github.io/moscow-walks/" />
     <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://commons.wikimedia.org/wiki/Special:FilePath/Red%20Square,%20Moscow,%20Russia.jpg" />
+    <meta property="og:image:alt" content="Красная площадь в Москве" />
     <meta property="og:locale" content="ru_RU" />
     <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary" />
@@ -25,7 +28,7 @@
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <a class="skip-link" href="#routeResult">К маршруту</a>
+    <a class="skip-link" href="#routeResult" data-i18n="toRoute">К маршруту</a>
     <main class="app-shell">
       <aside class="planner" aria-label="Параметры маршрута">
         <header class="brand">
@@ -86,7 +89,6 @@
             </div>
           </details>
 
-          <p class="form-note" data-i18n="formNote">Маршрут обновится сам</p>
         </form>
 
         <section class="route-summary" aria-live="polite">
@@ -158,7 +160,12 @@
         "applicationCategory": "TravelApplication",
         "operatingSystem": "Any",
         "inLanguage": "ru",
-        "isAccessibleForFree": true
+        "isAccessibleForFree": true,
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": "https://znoynext.github.io/moscow-walks/articles.html?search={search_term_string}",
+          "query-input": "required name=search_term_string"
+        }
       }
     </script>
 

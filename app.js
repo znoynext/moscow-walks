@@ -30,7 +30,6 @@ const translations = {
     addAnotherPlace: "+ Добавить ещё место",
     removePlace: "Убрать место",
     buildRoute: "Обновить маршрут",
-    formNote: "Маршрут обновится сам",
     time: "Время",
     stops: "Точек",
     caloriesLabel: "Примерно потрачено",
@@ -48,8 +47,8 @@ const translations = {
     mapData: "Прогулка начинается здесь",
     routeLoading: "Ищем приятные места для прогулки…",
     building: "Обновляем маршрут…",
-    routeBuilt: "Маршрут готов — можно идти.",
-    routeFallback: "Маршрут готов — можно идти.",
+    routeBuilt: "",
+    routeFallback: "",
     walkUnavailable: "Не удалось проложить непрерывный путь по пешеходным дорожкам. Попробуйте другую точку.",
     routeError: "Не удалось построить маршрут. Проверьте интернет и попробуйте ещё раз.",
     tryAgain: "Маршрут не построен — попробуйте ещё раз.",
@@ -59,7 +58,10 @@ const translations = {
     shareTitle: "Прогулка по Москве",
     startNote: "Старт рядом с метро — можно начинать.",
     finishNote: "Финиш рядом с метро — прогулку удобно завершить.",
-    legStart: "старт",
+  legStart: "старт",
+    lightTheme: "Переключить светлую тему",
+    darkTheme: "Переключить тёмную тему",
+    toRoute: "К маршруту",
   },
   en: {
     heroTitle: "A walking route through Moscow",
@@ -83,7 +85,6 @@ const translations = {
     addAnotherPlace: "+ Add another place",
     removePlace: "Remove place",
     buildRoute: "Update route",
-    formNote: "The route updates automatically",
     time: "Time",
     stops: "Stops",
     caloriesLabel: "Estimated energy",
@@ -101,8 +102,8 @@ const translations = {
     mapData: "Your walk starts here",
     routeLoading: "Finding lovely places for your walk…",
     building: "Updating route…",
-    routeBuilt: "Your walk is ready.",
-    routeFallback: "Your walk is ready.",
+    routeBuilt: "",
+    routeFallback: "",
     walkUnavailable: "A continuous walking path could not be found. Try another place.",
     routeError: "We couldn’t build the route. Check your connection and try again.",
     tryAgain: "Route failed — please try again.",
@@ -112,7 +113,10 @@ const translations = {
     shareTitle: "A walk through Moscow",
     startNote: "Start near the metro — ready to go.",
     finishNote: "Finish near the metro — easy to wrap up.",
-    legStart: "start",
+  legStart: "start",
+    lightTheme: "Switch to light theme",
+    darkTheme: "Switch to dark theme",
+    toRoute: "To route",
   },
 };
 
@@ -127,6 +131,39 @@ const areaNames = {
   "river-west": "Western riverfront",
   kolomenskoye: "Kolomenskoye",
   tsaritsyno: "Tsaritsyno",
+};
+
+const englishPlaceNames = {
+  "м. Охотный Ряд": "Okhotny Ryad Metro",
+  "м. Кропоткинская": "Kropotkinskaya Metro",
+  "м. Парк культуры": "Park Kultury Metro",
+  "м. Третьяковская": "Tretyakovskaya Metro",
+  "м. Маяковская": "Mayakovskaya Metro",
+  "м. ВДНХ": "VDNH Metro",
+  "м. Киевская": "Kiyevskaya Metro",
+  "м. Смоленская": "Smolenskaya Metro",
+  "м. Чистые пруды": "Chistye Prudy Metro",
+  "Красная площадь": "Red Square", "Александровский сад": "Alexander Garden",
+  "Собор Василия Блаженного": "Saint Basil’s Cathedral", "Манежная площадь": "Manezhnaya Square",
+  "Большой театр": "Bolshoi Theatre", "Никольская улица": "Nikolskaya Street", "Ильинка": "Ilyinka Street",
+  "Варварка": "Varvarka Street", "Парк Зарядье": "Zaryadye Park", "Лубянская площадь": "Lubyanka Square",
+  "Мясницкая улица": "Myasnitskaya Street", "Чистые пруды": "Chistye Prudy", "Покровка": "Pokrovka Street",
+  "Сретенский бульвар": "Sretensky Boulevard", "Тверской бульвар": "Tverskoy Boulevard", "Страстной бульвар": "Strastnoy Boulevard",
+  "Петровский бульвар": "Petrovsky Boulevard", "Трубная площадь": "Trubnaya Square", "Сад Эрмитаж": "Hermitage Garden",
+  "Патриаршие пруды": "Patriarch’s Ponds", "Спиридоновка": "Spiridonovka Street", "Малая Бронная": "Malaya Bronnaya Street",
+  "Тишинская площадь": "Tishinskaya Square", "Московский зоопарк": "Moscow Zoo", "Старый Арбат": "Old Arbat",
+  "Арбатские переулки": "Arbat side streets", "Остоженка": "Ostozhenka Street", "Пречистенка": "Prechistenka Street",
+  "Храм Христа Спасителя": "Cathedral of Christ the Saviour", "Крымский мост": "Krymsky Bridge", "Музеон": "Muzeon Arts Park",
+  "Парк Горького": "Gorky Park", "Андреевский мост": "Andreevsky Bridge", "Нескучный сад": "Neskuchny Garden",
+  "Смотровая у РАН": "Russian Academy of Sciences viewpoint", "Третьяковская галерея": "Tretyakov Gallery",
+  "Лаврушинский переулок": "Lavrushinsky Lane", "Болотная набережная": "Bolotnaya Embankment", "Кадашёвская набережная": "Kadashevskaya Embankment",
+  "Пятницкая улица": "Pyatnitskaya Street", "Большая Ордынка": "Bolshaya Ordynka Street", "Новодевичий монастырь": "Novodevichy Convent",
+  "Новодевичьи пруды": "Novodevichy Ponds", "Лужники": "Luzhniki", "Воробьёвы горы": "Sparrow Hills", "Главное здание МГУ": "Moscow State University",
+  "ВДНХ": "VDNH", "Фонтан Дружба народов": "Friendship of Nations Fountain", "Павильон Космос": "Cosmos Pavilion", "Останкинский парк": "Ostankino Park",
+  "Главный ботанический сад": "Main Botanical Garden", "Рабочий и колхозница": "Worker and Kolkhoz Woman", "Коломенское": "Kolomenskoye", "Царицыно": "Tsaritsyno",
+  "Новодевичий монастырь": "Novodevichy Convent", "Воробьёвы горы": "Sparrow Hills", "Сокольники": "Sokolniki Park",
+  "Нескучный сад": "Neskuchny Garden", "Аптекарский огород": "Aptekarsky Ogorod", "Измайловский парк": "Izmaylovo Park",
+  "Усадьба Кусково": "Kuskovo Estate", "Москва-Сити": "Moscow City", "Набережная Тараса Шевченко": "Taras Shevchenko Embankment",
 };
 
 let currentLanguage = localStorage.getItem(LANGUAGE_KEY) === "en" ? "en" : "ru";
@@ -216,6 +253,11 @@ const pois = [
   point("worker", "Рабочий и колхозница", 55.8297, 37.6469, "vdnh", ["architecture", "classic"], 80, "Яркая городская скульптура у входа в ВДНХ."),
   point("kolomenskoye", "Коломенское", 55.6712, 37.6697, "kolomenskoye", ["green", "architecture", "view"], 94, "Усадьба, сады и большие виды на Москву-реку."),
   point("tsaritsyno", "Царицыно", 55.6197, 37.6827, "tsaritsyno", ["green", "architecture", "water"], 94, "Дворцовый ансамбль, пруды и красивый парк."),
+  point("sokolniki", "Сокольники", 55.7958, 37.6758, "boulevards", ["green", "water"], 86, "Большой парк с аллеями и прудами."),
+  point("aptekarsky", "Аптекарский огород", 55.7798, 37.6327, "boulevards", ["green", "architecture"], 84, "Ботанический сад и оранжереи в центре города."),
+  point("izmaylovo", "Измайловский парк", 55.7946, 37.7994, "vdnh", ["green", "water"], 86, "Просторный лесопарк с длинными дорожками и прудами."),
+  point("kuskovo", "Усадьба Кусково", 55.7353, 37.8131, "vdnh", ["green", "architecture", "water"], 88, "Усадьба, дворец и регулярный парк для длинной прогулки."),
+  point("moscow-city", "Москва-Сити", 55.7481, 37.5395, "river-west", ["architecture", "water", "view"], 86, "Небоскрёбы и панорама современной Москвы у реки."),
 ];
 
 let map;
@@ -383,8 +425,15 @@ function applyLanguage() {
     if (translations[currentLanguage][key]) node.textContent = t(key);
   });
   elements.languageToggle.textContent = currentLanguage === "ru" ? "EN" : "RU";
-  elements.languageToggle.setAttribute("aria-label", currentLanguage === "ru" ? "Switch to English" : "Переключить на русский");
-  elements.themeToggle.setAttribute("aria-label", currentLanguage === "ru" ? (currentTheme === "dark" ? "Переключить светлую тему" : "Переключить тёмную тему") : (currentTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"));
+  elements.languageToggle.setAttribute("aria-label", currentLanguage === "ru" ? "Switch to English" : "Switch to Russian");
+  elements.themeToggle.setAttribute("aria-label", currentTheme === "dark" ? t("lightTheme") : t("darkTheme"));
+  document.querySelector(".skip-link")?.setAttribute("aria-label", t("toRoute"));
+  document.querySelector(".planner")?.setAttribute("aria-label", currentLanguage === "en" ? "Route settings" : "Параметры маршрута");
+  document.querySelector(".site-nav")?.setAttribute("aria-label", currentLanguage === "en" ? "Navigation" : "Навигация");
+  document.querySelector(".workspace")?.setAttribute("aria-label", currentLanguage === "en" ? "Route result" : "Результат маршрута");
+  document.querySelector(".map")?.setAttribute("aria-label", currentLanguage === "en" ? "Interactive walking route map" : "Интерактивная карта пешего маршрута");
+  document.querySelector(".itinerary")?.setAttribute("aria-label", currentLanguage === "en" ? "Route" : "Маршрут");
+  document.querySelector(".guide")?.setAttribute("aria-label", currentLanguage === "en" ? "About the service" : "О сервисе");
   fillSelects();
   [...elements.distance.options].forEach((option) => {
     option.textContent = `${option.value} ${currentLanguage === "ru" ? "км" : "km"}`;
@@ -753,7 +802,7 @@ function renderRoute(route, walking) {
   elements.routeTitle.textContent = buildRouteTitle(route);
   elements.routeArea.textContent = localizedArea(area);
   elements.routeReason.textContent = explainRoute(route, area, walking);
-  elements.routeStatus.textContent = t("routeBuilt");
+  elements.routeStatus.textContent = "";
   persistRouteState();
   renderStops(route);
   renderFallbackMap(walking.coordinates, route);
@@ -838,7 +887,7 @@ function localizedArea(area) {
 }
 
 function localizedPlaceName(name) {
-  if (currentLanguage === "en") return String(name).replace(/^м\.\s*/, "Metro ");
+  if (currentLanguage === "en") return englishPlaceNames[name] || String(name).replace(/^м\.\s*/, "Metro ");
   return name;
 }
 
@@ -870,6 +919,14 @@ const articleSlugByPoint = {
   vdnh: "vdnh",
   kolomenskoye: "kolomenskoye",
   tsaritsyno: "tsaritsyno",
+  novodevichy: "novodevichy",
+  sparrow: "sparrow-hills",
+  sokolniki: "sokolniki",
+  neskuchny: "neskuchny",
+  aptekarsky: "aptekarsky-ogorod",
+  izmaylovo: "izmaylovo",
+  kuskovo: "kuskovo",
+  "moscow-city": "moscow-city",
 };
 
 function articleLinkForStop(stop, compact = false) {
