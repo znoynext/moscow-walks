@@ -271,6 +271,17 @@ input[type="search"] {
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
+#distanceSelect {
+  min-height: 38px;
+  padding-right: 28px;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.field-pair > .field:last-child {
+  max-width: 108px;
+}
+
 select {
   appearance: none;
   cursor: pointer;
@@ -688,17 +699,17 @@ button:disabled {
 .articles-main {
   max-width: 1180px;
   margin: 0 auto;
-  padding: 38px 28px 72px;
+  padding: 30px 28px 60px;
 }
 
 .articles-intro {
   max-width: 700px;
-  margin-bottom: 34px;
+  margin-bottom: 24px;
 }
 
 .back-link {
   display: inline-block;
-  margin-bottom: 34px;
+  margin-bottom: 22px;
 }
 
 .articles-intro h1 {
@@ -710,10 +721,10 @@ button:disabled {
 
 .articles-lead {
   max-width: 570px;
-  margin-top: 20px;
+  margin-top: 14px;
   color: var(--muted);
-  font-size: 18px;
-  line-height: 1.55;
+  font-size: 16px;
+  line-height: 1.45;
 }
 
 .article-filters {
@@ -1121,15 +1132,17 @@ ol {
 }
 
 .articles-intro h1 {
-  max-width: 760px;
-  font-size: clamp(38px, 7vw, 78px);
+  max-width: none;
+  font-size: clamp(34px, 4.5vw, 56px);
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .articles-stats {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 26px;
+  margin-top: 18px;
 }
 
 .articles-stats span {
@@ -1179,7 +1192,7 @@ ol {
 
 .article-image-wrap {
   position: relative;
-  height: 198px;
+  height: 174px;
   overflow: hidden;
   background: linear-gradient(135deg, rgba(255, 106, 85, 0.32), rgba(255, 255, 255, 0.04));
 }
@@ -1205,11 +1218,17 @@ ol {
 
 .article-image-placeholder {
   display: grid;
+  width: 100%;
+  height: 100%;
   place-items: center;
   color: rgba(255, 255, 255, 0.88);
   background:
     radial-gradient(circle at 30% 20%, rgba(255, 198, 112, 0.4), transparent 34%),
     linear-gradient(135deg, #b54738, #273b54 68%, #15202b);
+}
+
+.article-image-placeholder[hidden] {
+  display: none;
 }
 
 .article-image-placeholder span {
@@ -1233,9 +1252,9 @@ ol {
 
 .article-card-body {
   display: flex;
-  min-height: 340px;
+  min-height: 300px;
   flex-direction: column;
-  padding: 20px;
+  padding: 18px;
 }
 
 .article-card-top {
@@ -1243,8 +1262,8 @@ ol {
 }
 
 .article-card h2 {
-  margin-top: 19px;
-  font-size: clamp(20px, 2vw, 25px);
+  margin-top: 14px;
+  font-size: clamp(19px, 2vw, 23px);
 }
 
 .article-card p {
@@ -1273,7 +1292,7 @@ ol {
   align-items: center;
   gap: 8px 12px;
   margin-top: auto;
-  padding-top: 18px;
+  padding-top: 14px;
 }
 
 .article-image-wrap.is-broken::before {
@@ -1451,7 +1470,7 @@ ol {
   }
 
   .article-image-wrap {
-    height: 184px;
+    height: 160px;
   }
 
   .article-card-body {
@@ -1459,6 +1478,12 @@ ol {
   }
 
   .route-status {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 700px) {
+  .articles-intro h1 {
     white-space: normal;
   }
 }

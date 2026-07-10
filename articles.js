@@ -143,7 +143,7 @@ function renderArticles(filter = "all") {
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
     <article id="article-${articleSlugs[articles.indexOf(item)]}" class="article-card">
-      <div class="article-image-wrap"><div class="article-image article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}"><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
+      <div class="article-image-wrap"><img class="article-image" src="${meta.image}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" width="1200" height="675" referrerpolicy="no-referrer" onerror="this.hidden=true; this.nextElementSibling.hidden=false" /><div class="article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}" hidden><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
       <div class="article-card-body"><div class="article-card-top"><span class="article-tag">${articleLanguage === "en" ? item.enTags : item.tags}</span></div>
       <h2>${articleLanguage === "en" ? item.en : item.title}</h2>
       <p>${articleLanguage === "en" ? item.enText : item.text}</p>
