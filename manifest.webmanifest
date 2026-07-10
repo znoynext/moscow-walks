@@ -1,9 +1,9 @@
 {
   "name": "Moscow Walks",
   "short_name": "Walks",
-  "start_url": "./index.html",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
-  "description": "Умные пешие маршруты по Москве на OpenStreetMap."
+  "description": "Красивые пешие маршруты по Москве: старт, длина и настроение прогулки."
 }

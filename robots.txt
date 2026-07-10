@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://znoynext.github.io/moscow-walks/sitemap.xml

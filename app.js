@@ -434,7 +434,7 @@ function renderLeafletRoute(route, line) {
     L.marker([stop.lat, stop.lon], {
       icon: createMarkerIcon(index + 1, index === 0),
     })
-      .bindPopup(`<strong>${index + 1}. ${stop.name}</strong><br>${stop.note}`)
+      .bindPopup(`<strong>${index + 1}. ${escapeHtml(stop.name)}</strong><br>${escapeHtml(stop.note)}`)
       .addTo(markersLayer);
   });
 
@@ -476,8 +476,8 @@ function renderStops(route) {
         <li class="stop">
           <span class="stop-number">${index + 1}</span>
           <div>
-            <h3>${stop.name}</h3>
-            <p>${stop.note}</p>
+            <h3>${escapeHtml(stop.name)}</h3>
+            <p>${escapeHtml(stop.note)}</p>
             ${tags ? `<span class="stop-tags">${tags}</span>` : ""}
           </div>
           <small>${leg}</small>
@@ -527,17 +527,41 @@ function explainRoute(route, area, walking) {
 function setRouteLoading(isLoading) {
   elements.regenerateButton.disabled = isLoading;
   elements.form.querySelector(".primary-button").disabled = isLoading;
+  elements.form.setAttribute("aria-busy", String(isLoading));
   elements.routeStatus.textContent = isLoading ? "Строю пеший маршрут по дорожкам..." : elements.routeStatus.textContent;
 }
 
 function copyRoute() {
-  const text = currentRoute.map((stop, index) => `${index + 1}. ${stop.name} - ${stop.note}`).join("\n");
-  navigator.clipboard.writeText(text).then(() => {
-    elements.copyButton.textContent = "Скопировано";
-    window.setTimeout(() => {
-      elements.copyButton.textContent = "Скопировать";
-    }, 1200);
-  });
+  const text = buildShareText();
+  const share = navigator.share
+    ? navigator.share({ title: elements.routeTitle.textContent || "Прогулка по Москве", text })
+    : navigator.clipboard?.writeText(text);
+
+  Promise.resolve(share)
+    .then(() => {
+      elements.copyButton.textContent = navigator.share ? "Отправлено" : "Скопировано";
+      window.setTimeout(() => {
+        elements.copyButton.textContent = "Поделиться";
+      }, 1400);
+    })
+    .catch(() => {
+      elements.routeStatus.textContent = "Не удалось открыть меню отправки. Попробуйте ещё раз.";
+    });
+}
+
+function buildShareText() {
+  const title = elements.routeTitle.textContent || "Прогулка по Москве";
+  const stops = currentRoute.map((stop, index) => `${index + 1}. ${stop.name}`).join("\n");
+  return `${title}\n${currentSummary.distanceKm.toFixed(1)} км · ${currentSummary.durationMin} мин\n\n${stops}\n\nСобрано в Moscow Walks`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
 }
 
 function exportRouteJson() {

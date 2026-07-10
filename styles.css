@@ -72,6 +72,14 @@ button {
   text-transform: uppercase;
 }
 
+.brand-note {
+  max-width: 290px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
 h1,
 h2,
 p {
@@ -188,6 +196,37 @@ input[type="search"]::placeholder {
   margin: 0 8px 0 0;
 }
 
+.advanced-settings {
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+
+.advanced-settings summary,
+.guide summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.advanced-settings summary:hover,
+.guide summary:hover {
+  color: var(--ink);
+}
+
+.advanced-fields {
+  display: grid;
+  gap: 14px;
+  padding-top: 14px;
+}
+
+.form-note {
+  color: var(--soft);
+  font-size: 12px;
+  line-height: 1.42;
+  text-align: center;
+}
+
 .primary-button,
 .ghost-button {
   min-height: 44px;
@@ -205,6 +244,13 @@ input[type="search"]::placeholder {
 
 .primary-button:hover {
   background: var(--accent-dark);
+}
+
+.primary-button:focus-visible,
+.ghost-button:focus-visible,
+summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
 }
 
 .ghost-button {
@@ -339,6 +385,47 @@ button:disabled {
   backdrop-filter: blur(18px);
 }
 
+.guide {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(280px, 1.2fr);
+  gap: 22px 56px;
+  align-items: start;
+  padding: 62px max(28px, calc((100vw - 1180px) / 2));
+  border-top: 1px solid var(--line);
+  background: #11141a;
+}
+
+.guide h2 {
+  margin-top: 8px;
+  font-size: clamp(25px, 3vw, 36px);
+}
+
+.guide > p,
+.guide details {
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1.65;
+}
+
+.guide details {
+  grid-column: 2;
+}
+
+.guide details p {
+  margin-top: 12px;
+}
+
+.site-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px max(28px, calc((100vw - 1180px) / 2));
+  color: var(--soft);
+  border-top: 1px solid var(--line);
+  background: #11141a;
+  font-size: 12px;
+}
+
 .itinerary-head {
   display: flex;
   align-items: flex-start;
@@ -441,6 +528,14 @@ ol {
   .summary-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
+
+  .guide {
+    grid-template-columns: 1fr;
+  }
+
+  .guide details {
+    grid-column: auto;
+  }
 }
 
 @media (max-width: 560px) {
@@ -482,5 +577,9 @@ ol {
 
   .stop small {
     grid-column: 2;
+  }
+
+  .site-footer {
+    display: grid;
   }
 }
