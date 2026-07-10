@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Walk Moscow — что посмотреть в Москве</title>
+    <meta name="description" content="Главные достопримечательности Москвы: короткие описания, идеи для прогулок и полезные ссылки перед визитом." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://znoynext.github.io/moscow-walks/articles.html" />
+    <link rel="alternate" hreflang="ru" href="https://znoynext.github.io/moscow-walks/articles.html?lang=ru" />
+    <link rel="alternate" hreflang="en" href="https://znoynext.github.io/moscow-walks/articles.html?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://znoynext.github.io/moscow-walks/articles.html" />
+    <meta name="theme-color" content="#0f1115" />
+    <meta property="og:title" content="Walk Moscow — что посмотреть в Москве" />
+    <meta property="og:description" content="Короткий гид по главным местам Москвы для самостоятельных прогулок." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://znoynext.github.io/moscow-walks/articles.html" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="articles-page">
+    <header class="articles-header">
+      <a class="articles-brand" href="./" aria-label="Walk Moscow">Walk Moscow</a>
+      <div class="utility-actions">
+        <button id="languageToggle" class="utility-button" type="button" aria-label="Switch language">EN</button>
+        <button id="themeToggle" class="utility-button" type="button" aria-label="Switch color theme">☼</button>
+      </div>
+    </header>
+
+    <main class="articles-main">
+      <div class="articles-intro">
+        <a class="back-link" href="./" data-i18n="back">← К маршрутам</a>
+        <p class="eyebrow" data-i18n="eyebrow">Гид по Москве</p>
+        <h1 data-i18n="title">Что посмотреть в Москве</h1>
+        <p class="articles-lead" data-i18n="lead">Выберите место по настроению — и добавьте его в маршрут прогулки.</p>
+      </div>
+
+      <nav class="article-filters" aria-label="Фильтр статей">
+        <button class="article-filter is-active" type="button" data-filter="all" data-i18n="all">Все места</button>
+        <button class="article-filter" type="button" data-filter="centre" data-i18n="centre">Центр</button>
+        <button class="article-filter" type="button" data-filter="parks" data-i18n="parks">Парки и вода</button>
+        <button class="article-filter" type="button" data-filter="museums" data-i18n="museums">Музеи и история</button>
+      </nav>
+
+      <section id="articleGrid" class="article-grid" aria-live="polite"></section>
+
+      <section class="article-note">
+        <p class="eyebrow" data-i18n="noteEyebrow">Перед визитом</p>
+        <p data-i18n="note">Режим работы, вход и правила посещения могут меняться. Перед поездкой откройте официальный сайт места — мы добавляем ссылки на первоисточники.</p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <span>© Walk Moscow</span>
+      <span data-i18n="footer">Идеи для прогулок по Москве</span>
+    </footer>
+
+    <script src="./articles.js"></script>
+  </body>
+</html>

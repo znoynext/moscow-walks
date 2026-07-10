@@ -13,6 +13,7 @@ const translations = {
     heroTitle: "Пеший маршрут по Москве",
     heroNote: "Выберите настроение — остальное соберём сами.",
     freeBadge: "Бесплатно",
+    articlesLink: "Что посмотреть",
     start: "Старт",
     distance: "Длина",
     mood: "Настроение",
@@ -32,7 +33,7 @@ const translations = {
     share: "Поделиться",
     guideEyebrow: "Прогулки без подготовки",
     guideTitle: "Идея для вечера, свидания или выходного",
-    guideText: "Выберите старт, длину и настроение. Moscow Walks соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.",
+    guideText: "Выберите старт, длину и настроение. Walk Moscow соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.",
     howItWorks: "Как строится маршрут",
     howItWorksText: "Мы подбираем близкие точки по выбранной теме, а пешеходную линию строим по данным OpenStreetMap. Если внешний сервис временно недоступен, покажем запасной маршрут между точками.",
     mapData: "Данные карты: OpenStreetMap",
@@ -54,6 +55,7 @@ const translations = {
     heroTitle: "A walking route through Moscow",
     heroNote: "Choose a mood — we’ll do the planning.",
     freeBadge: "Free",
+    articlesLink: "Things to see",
     start: "Start",
     distance: "Distance",
     mood: "Mood",
@@ -73,7 +75,7 @@ const translations = {
     share: "Share",
     guideEyebrow: "Walks without planning",
     guideTitle: "An easy idea for an evening or weekend",
-    guideText: "Choose a start, distance and mood. Moscow Walks creates a route through interesting places, with distance and walking time included.",
+    guideText: "Choose a start, distance and mood. Walk Moscow creates a route through interesting places, with distance and walking time included.",
     howItWorks: "How it works",
     howItWorksText: "We choose nearby places that match your mood and draw a walkable line using OpenStreetMap. If routing is temporarily unavailable, a local fallback route is shown.",
     mapData: "Map data: OpenStreetMap",
@@ -223,7 +225,6 @@ const elements = {
   fallbackMap: document.querySelector("#fallbackMap"),
   mapStatus: document.querySelector("#mapStatus"),
   copyButton: document.querySelector("#copyButton"),
-  exportButton: document.querySelector("#exportButton"),
   regenerateButton: document.querySelector("#regenerateButton"),
   placeHints: document.querySelector("#placeHints"),
   toast: document.querySelector("#toast"),
@@ -246,7 +247,6 @@ function init() {
   elements.form.addEventListener("submit", handleSubmit);
   elements.regenerateButton.addEventListener("click", generateAndRender);
   elements.copyButton.addEventListener("click", copyRoute);
-  elements.exportButton.addEventListener("click", exportRouteJson);
   elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
   generateAndRender();
@@ -272,10 +272,10 @@ function fillHints() {
 
 function applyLanguage() {
   document.documentElement.lang = currentLanguage;
-  document.title = currentLanguage === "en" ? "Moscow Walks — walking routes in Moscow" : "Moscow Walks — пешие маршруты по Москве";
+  document.title = currentLanguage === "en" ? "Walk Moscow — walking routes in Moscow" : "Walk Moscow — пешие маршруты по Москве";
   document.querySelector('meta[name="description"]')?.setAttribute("content", currentLanguage === "en" ? "Build a free walking route in Moscow with landmarks, a map and estimated walking time." : "Бесплатный генератор пеших маршрутов по Москве с картой, достопримечательностями и расчётом времени.");
   document.querySelector('meta[property="og:locale"]')?.setAttribute("content", currentLanguage === "en" ? "en_US" : "ru_RU");
-  document.querySelector('meta[property="og:title"]')?.setAttribute("content", currentLanguage === "en" ? "Moscow Walks — walking routes in Moscow" : "Moscow Walks — прогулки по Москве");
+  document.querySelector('meta[property="og:title"]')?.setAttribute("content", currentLanguage === "en" ? "Walk Moscow — walking routes in Moscow" : "Walk Moscow — прогулки по Москве");
   document.querySelector('meta[property="og:description"]')?.setAttribute("content", currentLanguage === "en" ? "Free walking routes in Moscow with landmarks, a map and estimated walking time." : "Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени.");
   document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", document.title);
   document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", currentLanguage === "en" ? "Build a free Moscow walk in seconds." : "Соберите бесплатную прогулку по Москве за несколько секунд.");
@@ -793,7 +793,7 @@ function copyText(text) {
 function buildShareText() {
   const title = elements.routeTitle.textContent || t("shareTitle");
   const stops = currentRoute.map((stop, index) => `${index + 1}. ${localizedPlaceName(stop.name)}`).join("\n");
-  return `${title}\n${formatDistance(currentSummary.distanceKm)} · ${formatDuration(currentSummary.durationMin)}\n\n${stops}\n\nMoscow Walks`;
+  return `${title}\n${formatDistance(currentSummary.distanceKm)} · ${formatDuration(currentSummary.durationMin)}\n\n${stops}\n\nWalk Moscow`;
 }
 
 function formatDistance(distance) {
@@ -891,23 +891,6 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-function exportRouteJson() {
-  const payload = {
-    app: "Moscow Walks",
-    version: 1,
-    generatedAt: new Date().toISOString(),
-    route: currentRoute,
-    summary: { ...currentSummary, stops: currentRoute.length },
-  };
-  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement("a");
-  link.href = url;
-  link.download = "moscow-walks-route.json";
-  link.click();
-  URL.revokeObjectURL(url);
-}
-
 function asRouteStop(pointData, fallbackNote) {
   return {
     id: pointData.id,
@@ -995,7 +978,7 @@ init();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-10-2").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-10-3").catch((error) => {
       console.warn("Service worker не зарегистрирован", error);
     });
   });

@@ -1,9 +1,9 @@
 {
-  "name": "Moscow Walks",
-  "short_name": "Walks",
+  "name": "Walk Moscow",
+  "short_name": "Walk Moscow",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
-  "description": "Красивые пешие маршруты по Москве: старт, длина и настроение прогулки."
+  "description": "Красивые пешие маршруты и идеи для прогулок по Москве."
 }
