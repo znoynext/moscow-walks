@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Прогулка по Москве</title>
+    <meta name="theme-color" content="#0f1115" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <aside class="planner" aria-label="Параметры маршрута">
+        <header class="brand">
+          <div>
+            <p class="eyebrow">Moscow Walks</p>
+            <h1>Пеший маршрут по Москве</h1>
+          </div>
+          <span class="status" id="mapStatus">OpenStreetMap</span>
+        </header>
+
+        <form id="routeForm" class="controls">
+          <div class="field-pair">
+            <label class="field">
+              <span>Старт</span>
+              <select id="startSelect" name="start"></select>
+            </label>
+
+            <label class="field">
+              <span>Длина</span>
+              <select id="distanceSelect" name="distance">
+                <option value="3">3 км</option>
+                <option value="5" selected>5 км</option>
+                <option value="8">8 км</option>
+                <option value="12">12 км</option>
+              </select>
+            </label>
+          </div>
+
+          <label class="field">
+            <span>Старт по адресу</span>
+            <input id="startSearch" name="startSearch" type="search" placeholder="Например, Китай-город" autocomplete="off" list="placeHints" />
+          </label>
+
+          <label class="field">
+            <span>Интересное место</span>
+            <select id="anchorSelect" name="anchor"></select>
+          </label>
+
+          <label class="field">
+            <span>Место через поиск</span>
+            <input id="anchorSearch" name="anchorSearch" type="search" placeholder="Например, Патриаршие пруды" autocomplete="off" list="placeHints" />
+          </label>
+
+          <datalist id="placeHints"></datalist>
+
+          <fieldset class="field">
+            <legend>Настроение</legend>
+            <div class="segments" id="themeGroup">
+              <label><input type="radio" name="theme" value="classic" checked /> Центр</label>
+              <label><input type="radio" name="theme" value="green" /> Парки</label>
+              <label><input type="radio" name="theme" value="architecture" /> Архитектура</label>
+              <label><input type="radio" name="theme" value="water" /> Вода</label>
+            </div>
+          </fieldset>
+
+          <button class="primary-button" type="submit">Сгенерировать</button>
+        </form>
+
+        <section class="route-summary" aria-live="polite">
+          <div class="summary-grid">
+            <div>
+              <span>Длина</span>
+              <strong id="totalDistance">-</strong>
+            </div>
+            <div>
+              <span>Время</span>
+              <strong id="totalTime">-</strong>
+            </div>
+            <div>
+              <span>Точек</span>
+              <strong id="stopCount">-</strong>
+            </div>
+            <div>
+              <span>Калории</span>
+              <strong id="caloriesCount">-</strong>
+            </div>
+          </div>
+          <p id="routeReason" class="reason"></p>
+          <p id="routeStatus" class="route-status">Маршрут строится бесплатно по данным OpenStreetMap.</p>
+        </section>
+      </aside>
+
+      <section class="workspace">
+        <div class="map-panel">
+          <div id="map" class="map"></div>
+          <svg id="fallbackMap" class="fallback-map" viewBox="0 0 1000 720" role="img" aria-label="Схема маршрута"></svg>
+        </div>
+
+        <section class="itinerary" aria-label="Маршрут">
+          <div class="itinerary-head">
+            <div>
+              <p id="routeArea" class="route-area">Маршрут</p>
+              <h2 id="routeTitle">Маршрут</h2>
+            </div>
+            <div class="actions">
+              <button id="exportButton" class="ghost-button" type="button">JSON</button>
+              <button id="regenerateButton" class="ghost-button" type="button">Ещё вариант</button>
+              <button id="copyButton" class="ghost-button" type="button">Скопировать</button>
+            </div>
+          </div>
+          <ol id="stopsList"></ol>
+        </section>
+      </section>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="./app.js"></script>
+  </body>
+</html>
