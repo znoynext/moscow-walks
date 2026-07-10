@@ -7,12 +7,16 @@
     <meta name="description" content="Бесплатный генератор пеших маршрутов по Москве. Выберите метро, длину и настроение — получите прогулку с картой, достопримечательностями и временем в пути." />
     <meta name="robots" content="index, follow, max-image-preview:large" />
     <link rel="canonical" href="https://znoynext.github.io/moscow-walks/" />
+    <link rel="alternate" hreflang="ru" href="https://znoynext.github.io/moscow-walks/?lang=ru" />
+    <link rel="alternate" hreflang="en" href="https://znoynext.github.io/moscow-walks/?lang=en" />
+    <link rel="alternate" hreflang="x-default" href="https://znoynext.github.io/moscow-walks/" />
     <meta name="theme-color" content="#0f1115" />
     <meta property="og:title" content="Moscow Walks — прогулки по Москве" />
     <meta property="og:description" content="Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени." />
     <meta property="og:url" content="https://znoynext.github.io/moscow-walks/" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" />
+    <meta property="og:locale:alternate" content="en_US" />
     <meta name="twitter:card" content="summary" />
     <meta name="twitter:title" content="Moscow Walks — пешие маршруты по Москве" />
     <meta name="twitter:description" content="Соберите бесплатную прогулку по Москве за несколько секунд." />
@@ -27,87 +31,77 @@
         <header class="brand">
           <div>
             <p class="eyebrow">Moscow Walks</p>
-            <h1>Пеший маршрут по Москве</h1>
-            <p class="brand-note">Выберите настроение — остальное соберём сами.</p>
+            <h1 data-i18n="heroTitle">Пеший маршрут по Москве</h1>
+            <p class="brand-note" data-i18n="heroNote">Выберите настроение — остальное соберём сами.</p>
           </div>
-          <span class="status" id="mapStatus" aria-label="Источник карты">OpenStreetMap</span>
+          <div class="utility-actions">
+            <button id="languageToggle" class="utility-button" type="button" aria-label="Switch language">EN</button>
+            <button id="themeToggle" class="utility-button" type="button" aria-label="Switch color theme">☼</button>
+          </div>
         </header>
+
+        <div class="map-credit"><span class="status" id="mapStatus" aria-label="Источник карты">OpenStreetMap</span><span class="free-badge" data-i18n="freeBadge">Бесплатно</span></div>
 
         <form id="routeForm" class="controls">
           <div class="field-pair">
             <label class="field">
-              <span>Старт</span>
+              <span data-i18n="start">Старт</span>
               <select id="startSelect" name="start"></select>
             </label>
 
             <label class="field">
-              <span>Длина</span>
+              <span data-i18n="distance">Длина</span>
               <select id="distanceSelect" name="distance">
-                <option value="3">3 км</option>
-                <option value="5" selected>5 км</option>
-                <option value="8">8 км</option>
-                <option value="12">12 км</option>
+                <option value="3">3 km</option>
+                <option value="5" selected>5 km</option>
+                <option value="8">8 km</option>
+                <option value="12">12 km</option>
               </select>
             </label>
           </div>
 
           <fieldset class="field">
-            <legend>Настроение</legend>
+            <legend data-i18n="mood">Настроение</legend>
             <div class="segments" id="themeGroup">
-              <label><input type="radio" name="theme" value="classic" checked /> Центр</label>
-              <label><input type="radio" name="theme" value="green" /> Парки</label>
-              <label><input type="radio" name="theme" value="architecture" /> Архитектура</label>
-              <label><input type="radio" name="theme" value="water" /> Вода</label>
+              <label><input type="radio" name="theme" value="classic" checked /><span data-i18n="themeClassic">Центр</span></label>
+              <label><input type="radio" name="theme" value="green" /><span data-i18n="themeGreen">Парки</span></label>
+              <label><input type="radio" name="theme" value="architecture" /><span data-i18n="themeArchitecture">Архитектура</span></label>
+              <label><input type="radio" name="theme" value="water" /><span data-i18n="themeWater">Вода</span></label>
             </div>
           </fieldset>
 
           <details class="advanced-settings">
-            <summary>Точная настройка</summary>
+            <summary data-i18n="optionalPoint">Добавить точку (необязательно)</summary>
             <div class="advanced-fields">
               <label class="field">
-                <span>Старт по адресу</span>
-                <input id="startSearch" name="startSearch" type="search" placeholder="Например, Китай-город" autocomplete="off" list="placeHints" />
-              </label>
-
-              <label class="field">
-                <span>Обязательное место</span>
+                <span data-i18n="anchor">Обязательное место</span>
                 <select id="anchorSelect" name="anchor"></select>
-              </label>
-
-              <label class="field">
-                <span>Место через поиск</span>
-                <input id="anchorSearch" name="anchorSearch" type="search" placeholder="Например, Патриаршие пруды" autocomplete="off" list="placeHints" />
               </label>
             </div>
           </details>
 
-          <datalist id="placeHints"></datalist>
-
-          <button class="primary-button" type="submit">Собрать прогулку</button>
-          <p class="form-note">Бесплатно, без регистрации. Маршрут можно перестроить в один клик.</p>
+          <button class="primary-button" type="submit" data-i18n="buildRoute">Собрать прогулку</button>
+          <p class="form-note" data-i18n="formNote">Без регистрации. Новый вариант — одним нажатием.</p>
         </form>
 
         <section class="route-summary" aria-live="polite">
           <div class="summary-grid">
             <div>
-              <span>Длина</span>
+              <span data-i18n="distance">Длина</span>
               <strong id="totalDistance">-</strong>
             </div>
             <div>
-              <span>Время</span>
+              <span data-i18n="time">Время</span>
               <strong id="totalTime">-</strong>
             </div>
             <div>
-              <span>Точек</span>
+              <span data-i18n="stops">Точек</span>
               <strong id="stopCount">-</strong>
             </div>
-            <div>
-              <span>Калории</span>
-              <strong id="caloriesCount">-</strong>
-            </div>
           </div>
+          <p class="calories-note"><span data-i18n="caloriesLabel">Примерно потрачено</span> <strong id="caloriesCount">—</strong></p>
           <p id="routeReason" class="reason"></p>
-          <p id="routeStatus" class="route-status">Маршрут строится бесплатно по данным OpenStreetMap.</p>
+          <p id="routeStatus" class="route-status" data-i18n="routeLoading">Строим прогулку по данным OpenStreetMap.</p>
         </section>
       </aside>
 
@@ -120,13 +114,13 @@
         <section class="itinerary" aria-label="Маршрут">
           <div class="itinerary-head">
             <div>
-              <p id="routeArea" class="route-area">Маршрут</p>
-              <h2 id="routeTitle">Маршрут</h2>
+              <p id="routeArea" class="route-area" data-i18n="route">Маршрут</p>
+              <h2 id="routeTitle" data-i18n="route">Маршрут</h2>
             </div>
             <div class="actions">
               <button id="exportButton" class="ghost-button" type="button" aria-label="Скачать маршрут в формате JSON">JSON</button>
-              <button id="regenerateButton" class="ghost-button" type="button" aria-label="Построить другой вариант маршрута">Ещё вариант</button>
-              <button id="copyButton" class="ghost-button" type="button" aria-label="Скопировать ссылку и описание маршрута">Поделиться</button>
+              <button id="regenerateButton" class="ghost-button" type="button" aria-label="Построить другой вариант маршрута" data-i18n="another">Ещё вариант</button>
+              <button id="copyButton" class="ghost-button" type="button" aria-label="Скопировать ссылку и описание маршрута" data-i18n="share">Поделиться</button>
             </div>
           </div>
           <ol id="stopsList" aria-live="polite"></ol>
@@ -136,19 +130,19 @@
 
     <section class="guide" aria-label="О сервисе">
       <div>
-        <p class="eyebrow">Прогулки без подготовки</p>
-        <h2>Идея для вечера, свидания или выходного</h2>
+        <p class="eyebrow" data-i18n="guideEyebrow">Прогулки без подготовки</p>
+        <h2 data-i18n="guideTitle">Идея для вечера, свидания или выходного</h2>
       </div>
-      <p>Выберите старт, длину и настроение. Moscow Walks соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.</p>
+      <p data-i18n="guideText">Выберите старт, длину и настроение. Moscow Walks соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.</p>
       <details>
-        <summary>Как строится маршрут</summary>
-        <p>Мы подбираем близкие точки по выбранной теме, а пешеходную линию строим по данным OpenStreetMap. Если внешний сервис временно недоступен, покажем запасной маршрут между точками.</p>
+        <summary data-i18n="howItWorks">Как строится маршрут</summary>
+        <p data-i18n="howItWorksText">Мы подбираем близкие точки по выбранной теме, а пешеходную линию строим по данным OpenStreetMap. Если внешний сервис временно недоступен, покажем запасной маршрут между точками.</p>
       </details>
     </section>
 
     <footer class="site-footer">
       <span>© Moscow Walks</span>
-      <span>Данные карты: OpenStreetMap</span>
+      <span data-i18n="mapData">Данные карты: OpenStreetMap</span>
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
