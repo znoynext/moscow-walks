@@ -255,11 +255,35 @@ input[type="search"] {
   outline: 0;
   color: var(--ink);
   background: var(--field);
+  color-scheme: dark;
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
 select {
+  appearance: none;
+  cursor: pointer;
   padding-right: 34px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%23a2aab6' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.7'/%3E%3C/svg%3E");
+  background-position: right 13px center;
+  background-repeat: no-repeat;
+}
+
+option,
+optgroup {
+  color: #f4f6f8;
+  background: #20242d;
+  font-weight: 600;
+}
+
+:root[data-theme="light"] select {
+  color-scheme: light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%235f6874' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.7'/%3E%3C/svg%3E");
+}
+
+:root[data-theme="light"] option,
+:root[data-theme="light"] optgroup {
+  color: #18202a;
+  background: #ffffff;
 }
 
 select:focus,

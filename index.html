@@ -43,17 +43,15 @@
           </div>
         </header>
 
-        <div class="map-credit"><span class="status" id="mapStatus" aria-label="Источник карты">OpenStreetMap</span><span class="free-badge" data-i18n="freeBadge">Бесплатно</span></div>
-
         <form id="routeForm" class="controls">
           <div class="field-pair">
             <label class="field">
-              <span data-i18n="start">Старт</span>
+              <span data-i18n="start">Откуда начнём</span>
               <select id="startSelect" name="start"></select>
             </label>
 
             <label class="field">
-              <span data-i18n="distance">Длина</span>
+              <span data-i18n="distance">Сколько идти</span>
               <select id="distanceSelect" name="distance">
                 <option value="3">3 km</option>
                 <option value="5" selected>5 km</option>
@@ -64,27 +62,26 @@
           </div>
 
           <fieldset class="field">
-            <legend data-i18n="mood">Настроение</legend>
+            <legend data-i18n="mood">Как хочется гулять</legend>
             <div class="segments" id="themeGroup">
-              <label><input type="radio" name="theme" value="classic" checked /><span data-i18n="themeClassic">Центр</span></label>
+              <label><input type="radio" name="theme" value="classic" checked /><span data-i18n="themeClassic">Классика</span></label>
               <label><input type="radio" name="theme" value="green" /><span data-i18n="themeGreen">Парки</span></label>
-              <label><input type="radio" name="theme" value="architecture" /><span data-i18n="themeArchitecture">Архитектура</span></label>
-              <label><input type="radio" name="theme" value="water" /><span data-i18n="themeWater">Вода</span></label>
+              <label><input type="radio" name="theme" value="architecture" /><span data-i18n="themeArchitecture">Красивые здания</span></label>
+              <label><input type="radio" name="theme" value="water" /><span data-i18n="themeWater">Вдоль реки</span></label>
             </div>
           </fieldset>
 
           <details class="advanced-settings">
-            <summary data-i18n="optionalPoint">Добавить точку (необязательно)</summary>
+            <summary data-i18n="optionalPoint">Добавить место (необязательно)</summary>
             <div class="advanced-fields">
               <label class="field">
-                <span data-i18n="anchor">Обязательное место</span>
+                <span data-i18n="anchor">Что обязательно увидеть</span>
                 <select id="anchorSelect" name="anchor"></select>
               </label>
             </div>
           </details>
 
-          <button class="primary-button" type="submit" data-i18n="buildRoute">Собрать прогулку</button>
-          <p class="form-note" data-i18n="formNote">Без регистрации. Новый вариант — одним нажатием.</p>
+          <p class="form-note" data-i18n="formNote">Маршрут обновится сам</p>
         </form>
 
         <section class="route-summary" aria-live="polite">
@@ -104,7 +101,7 @@
           </div>
           <p class="calories-note"><span data-i18n="caloriesLabel">Примерно потрачено</span> <strong id="caloriesCount">—</strong></p>
           <p id="routeReason" class="reason"></p>
-          <p id="routeStatus" class="route-status" data-i18n="routeLoading">Строим прогулку по данным OpenStreetMap.</p>
+          <p id="routeStatus" class="route-status" data-i18n="routeLoading">Ищем приятные места для прогулки…</p>
         </section>
       </aside>
 
@@ -117,12 +114,12 @@
         <section class="itinerary" aria-label="Маршрут">
           <div class="itinerary-head">
             <div>
-              <p id="routeArea" class="route-area" data-i18n="route">Маршрут</p>
-              <h2 id="routeTitle" data-i18n="route">Маршрут</h2>
+              <p id="routeArea" class="route-area" data-i18n="route">Ваша прогулка</p>
+              <h2 id="routeTitle" data-i18n="route">Ваша прогулка</h2>
             </div>
             <div class="actions">
-              <button id="regenerateButton" class="ghost-button" type="button" aria-label="Построить другой вариант маршрута" data-i18n="another">Ещё вариант</button>
-              <button id="copyButton" class="ghost-button" type="button" aria-label="Скопировать ссылку и описание маршрута" data-i18n="share">Поделиться</button>
+              <button id="regenerateButton" class="ghost-button" type="button" aria-label="Построить другой вариант маршрута" data-i18n="another">Другой маршрут</button>
+              <button id="copyButton" class="ghost-button" type="button" aria-label="Поделиться маршрутом" data-i18n="share">Поделиться маршрутом</button>
             </div>
           </div>
           <ol id="stopsList" aria-live="polite"></ol>
@@ -136,15 +133,11 @@
         <h2 data-i18n="guideTitle">Идея для вечера, свидания или выходного</h2>
       </div>
       <p data-i18n="guideText">Выберите старт, длину и настроение. Walk Moscow соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.</p>
-      <details>
-        <summary data-i18n="howItWorks">Как строится маршрут</summary>
-        <p data-i18n="howItWorksText">Мы подбираем близкие точки по выбранной теме, а пешеходную линию строим по данным OpenStreetMap. Если внешний сервис временно недоступен, покажем запасной маршрут между точками.</p>
-      </details>
     </section>
 
     <footer class="site-footer">
       <span>© Walk Moscow</span>
-      <span data-i18n="mapData">Данные карты: OpenStreetMap</span>
+      <span data-i18n="mapData">Прогулка начинается здесь</span>
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>

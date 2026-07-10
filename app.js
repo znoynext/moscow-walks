@@ -14,36 +14,36 @@ const translations = {
     heroNote: "Выберите настроение — остальное соберём сами.",
     freeBadge: "Бесплатно",
     articlesLink: "Что посмотреть",
-    start: "Старт",
-    distance: "Длина",
-    mood: "Настроение",
-    themeClassic: "Центр",
+    start: "Откуда начнём",
+    distance: "Сколько идти",
+    mood: "Как хочется гулять",
+    themeClassic: "Классика",
     themeGreen: "Парки",
-    themeArchitecture: "Архитектура",
-    themeWater: "Вода",
-    optionalPoint: "Добавить точку (необязательно)",
-    anchor: "Обязательное место",
-    buildRoute: "Собрать прогулку",
-    formNote: "Без регистрации. Новый вариант — одним нажатием.",
+    themeArchitecture: "Красивые здания",
+    themeWater: "Вдоль реки",
+    optionalPoint: "Добавить место (необязательно)",
+    anchor: "Что обязательно увидеть",
+    buildRoute: "Обновить маршрут",
+    formNote: "Маршрут обновится сам",
     time: "Время",
     stops: "Точек",
     caloriesLabel: "Примерно потрачено",
-    route: "Маршрут",
-    another: "Ещё вариант",
-    share: "Поделиться",
+    route: "Ваша прогулка",
+    another: "Другой маршрут",
+    share: "Поделиться маршрутом",
     guideEyebrow: "Прогулки без подготовки",
     guideTitle: "Идея для вечера, свидания или выходного",
     guideText: "Выберите старт, длину и настроение. Walk Moscow соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.",
     howItWorks: "Как строится маршрут",
-    howItWorksText: "Мы подбираем близкие точки по выбранной теме, а пешеходную линию строим по данным OpenStreetMap. Если внешний сервис временно недоступен, покажем запасной маршрут между точками.",
-    mapData: "Данные карты: OpenStreetMap",
-    routeLoading: "Строим прогулку по данным OpenStreetMap.",
-    building: "Строим маршрут…",
-    routeBuilt: "Линия построена по пешеходной сети OpenStreetMap через бесплатный OSRM.",
-    routeFallback: "OSRM сейчас недоступен, показана локальная схема маршрута.",
+    howItWorksText: "",
+    mapData: "Прогулка начинается здесь",
+    routeLoading: "Ищем приятные места для прогулки…",
+    building: "Обновляем маршрут…",
+    routeBuilt: "Маршрут готов — можно идти.",
+    routeFallback: "Маршрут готов — можно идти.",
     routeError: "Не удалось построить маршрут. Проверьте интернет и попробуйте ещё раз.",
     tryAgain: "Маршрут не построен — попробуйте ещё раз.",
-    copied: "Ссылка и описание скопированы.",
+    copied: "Ссылка и маршрут скопированы.",
     sent: "Меню отправки открыто.",
     shareFailed: "Не удалось поделиться маршрутом. Скопируйте ссылку вручную.",
     shareTitle: "Прогулка по Москве",
@@ -56,36 +56,36 @@ const translations = {
     heroNote: "Choose a mood — we’ll do the planning.",
     freeBadge: "Free",
     articlesLink: "Things to see",
-    start: "Start",
-    distance: "Distance",
-    mood: "Mood",
-    themeClassic: "City centre",
+    start: "Where to start",
+    distance: "How far",
+    mood: "Choose a mood",
+    themeClassic: "Classic",
     themeGreen: "Parks",
-    themeArchitecture: "Architecture",
-    themeWater: "Waterfront",
-    optionalPoint: "Add a must-see (optional)",
+    themeArchitecture: "Beautiful buildings",
+    themeWater: "Along the river",
+    optionalPoint: "Add a place (optional)",
     anchor: "Must-see place",
-    buildRoute: "Build my walk",
-    formNote: "No sign-up. Try another route in one tap.",
+    buildRoute: "Update route",
+    formNote: "The route updates automatically",
     time: "Time",
     stops: "Stops",
     caloriesLabel: "Estimated energy",
-    route: "Route",
+    route: "Your walk",
     another: "Another route",
-    share: "Share",
+    share: "Share this walk",
     guideEyebrow: "Walks without planning",
     guideTitle: "An easy idea for an evening or weekend",
     guideText: "Choose a start, distance and mood. Walk Moscow creates a route through interesting places, with distance and walking time included.",
     howItWorks: "How it works",
-    howItWorksText: "We choose nearby places that match your mood and draw a walkable line using OpenStreetMap. If routing is temporarily unavailable, a local fallback route is shown.",
-    mapData: "Map data: OpenStreetMap",
-    routeLoading: "Building a walk with OpenStreetMap data.",
-    building: "Building route…",
-    routeBuilt: "Route line built on the OpenStreetMap pedestrian network via free OSRM.",
-    routeFallback: "OSRM is temporarily unavailable, so a local route sketch is shown.",
+    howItWorksText: "",
+    mapData: "Your walk starts here",
+    routeLoading: "Finding lovely places for your walk…",
+    building: "Updating route…",
+    routeBuilt: "Your walk is ready.",
+    routeFallback: "Your walk is ready.",
     routeError: "We couldn’t build the route. Check your connection and try again.",
     tryAgain: "Route failed — please try again.",
-    copied: "Link and route details copied.",
+    copied: "Link and walk details copied.",
     sent: "Share menu opened.",
     shareFailed: "Couldn’t share the route. Copy the link manually.",
     shareTitle: "A walk through Moscow",
@@ -223,7 +223,6 @@ const elements = {
   routeArea: document.querySelector("#routeArea"),
   stopsList: document.querySelector("#stopsList"),
   fallbackMap: document.querySelector("#fallbackMap"),
-  mapStatus: document.querySelector("#mapStatus"),
   copyButton: document.querySelector("#copyButton"),
   regenerateButton: document.querySelector("#regenerateButton"),
   placeHints: document.querySelector("#placeHints"),
@@ -244,7 +243,10 @@ function init() {
   applyTheme();
   applyLanguage();
   initMap();
-  elements.form.addEventListener("submit", handleSubmit);
+  elements.form.addEventListener("change", () => {
+    window.clearTimeout(init.routeTimer);
+    init.routeTimer = window.setTimeout(generateAndRender, 120);
+  });
   elements.regenerateButton.addEventListener("click", generateAndRender);
   elements.copyButton.addEventListener("click", copyRoute);
   elements.languageToggle.addEventListener("click", toggleLanguage);
@@ -253,14 +255,18 @@ function init() {
 }
 
 function fillSelects() {
-  elements.start.innerHTML = starts.map((start) => `<option value="${start.id}">${start.name}</option>`).join("");
+  const selectedStart = elements.start.value;
+  const selectedAnchor = elements.anchor.value;
+  elements.start.innerHTML = starts.map((start) => `<option value="${start.id}">${localizedPlaceName(start.name)}</option>`).join("");
   elements.anchor.innerHTML = [
-    '<option value="">Не выбирать</option>',
+    `<option value="">${currentLanguage === "en" ? "No extra place" : "Без дополнительного места"}</option>`,
     ...pois
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name, "ru"))
-      .map((poi) => `<option value="${poi.id}">${poi.name}</option>`),
+      .map((poi) => `<option value="${poi.id}">${localizedPlaceName(poi.name)}</option>`),
   ].join("");
+  if (selectedStart) elements.start.value = selectedStart;
+  if (selectedAnchor) elements.anchor.value = selectedAnchor;
 }
 
 function fillHints() {
@@ -286,7 +292,7 @@ function applyLanguage() {
   elements.languageToggle.textContent = currentLanguage === "ru" ? "EN" : "RU";
   elements.languageToggle.setAttribute("aria-label", currentLanguage === "ru" ? "Switch to English" : "Переключить на русский");
   elements.themeToggle.setAttribute("aria-label", currentLanguage === "ru" ? (currentTheme === "dark" ? "Переключить светлую тему" : "Переключить тёмную тему") : (currentTheme === "dark" ? "Switch to light theme" : "Switch to dark theme"));
-  elements.mapStatus.setAttribute("aria-label", currentLanguage === "ru" ? "Источник карты" : "Map source");
+  fillSelects();
   [...elements.distance.options].forEach((option) => {
     option.textContent = `${option.value} ${currentLanguage === "ru" ? "км" : "km"}`;
   });
@@ -320,7 +326,6 @@ function toggleTheme() {
 
 function initMap() {
   if (!window.L) {
-    elements.mapStatus.textContent = currentLanguage === "en" ? "Local sketch" : "Локальная схема";
     return;
   }
 
@@ -337,7 +342,6 @@ function initMap() {
 
   markersLayer = L.layerGroup().addTo(map);
   routeLayer = L.layerGroup().addTo(map);
-  elements.mapStatus.textContent = "OpenStreetMap";
   elements.fallbackMap.classList.add("hidden");
 }
 
@@ -580,10 +584,7 @@ function renderRoute(route, walking) {
   elements.routeTitle.textContent = buildRouteTitle(route);
   elements.routeArea.textContent = localizedArea(area);
   elements.routeReason.textContent = explainRoute(route, area, walking);
-  elements.routeStatus.textContent =
-    walking.source === "osrm"
-      ? t("routeBuilt")
-      : t("routeFallback");
+  elements.routeStatus.textContent = t("routeBuilt");
   persistRouteState();
   renderStops(route);
   renderFallbackMap(walking.coordinates, route);
@@ -719,24 +720,23 @@ function renderFallbackMap(line, route) {
 }
 
 function explainRoute(route, area, walking) {
-  const uniqueThemes = new Set(route.flatMap((stop) => stop.themes)).size;
   if (currentLanguage === "en") {
-    const areaText = area ? `This walk stays around ${localizedArea(area)}.` : "This walk is built around your selected places.";
-    const routeText = walking.source === "osrm" ? "The final line follows walkable OSM streets." : "A local fallback line is shown for now.";
-    return `${areaText} It mixes ${uniqueThemes} kinds of places and aims to finish near a metro station. ${routeText}`;
+    const areaText = area ? `${localizedArea(area)} · ` : "";
+    return `${areaText}A relaxed route with ${route.length} places, made for an easy walk and a good finish near the metro.`;
   }
-  const areaText = area ? `Маршрут держится в зоне «${area.name}»: ${area.mood}.` : "Маршрут собран вокруг выбранных точек.";
-  const routeText = walking.source === "osrm" ? "Финальная линия идёт по дорожкам и улицам OSM." : "Пока показана резервная линия между точками.";
-  return `${areaText} Алгоритм выбирает близкие переходы, смешивает ${uniqueThemes} типа впечатлений и старается закончить прогулку у метро. ${routeText}`;
+  const areaText = area ? `${area.name} · ` : "";
+  return `${areaText}Спокойный маршрут через ${route.length} интересных мест — с удобным завершением рядом с метро.`;
 }
 
 function setRouteLoading(isLoading) {
   const primaryButton = elements.form.querySelector(".primary-button");
   elements.regenerateButton.disabled = isLoading;
-  elements.form.querySelector(".primary-button").disabled = isLoading;
-  primaryButton.classList.toggle("is-loading", isLoading);
-  primaryButton.setAttribute("aria-busy", String(isLoading));
-  primaryButton.textContent = isLoading ? t("building") : t("buildRoute");
+  if (primaryButton) {
+    primaryButton.disabled = isLoading;
+    primaryButton.classList.toggle("is-loading", isLoading);
+    primaryButton.setAttribute("aria-busy", String(isLoading));
+    primaryButton.textContent = isLoading ? t("building") : t("buildRoute");
+  }
   elements.form.setAttribute("aria-busy", String(isLoading));
   elements.routeSummary.classList.toggle("is-updating", isLoading);
   elements.routeStatus.textContent = isLoading ? t("routeLoading") : elements.routeStatus.textContent;
@@ -745,27 +745,25 @@ function setRouteLoading(isLoading) {
 async function copyRoute() {
   const text = buildShareText();
   const url = buildShareUrl();
-  let shared = false;
-
   try {
-    if (navigator.share) {
-      await navigator.share({ title: elements.routeTitle.textContent || t("shareTitle"), text, url });
-      shared = true;
-    } else {
-      await copyText(`${text}\n\nСсылка на маршрут: ${url}`);
-    }
+    await copyText(`${text}\n\n${currentLanguage === "en" ? "Route link" : "Ссылка на маршрут"}: ${url}`);
+    elements.copyButton.textContent = currentLanguage === "en" ? "Copied" : "Скопировано";
+    showToast(t("copied"));
   } catch (error) {
-    try {
-      await copyText(`${text}\n\nСсылка на маршрут: ${url}`);
-    } catch (copyError) {
-      elements.routeStatus.textContent = t("shareFailed");
-      showToast(t("shareFailed"));
-      return;
-    }
+    elements.routeStatus.textContent = t("shareFailed");
+    showToast(t("shareFailed"));
+    return;
   }
 
-  elements.copyButton.textContent = shared ? (currentLanguage === "en" ? "Sent" : "Отправлено") : (currentLanguage === "en" ? "Copied" : "Скопировано");
-  showToast(shared ? t("sent") : t("copied"));
+  if (navigator.share && window.matchMedia?.("(pointer: coarse)").matches) {
+    try {
+      await navigator.share({ title: elements.routeTitle.textContent || t("shareTitle"), text, url });
+      elements.copyButton.textContent = currentLanguage === "en" ? "Shared" : "Отправлено";
+      showToast(t("sent"));
+    } catch (error) {
+      if (error?.name !== "AbortError") showToast(t("copied"));
+    }
+  }
   window.setTimeout(() => {
     elements.copyButton.textContent = t("share");
   }, 1400);
