@@ -76,10 +76,13 @@
           <details class="advanced-settings">
             <summary data-i18n="optionalPoint">Добавить место (необязательно)</summary>
             <div class="advanced-fields">
-              <label class="field">
-                <span data-i18n="anchor">Что обязательно увидеть</span>
-                <select id="anchorSelect" name="anchor"></select>
-              </label>
+              <div id="anchorFields" class="anchor-fields">
+                <label class="field anchor-row">
+                  <span data-i18n="anchor">Что обязательно увидеть</span>
+                  <select id="anchorSelect" class="anchor-select" name="anchor"></select>
+                </label>
+              </div>
+              <button id="addAnchorButton" class="add-anchor-button" type="button" data-i18n="addAnotherPlace">+ Добавить ещё место</button>
             </div>
           </details>
 
@@ -101,7 +104,7 @@
               <strong id="stopCount">-</strong>
             </div>
           </div>
-          <p class="calories-note"><span data-i18n="caloriesLabel">Примерно потрачено</span> <strong id="caloriesCount">—</strong></p>
+          <p class="calories-note"><span data-i18n="caloriesSpent">Вы потратите</span> <strong id="caloriesCount">—</strong></p>
           <p id="routeReason" class="reason"></p>
           <p id="routeStatus" class="route-status" data-i18n="routeLoading">Ищем приятные места для прогулки…</p>
         </section>

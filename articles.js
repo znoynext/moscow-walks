@@ -77,7 +77,7 @@ const articles = [
 
 const articleMeta = [
   { image: "https://images.unsplash.com/photo-1513326738677-b964603b136d?auto=format&fit=crop&w=1200&q=84", price: "Бесплатно снаружи · от 1 000 ₽ внутри", enPrice: "Free outside · from ₽1,000 inside", address: "Красная площадь", enAddress: "Red Square", lat: 55.7539, lon: 37.6208, anchor: "alexander-garden", official: "https://www.kremlin.ru/" },
-  { image: "https://images.unsplash.com/photo-1548919973-5cef591cdbc9?auto=format&fit=crop&w=1200&q=84", price: "от 700 ₽", enPrice: "from ₽700", address: "Красная площадь, 2", enAddress: "2 Red Square", lat: 55.7525, lon: 37.6231, anchor: "cathedral", official: "https://cathedral.ru/" },
+  { image: "https://images.unsplash.com/photo-1548919973-5cef591cdbc9?auto=format&fit=crop&w=1200&q=84", price: "от 700 ₽", enPrice: "from ₽700", address: "Красная площадь, 2", enAddress: "2 Red Square", lat: 55.7525, lon: 37.6231, anchor: "st-basil", official: "https://cathedral.ru/" },
   { image: "https://images.unsplash.com/photo-1523731407965-2430cd12f5e4?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Никольская улица", enAddress: "Nikolskaya Street", lat: 55.7598, lon: 37.6261, anchor: "nikolskaya", official: "https://gum.ru/" },
   { image: "https://images.unsplash.com/photo-1539650116574-75c0c6d73f6e?auto=format&fit=crop&w=1200&q=84", price: "Парк — бесплатно", enPrice: "Park — free", address: "ул. Варварка, 6", enAddress: "6 Varvarka Street", lat: 55.7517, lon: 37.6286, anchor: "zaryadye", official: "https://www.zaryadye-park.ru/" },
   { image: "https://images.unsplash.com/photo-1577083288073-40892c0860a4?auto=format&fit=crop&w=1200&q=84", price: "от 300 ₽", enPrice: "from ₽300", address: "Лаврушинский переулок, 10", enAddress: "10 Lavrushinsky Lane", lat: 55.7415, lon: 37.6202, anchor: "tretyakov", official: "https://www.tretyakovgallery.ru/" },
@@ -89,6 +89,8 @@ const articleMeta = [
   { image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=84", price: "Парк бесплатно · музей уточнить", enPrice: "Park free · museum price varies", address: "просп. Андропова, 39", enAddress: "39 Andropov Avenue", lat: 55.6712, lon: 37.6697, anchor: "kolomenskoye", official: "https://mgomz.ru/" },
   { image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=84", price: "Парк бесплатно · дворец 750 ₽", enPrice: "Park free · palace ₽750", address: "ул. Дольская, 1", enAddress: "1 Dolskaya Street", lat: 55.6197, lon: 37.6827, anchor: "tsaritsyno", official: "https://tsaritsyno-museum.ru/" },
 ];
+
+const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno"];
 
 const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && localStorage.getItem(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
@@ -107,7 +109,7 @@ function renderArticles(filter = "all") {
     const mapUrl = `https://yandex.ru/maps/?pt=${meta.lon},${meta.lat}&z=16&l=map`;
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
-    <article class="article-card">
+    <article id="article-${articleSlugs[articles.indexOf(item)]}" class="article-card">
       <div class="article-image-wrap"><img class="article-image" src="${meta.image}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" onerror="this.closest('.article-image-wrap').classList.add('is-broken')" /><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
       <div class="article-card-body"><div class="article-card-top"><span class="article-tag">${articleLanguage === "en" ? item.enTags : item.tags}</span></div>
       <h2>${articleLanguage === "en" ? item.en : item.title}</h2>
@@ -126,6 +128,7 @@ function applyArticleLanguage() {
   document.querySelector("#languageToggle").textContent = articleLanguage === "ru" ? "EN" : "RU";
   document.querySelector("#languageToggle").setAttribute("aria-label", at("language"));
   renderArticles(document.querySelector(".article-filter.is-active")?.dataset.filter || "all");
+  if (window.location.hash) document.getElementById(window.location.hash.slice(1))?.scrollIntoView({ block: "center" });
 }
 
 function applyArticleTheme() {

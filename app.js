@@ -28,11 +28,15 @@ const translations = {
     themeWater: "Вдоль реки",
     optionalPoint: "Добавить место (необязательно)",
     anchor: "Что обязательно увидеть",
+    addAnotherPlace: "+ Добавить ещё место",
+    removePlace: "Убрать место",
     buildRoute: "Обновить маршрут",
     formNote: "Маршрут обновится сам",
     time: "Время",
     stops: "Точек",
     caloriesLabel: "Примерно потрачено",
+    caloriesSpent: "Вы потратите",
+    stopNote: "Интересная точка по пути.",
     route: "Ваша прогулка",
     another: "Другой маршрут",
     share: "Поделиться маршрутом",
@@ -75,11 +79,15 @@ const translations = {
     themeWater: "Along the river",
     optionalPoint: "Add a place (optional)",
     anchor: "Must-see place",
+    addAnotherPlace: "+ Add another place",
+    removePlace: "Remove place",
     buildRoute: "Update route",
     formNote: "The route updates automatically",
     time: "Time",
     stops: "Stops",
     caloriesLabel: "Estimated energy",
+    caloriesSpent: "You will spend",
+    stopNote: "An interesting stop along the way.",
     route: "Your walk",
     another: "Another route",
     share: "Share this walk",
@@ -153,6 +161,7 @@ const routespace = [
 const pois = [
   point("red-square", "Красная площадь", 55.7539, 37.6208, "center", ["classic", "architecture"], 99, "Главная площадь Москвы, сильный якорь для коротких и средних прогулок."),
   point("alexander-garden", "Александровский сад", 55.7521, 37.6137, "center", ["classic", "green"], 92, "Зелёный проход у Кремля, удобен как спокойная пауза в центре."),
+  point("st-basil", "Собор Василия Блаженного", 55.7525, 37.6231, "center", ["classic", "architecture"], 95, "Главный силуэт Красной площади и одна из самых узнаваемых точек Москвы."),
   point("manege", "Манежная площадь", 55.7555, 37.6139, "center", ["classic"], 82, "Открытая городская площадь рядом с ключевыми пешеходными связями."),
   point("bolshoi", "Большой театр", 55.7601, 37.6187, "center", ["classic", "architecture"], 88, "Архитектурная доминанта и хорошая точка для маршрута через Театральную площадь."),
   point("nikolskaya", "Никольская улица", 55.7586, 37.6246, "center", ["classic", "architecture"], 90, "Пешеходная улица с плотной исторической средой."),
@@ -228,6 +237,8 @@ const elements = {
   startSearch: document.querySelector("#startSearch"),
   distance: document.querySelector("#distanceSelect"),
   anchor: document.querySelector("#anchorSelect"),
+  anchorFields: document.querySelector("#anchorFields"),
+  addAnchorButton: document.querySelector("#addAnchorButton"),
   anchorSearch: document.querySelector("#anchorSearch"),
   locateButton: document.querySelector("#locateButton"),
   locationStatus: document.querySelector("#locationStatus"),
@@ -268,12 +279,21 @@ function init() {
   applyLanguage();
   initMap();
   elements.form.addEventListener("change", () => {
+    syncAnchorOptions();
     window.clearTimeout(init.routeTimer);
     init.routeTimer = window.setTimeout(generateAndRender, 120);
   });
   elements.regenerateButton.addEventListener("click", generateAndRender);
   elements.copyButton.addEventListener("click", copyRoute);
   elements.locateButton.addEventListener("click", toggleLocationTracking);
+  elements.addAnchorButton.addEventListener("click", addAnchorField);
+  elements.anchorFields.addEventListener("click", (event) => {
+    const removeButton = event.target.closest("[data-remove-anchor]");
+    if (!removeButton) return;
+    removeButton.closest(".anchor-row")?.remove();
+    fillSelects();
+    generateAndRender();
+  });
   elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
   generateAndRender();
@@ -281,17 +301,60 @@ function init() {
 
 function fillSelects() {
   const selectedStart = elements.start.value;
-  const selectedAnchor = elements.anchor.value;
+  const selectedAnchors = [...document.querySelectorAll(".anchor-select")].map((select) => select.value);
   elements.start.innerHTML = starts.map((start) => `<option value="${start.id}">${localizedPlaceName(start.name)}</option>`).join("");
-  elements.anchor.innerHTML = [
+  const anchorOptions = [
     `<option value="">${currentLanguage === "en" ? "No extra place" : "Без дополнительного места"}</option>`,
     ...pois
       .slice()
       .sort((a, b) => a.name.localeCompare(b.name, "ru"))
       .map((poi) => `<option value="${poi.id}">${localizedPlaceName(poi.name)}</option>`),
   ].join("");
+  document.querySelectorAll(".anchor-select").forEach((select, index) => {
+    select.innerHTML = anchorOptions;
+    if (selectedAnchors[index]) select.value = selectedAnchors[index];
+  });
   if (selectedStart) elements.start.value = selectedStart;
-  if (selectedAnchor) elements.anchor.value = selectedAnchor;
+  syncAnchorOptions();
+  updateAnchorControls();
+}
+
+function getSelectedAnchorIds() {
+  return [...document.querySelectorAll(".anchor-select")]
+    .map((select) => select.value)
+    .filter(Boolean)
+    .filter((value, index, values) => values.indexOf(value) === index);
+}
+
+function syncAnchorOptions() {
+  const selects = [...document.querySelectorAll(".anchor-select")];
+  const selected = selects.map((select) => select.value).filter(Boolean);
+  selects.forEach((select) => {
+    [...select.options].forEach((option) => {
+      option.disabled = Boolean(option.value && selected.includes(option.value) && option.value !== select.value);
+    });
+  });
+}
+
+function updateAnchorControls() {
+  const rows = document.querySelectorAll(".anchor-row");
+  const hasSelection = getSelectedAnchorIds().length > 0;
+  elements.addAnchorButton.disabled = rows.length >= 4;
+  elements.addAnchorButton.hidden = rows.length >= 4 || !hasSelection;
+  rows.forEach((row, index) => {
+    const label = row.querySelector("span");
+    if (index > 0 && label) label.textContent = `${currentLanguage === "en" ? "Place" : "Место"} ${index + 1}`;
+  });
+}
+
+function addAnchorField() {
+  const rows = document.querySelectorAll(".anchor-row");
+  if (rows.length >= 4) return;
+  const row = document.createElement("label");
+  row.className = "field anchor-row anchor-row-extra";
+  row.innerHTML = `<span>${currentLanguage === "en" ? "Place" : "Место"} ${rows.length + 1}</span><div class="anchor-input-row"><select class="anchor-select" name="anchor"></select><button class="remove-anchor-button" type="button" data-remove-anchor aria-label="${t("removePlace")}">×</button></div>`;
+  elements.anchorFields.append(row);
+  fillSelects();
 }
 
 function fillHints() {
@@ -436,14 +499,15 @@ async function generateAndRender() {
 
   try {
     const selectedStart = userPosition || starts.find((item) => item.id === elements.start.value) || starts[0];
-    const selectedAnchor = pois.find((item) => item.id === elements.anchor.value);
+    const selectedAnchors = getSelectedAnchorIds().map((id) => pois.find((item) => item.id === id)).filter(Boolean);
+    const selectedAnchor = selectedAnchors[0];
     const targetKm = Number(elements.distance.value);
     const theme = new FormData(elements.form).get("theme");
     const start = (await resolveSearchPoint(elements.startSearch?.value, "Старт из поиска", "search")) || selectedStart;
     const anchor = (await resolveSearchPoint(elements.anchorSearch?.value, "Место из поиска", "search")) || selectedAnchor;
 
     if (run !== latestRun) return;
-    currentRoute = buildRoute({ start, targetKm, anchor, theme, variantSeed });
+    currentRoute = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
     const walking = await buildWalkingRoute(currentRoute);
 
     if (run !== latestRun) return;
@@ -497,14 +561,17 @@ async function resolveSearchPoint(query, note, area) {
   }
 }
 
-function buildRoute({ start, targetKm, anchor, theme, variantSeed }) {
+function buildRoute({ start, targetKm, anchor, anchors = [], theme, variantSeed }) {
   const area = chooseArea(start, anchor, theme);
-  const candidatePool = rankCandidates({ start, anchor, theme, area, targetKm, variantSeed });
+  const requiredPlaces = anchors.length ? anchors : anchor ? [anchor] : [];
+  const candidatePool = rankCandidates({ start, anchor, anchors: requiredPlaces, theme, area, targetKm, variantSeed });
   const desiredStops = targetKm <= 3 ? 4 : targetKm <= 5 ? 6 : targetKm <= 8 ? 8 : 10;
   const route = [asRouteStop(start, "Старт: удобно начать рядом с метро или выбранной точкой.")];
 
-  if (anchor) {
-    route.push(asRouteStop(anchor, anchor.note || "Обязательная точка, которую маршрут старается встроить естественно."));
+  if (requiredPlaces.length) {
+    requiredPlaces.forEach((place) => {
+      if (!route.some((stop) => stop.id === place.id)) route.push(asRouteStop(place, place.note || "Интересное место, которое вы выбрали для прогулки."));
+    });
   } else {
     route.push(candidatePool[0]);
   }
@@ -533,7 +600,7 @@ function chooseArea(start, anchor, theme) {
     .sort((a, b) => b.value - a.value)[0].area;
 }
 
-function rankCandidates({ start, anchor, theme, area, targetKm, variantSeed }) {
+function rankCandidates({ start, anchor, anchors = [], theme, area, targetKm, variantSeed }) {
   const origin = anchor || start;
   return pois
     .map((poi) => {
@@ -544,7 +611,7 @@ function rankCandidates({ start, anchor, theme, area, targetKm, variantSeed }) {
       const variantBoost = seededNoise(poi.id, variantSeed) * 14;
       return { ...poi, value: poi.score + areaBoost + themeBoost + shortWalkBoost + variantBoost - distancePenalty };
     })
-    .filter((poi) => !anchor || poi.id !== anchor.id)
+    .filter((poi) => !anchors.some((required) => required.id === poi.id))
     .sort((a, b) => b.value - a.value)
     .map((poi) => asRouteStop(poi, poi.note));
 }
@@ -690,7 +757,7 @@ function renderLeafletRoute(route, line) {
     L.marker([stop.lat, stop.lon], {
       icon: createMarkerIcon(index + 1, index === 0),
     })
-      .bindPopup(`<strong>${index + 1}. ${escapeHtml(localizedPlaceName(stop.name))}</strong><br>${escapeHtml(localizedNote(stop.note, index, route.length))}`)
+      .bindPopup(`<strong>${index + 1}. ${articleLinkForStop(stop, true)}</strong><br>${escapeHtml(localizedNote(stop, index))}`)
       .addTo(markersLayer);
   });
 
@@ -725,7 +792,7 @@ function localizedPlaceName(name) {
 }
 
 function localizedNote(stop, index) {
-  if (currentLanguage === "ru") return stop.note;
+  if (currentLanguage === "ru") return stop.note || t("stopNote");
   if (index === 0) return t("startNote");
   if (/метро|Metro/i.test(stop.name) || index === currentRoute.length - 1) return t("finishNote");
   const theme = stop.themes?.[0];
@@ -737,6 +804,29 @@ function localizedNote(stop, index) {
     view: "A viewpoint worth adding to the route.",
   };
   return notes[theme] || "A carefully chosen stop for this walk.";
+}
+
+const articleSlugByPoint = {
+  "alexander-garden": "red-square",
+  "st-basil": "st-basil",
+  nikolskaya: "gum",
+  zaryadye: "zaryadye",
+  tretyakov: "tretyakov",
+  cathedral: "christ-cathedral",
+  patriarshiye: "patriarshiye",
+  arbat: "arbat",
+  gorky: "gorky",
+  vdnh: "vdnh",
+  kolomenskoye: "kolomenskoye",
+  tsaritsyno: "tsaritsyno",
+};
+
+function articleLinkForStop(stop, compact = false) {
+  const label = escapeHtml(localizedPlaceName(stop.name));
+  const slug = articleSlugByPoint[stop.id];
+  if (!slug) return label;
+  const className = compact ? "map-popup-link" : "stop-link";
+  return `<a class="${className}" href="./articles.html#article-${slug}">${label}</a>`;
 }
 
 function routeArea(route) {
@@ -757,7 +847,7 @@ function renderStops(route) {
         <li class="stop entering" style="--stop-index:${index}">
           <span class="stop-number">${index + 1}</span>
           <div>
-            <h3>${escapeHtml(localizedPlaceName(stop.name))}</h3>
+            <h3>${articleLinkForStop(stop)}</h3>
             <p>${escapeHtml(localizedNote(stop, index))}</p>
             ${tags ? `<span class="stop-tags">${tags}</span>` : ""}
           </div>
@@ -895,6 +985,8 @@ function buildShareUrl() {
     mode: currentTheme,
   });
   if (elements.anchor?.value) params.set("anchor", elements.anchor.value);
+  const selectedAnchors = getSelectedAnchorIds();
+  if (selectedAnchors.length) params.set("anchors", selectedAnchors.join(","));
   if (elements.startSearch?.value.trim()) params.set("startSearch", elements.startSearch.value.trim());
   if (elements.anchorSearch?.value.trim()) params.set("anchorSearch", elements.anchorSearch.value.trim());
   return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
@@ -906,6 +998,7 @@ function persistRouteState() {
     distance: elements.distance.value,
     theme: new FormData(elements.form).get("theme") || "classic",
     anchor: elements.anchor?.value || "",
+    anchors: getSelectedAnchorIds(),
     startSearch: elements.startSearch?.value || "",
     anchorSearch: elements.anchorSearch?.value || "",
     lang: currentLanguage,
@@ -932,7 +1025,10 @@ function restoreRouteState() {
 
   if (starts.some((item) => item.id === state.start)) elements.start.value = state.start;
   if (["3", "5", "8", "12"].includes(state.distance)) elements.distance.value = state.distance;
-  if (elements.anchor && pois.some((item) => item.id === state.anchor)) elements.anchor.value = state.anchor;
+  const savedAnchors = String(state.anchors || state.anchor || "").split(",").filter((id) => pois.some((item) => item.id === id));
+  while (document.querySelectorAll(".anchor-select").length < savedAnchors.length) addAnchorField();
+  document.querySelectorAll(".anchor-select").forEach((select, index) => { select.value = savedAnchors[index] || ""; });
+  syncAnchorOptions();
   if (elements.startSearch && state.startSearch) elements.startSearch.value = state.startSearch;
   if (elements.anchorSearch && state.anchorSearch) elements.anchorSearch.value = state.anchorSearch;
   const theme = [...elements.form.querySelectorAll('input[name="theme"]')].find((input) => input.value === (state.theme || "classic"));
