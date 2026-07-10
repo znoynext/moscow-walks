@@ -23,7 +23,7 @@ const articleTranslations = {
     eyebrow: "Гид по Москве",
     title: "Что посмотреть в Москве",
     lead: "Выберите место по настроению — и добавьте его в маршрут прогулки.",
-    statPlaces: "20 мест",
+    statPlaces: "24 места",
     statLinks: "Официальные ссылки",
     statRoutes: "Маршрут в один клик",
     searchLabel: "Поиск по местам",
@@ -51,7 +51,7 @@ const articleTranslations = {
     eyebrow: "Moscow guide",
     title: "Things to see in Moscow",
     lead: "Choose a place by mood — then add it to your walking route.",
-    statPlaces: "20 places",
+    statPlaces: "24 places",
     statLinks: "Official links",
     statRoutes: "One-tap routes",
     searchLabel: "Search places",
@@ -97,6 +97,10 @@ const articles = [
   { category: "parks", title: "Измайловский парк", en: "Izmaylovo Park", text: "Просторный лесопарк с прудами и длинными дорожками. Подходит для медленной прогулки, велосипеда и отдыха на полдня.", enText: "A spacious woodland park with ponds and long paths. Ideal for a slow walk, cycling or a half-day outdoors.", tags: "Парк · лес", enTags: "Park · woodland", url: "https://izmailovsky-park.ru/", filter: "parks" },
   { category: "museums", title: "Усадьба Кусково", en: "Kuskovo Estate", text: "Загородная усадьба с дворцом, регулярным парком и прудами. Хороший маршрут для архитектуры, тишины и длинного дня.", enText: "A country estate with a palace, formal gardens and ponds. A rewarding day out for architecture, quiet and open space.", tags: "Усадьба · парк", enTags: "Estate · park", url: "https://kuskovo.ru/", filter: "museums" },
   { category: "centre", title: "Москва-Сити и набережная Тараса Шевченко", en: "Moscow City and Taras Shevchenko Embankment", text: "Современная Москва с небоскрёбами, видами на реку и контрастом между деловым кварталом и длинной набережной.", enText: "Modern Moscow at its most vertical: skyscrapers, river views and a striking contrast between the business district and the long embankment.", tags: "Архитектура · вода", enTags: "Architecture · waterfront", url: "https://citymoscow.ru/", filter: "centre" },
+  { category: "centre", title: "Большой театр и Театральная площадь", en: "Bolshoi Theatre and Theatre Square", text: "Парадная площадь Москвы с фасадом Большого театра, фонтаном и удобным продолжением маршрута к Неглинной улице и ЦУМу.", enText: "Moscow at its most theatrical: the Bolshoi facade, the fountain and an easy continuation towards Neglinnaya Street and TSUM.", tags: "Архитектура · центр", enTags: "Architecture · centre", url: "https://www.bolshoi.ru/", filter: "centre" },
+  { category: "parks", title: "Московский зоопарк", en: "Moscow Zoo", text: "Зелёный маршрут в центре Москвы с просторными аллеями и возможностью провести здесь несколько спокойных часов.", enText: "A green city-centre route with broad paths and enough to explore for a relaxed few hours.", tags: "Парк · центр", enTags: "Park · centre", url: "https://moscowzoo.ru/", filter: "parks" },
+  { category: "parks", title: "Музеон и Крымская набережная", en: "Muzeon and Krymskaya Embankment", text: "Парк скульптур, спокойная набережная и удобная связка с Парком Горького. Подходит для прогулки без резких подъёмов.", enText: "A sculpture park, a calm riverside and an easy connection to Gorky Park. A smooth walk with no demanding climbs.", tags: "Парк · искусство", enTags: "Park · art", url: "https://park-gorkogo.com/muzeon/", filter: "parks" },
+  { category: "parks", title: "Главный ботанический сад", en: "Main Botanical Garden", text: "Большой зелёный маршрут с коллекциями растений, аллеями и ощущением загородной прогулки внутри города.", enText: "A large green escape with plant collections, long paths and the feeling of being outside the city.", tags: "Сад · природа", enTags: "Garden · nature", url: "https://www.gbsad.ru/", filter: "parks" },
 ];
 
 const articleMeta = [
@@ -120,9 +124,14 @@ const articleMeta = [
   { image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Московский проспект, 57", enAddress: "57 Moskovsky Avenue", lat: 55.7946, lon: 37.7994, anchor: "izmaylovo", official: "https://izmailovsky-park.ru/" },
   { image: "https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=84", price: "от 400 ₽", enPrice: "from ₽400", address: "ул. Юности, 2", enAddress: "2 Yunosti Street", lat: 55.7353, lon: 37.8131, anchor: "kuskovo", official: "https://kuskovo.ru/" },
   { image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Пресненская набережная, 2", enAddress: "2 Presnenskaya Embankment", lat: 55.7481, lon: 37.5395, anchor: "moscow-city", official: "https://citymoscow.ru/" },
+  { image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=1200&q=84", price: "от 1 000 ₽", enPrice: "from ₽1,000", address: "Театральная площадь, 1", enAddress: "1 Theatre Square", lat: 55.7601, lon: 37.6187, anchor: "bolshoi", official: "https://www.bolshoi.ru/" },
+  { image: "https://images.unsplash.com/photo-1470770841072-f978cf4d019e?auto=format&fit=crop&w=1200&q=84", price: "от 1 000 ₽", enPrice: "from ₽1,000", address: "Большая Грузинская, 1", enAddress: "1 Bolshaya Gruzinskaya Street", lat: 55.7616, lon: 37.5774, anchor: "zoo", official: "https://moscowzoo.ru/" },
+  { image: "https://images.unsplash.com/photo-1500534623283-312aade485b7?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "Крымский Вал, 10", enAddress: "10 Krymsky Val", lat: 55.7355, lon: 37.6051, anchor: "muzeon", official: "https://park-gorkogo.com/muzeon/" },
+  { image: "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "ул. Ботаническая, 4", enAddress: "4 Botanicheskaya Street", lat: 55.8467, lon: 37.6047, anchor: "botanical-garden", official: "https://www.gbsad.ru/" },
 ];
 
-const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno", "novodevichy", "sparrow-hills", "sokolniki", "neskuchny", "aptekarsky-ogorod", "izmaylovo", "kuskovo", "moscow-city"];
+const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno", "novodevichy", "sparrow-hills", "sokolniki", "neskuchny", "aptekarsky-ogorod", "izmaylovo", "kuskovo", "moscow-city", "bolshoi", "moscow-zoo", "muzeon", "botanical-garden"];
+const articleFallbackImage = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23b54738'/%3E%3Cstop offset='1' stop-color='%23273b54'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='675' fill='url(%23g)'/%3E%3Ccircle cx='260' cy='150' r='190' fill='%23ffc670' fill-opacity='.3'/%3E%3C/svg%3E";
 
 const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && readArticleStorage(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
@@ -138,12 +147,14 @@ function renderArticles(filter = "all") {
     const haystack = `${item.title} ${item.en} ${item.text} ${item.enText} ${item.tags} ${item.enTags}`.toLowerCase();
     return (filter === "all" || item.filter === filter) && (!query || haystack.includes(query));
   }).map((item) => {
-    const meta = articleMeta[articles.indexOf(item)];
+    const articleIndex = articles.indexOf(item);
+    const meta = articleMeta[articleIndex];
+    const imageSource = meta.image || articleFallbackImage;
     const mapUrl = `https://yandex.ru/maps/?pt=${meta.lon},${meta.lat}&z=16&l=map`;
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
-    <article id="article-${articleSlugs[articles.indexOf(item)]}" class="article-card">
-      <div class="article-image-wrap"><img class="article-image" src="${meta.image}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" width="1200" height="675" referrerpolicy="no-referrer" onerror="this.hidden=true; this.nextElementSibling.hidden=false" /><div class="article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}" hidden><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
+    <article id="article-${articleSlugs[articleIndex]}" class="article-card">
+      <div class="article-image-wrap"><img class="article-image" src="${imageSource}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" width="1200" height="675" referrerpolicy="no-referrer" onerror="this.hidden=true; this.nextElementSibling.hidden=false" /><div class="article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}" hidden><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articleIndex + 1).padStart(2, "0")}</span></div>
       <div class="article-card-body"><div class="article-card-top"><span class="article-tag">${articleLanguage === "en" ? item.enTags : item.tags}</span></div>
       <h2>${articleLanguage === "en" ? item.en : item.title}</h2>
       <p>${articleLanguage === "en" ? item.enText : item.text}</p>
@@ -156,7 +167,7 @@ function renderArticles(filter = "all") {
 function applyArticleLanguage() {
   document.documentElement.lang = articleLanguage;
   document.title = articleLanguage === "en" ? "Walk Moscow — things to see in Moscow" : "Walk Moscow — что посмотреть в Москве";
-  const description = articleLanguage === "en" ? "Things to see in Moscow: 20 landmarks, parks, museums and walking ideas with short descriptions, maps and official links." : "Что посмотреть в Москве: 20 достопримечательностей, парков, музеев и красивых маршрутов с краткими описаниями, картой и официальными ссылками.";
+  const description = articleLanguage === "en" ? "Things to see in Moscow: 24 landmarks, parks, museums and walking ideas with short descriptions, maps and official links." : "Что посмотреть в Москве: 24 достопримечательности, парки, музеи и красивые маршруты с краткими описаниями, картой и официальными ссылками.";
   document.querySelector('meta[name="description"]')?.setAttribute("content", description);
   document.querySelector('meta[property="og:title"]')?.setAttribute("content", document.title);
   document.querySelector('meta[property="og:description"]')?.setAttribute("content", description);
