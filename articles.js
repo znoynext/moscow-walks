@@ -1,6 +1,22 @@
 const ARTICLE_LANGUAGE_KEY = "moscow-walks-language";
 const ARTICLE_THEME_KEY = "moscow-walks-theme";
 
+function readArticleStorage(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
+
+function writeArticleStorage(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch (error) {
+    // Storage is optional; the page remains usable without it.
+  }
+}
+
 const articleTranslations = {
   ru: {
     back: "← К маршрутам",
@@ -109,8 +125,8 @@ const articleMeta = [
 const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno", "novodevichy", "sparrow-hills", "sokolniki", "neskuchny", "aptekarsky-ogorod", "izmaylovo", "kuskovo", "moscow-city"];
 
 const articleParams = new URLSearchParams(window.location.search);
-let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && localStorage.getItem(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
-let articleTheme = localStorage.getItem(ARTICLE_THEME_KEY) === "light" ? "light" : "dark";
+let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && readArticleStorage(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
+let articleTheme = readArticleStorage(ARTICLE_THEME_KEY) === "light" ? "light" : "dark";
 const initialArticleSearch = articleParams.get("search") || "";
 
 function at(key) { return articleTranslations[articleLanguage][key] || articleTranslations.ru[key] || key; }
@@ -127,7 +143,7 @@ function renderArticles(filter = "all") {
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
     <article id="article-${articleSlugs[articles.indexOf(item)]}" class="article-card">
-      <div class="article-image-wrap"><img class="article-image" src="${meta.image}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" referrerpolicy="no-referrer" onerror="this.closest('.article-image-wrap').classList.add('is-broken')" /><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
+      <div class="article-image-wrap"><div class="article-image article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}"><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articles.indexOf(item) + 1).padStart(2, "0")}</span></div>
       <div class="article-card-body"><div class="article-card-top"><span class="article-tag">${articleLanguage === "en" ? item.enTags : item.tags}</span></div>
       <h2>${articleLanguage === "en" ? item.en : item.title}</h2>
       <p>${articleLanguage === "en" ? item.enText : item.text}</p>
@@ -161,9 +177,9 @@ function applyArticleTheme() {
   button.setAttribute("aria-label", articleTheme === "dark" ? at("lightTheme") : at("darkTheme"));
 }
 
-document.querySelector("#languageToggle").addEventListener("click", () => { articleLanguage = articleLanguage === "ru" ? "en" : "ru"; localStorage.setItem(ARTICLE_LANGUAGE_KEY, articleLanguage); applyArticleLanguage(); applyArticleTheme(); });
-document.querySelector("#themeToggle").addEventListener("click", () => { articleTheme = articleTheme === "dark" ? "light" : "dark"; localStorage.setItem(ARTICLE_THEME_KEY, articleTheme); applyArticleTheme(); });
+document.querySelector("#languageToggle")?.addEventListener("click", () => { articleLanguage = articleLanguage === "ru" ? "en" : "ru"; writeArticleStorage(ARTICLE_LANGUAGE_KEY, articleLanguage); applyArticleLanguage(); applyArticleTheme(); });
+document.querySelector("#themeToggle")?.addEventListener("click", () => { articleTheme = articleTheme === "dark" ? "light" : "dark"; writeArticleStorage(ARTICLE_THEME_KEY, articleTheme); applyArticleTheme(); });
 document.querySelectorAll(".article-filter").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll(".article-filter").forEach((item) => item.classList.remove("is-active")); button.classList.add("is-active"); renderArticles(button.dataset.filter); }));
-document.querySelector("#articleSearch").addEventListener("input", () => renderArticles(document.querySelector(".article-filter.is-active")?.dataset.filter || "all"));
+document.querySelector("#articleSearch")?.addEventListener("input", () => renderArticles(document.querySelector(".article-filter.is-active")?.dataset.filter || "all"));
 applyArticleTheme();
 applyArticleLanguage();

@@ -7,6 +7,22 @@ const LANGUAGE_KEY = "moscow-walks-language";
 const THEME_KEY = "moscow-walks-theme";
 const REQUEST_TIMEOUT_MS = 15000;
 
+function readStorage(key) {
+  try {
+    return window.localStorage.getItem(key);
+  } catch (error) {
+    return null;
+  }
+}
+
+function writeStorage(key, value) {
+  try {
+    window.localStorage.setItem(key, value);
+  } catch (error) {
+    // Private browsing and locked-down WebViews may disable storage.
+  }
+}
+
 const translations = {
   ru: {
     heroTitle: "Пеший маршрут по Москве",
@@ -166,8 +182,8 @@ const englishPlaceNames = {
   "Усадьба Кусково": "Kuskovo Estate", "Москва-Сити": "Moscow City", "Набережная Тараса Шевченко": "Taras Shevchenko Embankment",
 };
 
-let currentLanguage = localStorage.getItem(LANGUAGE_KEY) === "en" ? "en" : "ru";
-let currentTheme = localStorage.getItem(THEME_KEY) === "light" ? "light" : "dark";
+let currentLanguage = readStorage(LANGUAGE_KEY) === "en" ? "en" : "ru";
+let currentTheme = readStorage(THEME_KEY) === "light" ? "light" : "dark";
 
 function t(key) {
   return translations[currentLanguage][key] || translations.ru[key] || key;
@@ -317,6 +333,7 @@ function point(id, name, lat, lon, area, themes, score, note) {
 }
 
 function init() {
+  if (!elements.form || !elements.start || !elements.distance) return;
   fillSelects();
   if (elements.locateButton) elements.locateButton.textContent = userLocationWatch ? t("stopLocation") : t("useLocation");
   if (userPosition) userPosition.name = t("yourLocation");
@@ -329,20 +346,20 @@ function init() {
     window.clearTimeout(init.routeTimer);
     init.routeTimer = window.setTimeout(generateAndRender, 120);
   });
-  elements.regenerateButton.addEventListener("click", generateAndRender);
-  elements.copyButton.addEventListener("click", copyRoute);
-  elements.navigationButton.addEventListener("click", openNavigation);
-  elements.locateButton.addEventListener("click", toggleLocationTracking);
-  elements.addAnchorButton.addEventListener("click", addAnchorField);
-  elements.anchorFields.addEventListener("click", (event) => {
+  elements.regenerateButton?.addEventListener("click", generateAndRender);
+  elements.copyButton?.addEventListener("click", copyRoute);
+  elements.navigationButton?.addEventListener("click", openNavigation);
+  elements.locateButton?.addEventListener("click", toggleLocationTracking);
+  elements.addAnchorButton?.addEventListener("click", addAnchorField);
+  elements.anchorFields?.addEventListener("click", (event) => {
     const removeButton = event.target.closest("[data-remove-anchor]");
     if (!removeButton) return;
     removeButton.closest(".anchor-row")?.remove();
     fillSelects();
     generateAndRender();
   });
-  elements.languageToggle.addEventListener("click", toggleLanguage);
-  elements.themeToggle.addEventListener("click", toggleTheme);
+  elements.languageToggle?.addEventListener("click", toggleLanguage);
+  elements.themeToggle?.addEventListener("click", toggleTheme);
   generateAndRender();
 }
 
@@ -448,7 +465,7 @@ function applyLanguage() {
 
 function toggleLanguage() {
   currentLanguage = currentLanguage === "ru" ? "en" : "ru";
-  localStorage.setItem(LANGUAGE_KEY, currentLanguage);
+  writeStorage(LANGUAGE_KEY, currentLanguage);
   applyLanguage();
   if (currentRoute.length) window.history.replaceState({}, "", buildShareUrl());
 }
@@ -461,7 +478,7 @@ function applyTheme() {
 
 function toggleTheme() {
   currentTheme = currentTheme === "dark" ? "light" : "dark";
-  localStorage.setItem(THEME_KEY, currentTheme);
+  writeStorage(THEME_KEY, currentTheme);
   applyTheme();
   if (currentRoute.length) window.history.replaceState({}, "", buildShareUrl());
 }
@@ -1129,7 +1146,7 @@ function persistRouteState() {
     mode: currentTheme,
   };
   try {
-    localStorage.setItem(ROUTE_STATE_KEY, JSON.stringify(state));
+    writeStorage(ROUTE_STATE_KEY, JSON.stringify(state));
     window.history.replaceState({}, "", buildShareUrl());
   } catch (error) {
     console.warn("Не удалось сохранить параметры маршрута", error);
@@ -1140,7 +1157,7 @@ function restoreRouteState() {
   let state = {};
   try {
     const params = new URLSearchParams(window.location.search);
-    const saved = JSON.parse(localStorage.getItem(ROUTE_STATE_KEY) || "{}");
+    const saved = JSON.parse(readStorage(ROUTE_STATE_KEY) || "{}");
     state = Object.fromEntries(params.entries());
     if (!Object.keys(state).length) state = saved;
   } catch (error) {

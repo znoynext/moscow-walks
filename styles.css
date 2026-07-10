@@ -1203,6 +1203,21 @@ ol {
   transition: transform 0.55s var(--ease), filter 0.55s ease;
 }
 
+.article-image-placeholder {
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.88);
+  background:
+    radial-gradient(circle at 30% 20%, rgba(255, 198, 112, 0.4), transparent 34%),
+    linear-gradient(135deg, #b54738, #273b54 68%, #15202b);
+}
+
+.article-image-placeholder span {
+  font-size: 58px;
+  line-height: 1;
+  opacity: 0.8;
+}
+
 .article-card:hover .article-image {
   filter: saturate(1.08);
   transform: scale(1.045);

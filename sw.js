@@ -1,4 +1,4 @@
-const CACHE_NAME = "moscow-walks-v7";
+const CACHE_NAME = "moscow-walks-v8";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -40,27 +40,24 @@ self.addEventListener("fetch", (event) => {
   const isLocal = url.origin === self.location.origin;
 
   if (isNavigation) {
-    event.respondWith(fetch(request).catch(() => caches.match("./index.html")));
+    event.respondWith(networkFirst(request, "./index.html"));
     return;
   }
 
   if (isLocal || isLeaflet || isTile) {
-    event.respondWith(cacheFirst(request));
+    event.respondWith(networkFirst(request));
   }
 });
 
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if (cached) return cached;
-
+async function networkFirst(request, fallbackUrl) {
   try {
     const response = await fetch(request);
     if (response.ok) {
       const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
+      await cache.put(request, response.clone());
     }
     return response;
   } catch (error) {
-    return new Response("Offline", { status: 503, statusText: "Offline" });
+    return (await caches.match(request)) || (fallbackUrl ? await caches.match(fallbackUrl) : new Response("Offline", { status: 503, statusText: "Offline" }));
   }
 }

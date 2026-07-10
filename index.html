@@ -12,6 +12,7 @@
     <link rel="alternate" hreflang="en" href="https://znoynext.github.io/moscow-walks/?lang=en" />
     <link rel="alternate" hreflang="x-default" href="https://znoynext.github.io/moscow-walks/" />
     <meta name="theme-color" content="#0f1115" />
+    <meta name="color-scheme" content="dark light" />
     <meta property="og:title" content="Walk Moscow — прогулки по Москве" />
     <meta property="og:description" content="Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени." />
     <meta property="og:url" content="https://znoynext.github.io/moscow-walks/" />
@@ -24,6 +25,8 @@
     <meta name="twitter:title" content="Walk Moscow — пешие маршруты по Москве" />
     <meta name="twitter:description" content="Соберите бесплатную прогулку по Москве за несколько секунд." />
     <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="preconnect" href="https://unpkg.com" />
+    <link rel="preconnect" href="https://tile.openstreetmap.org" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
@@ -169,7 +172,7 @@
       }
     </script>
 
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="./app.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script defer src="./app.js"></script>
   </body>
 </html>
