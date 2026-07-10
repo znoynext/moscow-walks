@@ -15,6 +15,11 @@ const translations = {
     freeBadge: "Бесплатно",
     articlesLink: "Что посмотреть",
     start: "Откуда начнём",
+    useLocation: "Использовать моё местоположение",
+    stopLocation: "Остановить геолокацию",
+    locationOn: "Местоположение обновляется",
+    locationDenied: "Не удалось получить местоположение",
+    yourLocation: "Ваше местоположение",
     distance: "Сколько идти",
     mood: "Как хочется гулять",
     themeClassic: "Классика",
@@ -57,6 +62,11 @@ const translations = {
     freeBadge: "Free",
     articlesLink: "Things to see",
     start: "Where to start",
+    useLocation: "Use my location",
+    stopLocation: "Stop location",
+    locationOn: "Location is updating",
+    locationDenied: "Could not get your location",
+    yourLocation: "Your location",
     distance: "How far",
     mood: "Choose a mood",
     themeClassic: "Classic",
@@ -104,6 +114,8 @@ const areaNames = {
   patriki: "Patriki and Tverskoy Boulevard",
   vdnh: "VDNH and Ostankino",
   "river-west": "Western riverfront",
+  kolomenskoye: "Kolomenskoye",
+  tsaritsyno: "Tsaritsyno",
 };
 
 let currentLanguage = localStorage.getItem(LANGUAGE_KEY) === "en" ? "en" : "ru";
@@ -134,6 +146,8 @@ const routespace = [
   { id: "patriki", name: "Патрики и Тверские бульвары", center: [55.7639, 37.5944], themes: ["classic", "water", "architecture"], mood: "камерные улицы, пруды и городская фактура" },
   { id: "vdnh", name: "ВДНХ и Останкино", center: [55.8278, 37.6263], themes: ["green", "architecture"], mood: "монументальная архитектура и большие прогулочные пространства" },
   { id: "river-west", name: "Западная река", center: [55.7257, 37.5578], themes: ["green", "water", "view"], mood: "длинные видовые прогулки у воды" },
+  { id: "kolomenskoye", name: "Коломенское", center: [55.6712, 37.6697], themes: ["green", "architecture", "view"], mood: "усадьба, сады и виды на реку" },
+  { id: "tsaritsyno", name: "Царицыно", center: [55.6197, 37.6827], themes: ["green", "architecture", "water"], mood: "дворцы, пруды и большая прогулка" },
 ];
 
 const pois = [
@@ -188,6 +202,8 @@ const pois = [
   point("ostankino-park", "Останкинский парк", 55.8245, 37.6131, "vdnh", ["green"], 86, "Зелёный маршрут рядом с ВДНХ."),
   point("botanical-garden", "Главный ботанический сад", 55.8421, 37.6038, "vdnh", ["green"], 84, "Подходит для длинной зелёной прогулки."),
   point("worker", "Рабочий и колхозница", 55.8297, 37.6469, "vdnh", ["architecture", "classic"], 80, "Яркая городская скульптура у входа в ВДНХ."),
+  point("kolomenskoye", "Коломенское", 55.6712, 37.6697, "kolomenskoye", ["green", "architecture", "view"], 94, "Усадьба, сады и большие виды на Москву-реку."),
+  point("tsaritsyno", "Царицыно", 55.6197, 37.6827, "tsaritsyno", ["green", "architecture", "water"], 94, "Дворцовый ансамбль, пруды и красивый парк."),
 ];
 
 let map;
@@ -213,6 +229,8 @@ const elements = {
   distance: document.querySelector("#distanceSelect"),
   anchor: document.querySelector("#anchorSelect"),
   anchorSearch: document.querySelector("#anchorSearch"),
+  locateButton: document.querySelector("#locateButton"),
+  locationStatus: document.querySelector("#locationStatus"),
   totalDistance: document.querySelector("#totalDistance"),
   totalTime: document.querySelector("#totalTime"),
   stopCount: document.querySelector("#stopCount"),
@@ -233,12 +251,18 @@ const elements = {
   themeToggle: document.querySelector("#themeToggle"),
 };
 
+let userPosition = null;
+let userLocationWatch = null;
+let userLocationMarker = null;
+
 function point(id, name, lat, lon, area, themes, score, note) {
   return { id, name, lat, lon, area, themes, score, note };
 }
 
 function init() {
   fillSelects();
+  if (elements.locateButton) elements.locateButton.textContent = userLocationWatch ? t("stopLocation") : t("useLocation");
+  if (userPosition) userPosition.name = t("yourLocation");
   restoreRouteState();
   applyTheme();
   applyLanguage();
@@ -249,6 +273,7 @@ function init() {
   });
   elements.regenerateButton.addEventListener("click", generateAndRender);
   elements.copyButton.addEventListener("click", copyRoute);
+  elements.locateButton.addEventListener("click", toggleLocationTracking);
   elements.languageToggle.addEventListener("click", toggleLanguage);
   elements.themeToggle.addEventListener("click", toggleTheme);
   generateAndRender();
@@ -345,6 +370,60 @@ function initMap() {
   elements.fallbackMap.classList.add("hidden");
 }
 
+function toggleLocationTracking() {
+  if (userLocationWatch !== null) {
+    navigator.geolocation.clearWatch(userLocationWatch);
+    userLocationWatch = null;
+    userPosition = null;
+    userLocationMarker?.remove();
+    userLocationMarker = null;
+    elements.locateButton.textContent = t("useLocation");
+    elements.locationStatus.textContent = "";
+    generateAndRender();
+    return;
+  }
+
+  if (!navigator.geolocation) {
+    elements.locationStatus.textContent = t("locationDenied");
+    return;
+  }
+
+  elements.locateButton.disabled = true;
+  navigator.geolocation.getCurrentPosition(
+    (position) => {
+      updateUserPosition(position);
+      userLocationWatch = navigator.geolocation.watchPosition(updateUserPosition, handleLocationError, { enableHighAccuracy: true, maximumAge: 10000, timeout: 12000 });
+      elements.locateButton.disabled = false;
+      elements.locateButton.textContent = t("stopLocation");
+      generateAndRender();
+    },
+    () => {
+      elements.locateButton.disabled = false;
+      elements.locationStatus.textContent = t("locationDenied");
+    },
+    { enableHighAccuracy: true, maximumAge: 10000, timeout: 12000 },
+  );
+}
+
+function updateUserPosition(position) {
+  userPosition = { id: "user-location", name: t("yourLocation"), lat: position.coords.latitude, lon: position.coords.longitude, area: "custom", themes: ["classic", "view"], score: 100, note: "" };
+  if (map && window.L) {
+    if (!userLocationMarker) {
+      userLocationMarker = L.circleMarker([userPosition.lat, userPosition.lon], { radius: 8, color: "#fff", weight: 3, fillColor: "#3b82f6", fillOpacity: 1 }).addTo(map);
+    } else {
+      userLocationMarker.setLatLng([userPosition.lat, userPosition.lon]);
+    }
+    map.setView([userPosition.lat, userPosition.lon], Math.max(map.getZoom(), 13), { animate: true });
+  }
+  elements.locationStatus.textContent = t("locationOn");
+  window.clearTimeout(updateUserPosition.timer);
+  updateUserPosition.timer = window.setTimeout(generateAndRender, 800);
+}
+
+function handleLocationError() {
+  elements.locationStatus.textContent = t("locationDenied");
+}
+
 function handleSubmit(event) {
   event.preventDefault();
   generateAndRender();
@@ -356,7 +435,7 @@ async function generateAndRender() {
   setRouteLoading(true);
 
   try {
-    const selectedStart = starts.find((item) => item.id === elements.start.value) || starts[0];
+    const selectedStart = userPosition || starts.find((item) => item.id === elements.start.value) || starts[0];
     const selectedAnchor = pois.find((item) => item.id === elements.anchor.value);
     const targetKm = Number(elements.distance.value);
     const theme = new FormData(elements.form).get("theme");
@@ -976,7 +1055,7 @@ init();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-10-3").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-1").catch((error) => {
       console.warn("Service worker не зарегистрирован", error);
     });
   });
