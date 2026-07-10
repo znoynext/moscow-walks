@@ -3,6 +3,8 @@ const OSRM_FOOT_URLS = [
   "https://router.project-osrm.org/route/v1/foot/",
 ];
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+const ROUTE_STATE_KEY = "moscow-walks-route-state";
+const REQUEST_TIMEOUT_MS = 15000;
 
 const starts = [
   { id: "metro-okhotny", name: "м. Охотный Ряд", lat: 55.7577, lon: 37.6156, area: "center" },
@@ -119,6 +121,7 @@ const elements = {
   exportButton: document.querySelector("#exportButton"),
   regenerateButton: document.querySelector("#regenerateButton"),
   placeHints: document.querySelector("#placeHints"),
+  toast: document.querySelector("#toast"),
 };
 
 function point(id, name, lat, lon, area, themes, score, note) {
@@ -128,6 +131,7 @@ function point(id, name, lat, lon, area, themes, score, note) {
 function init() {
   fillSelects();
   fillHints();
+  restoreRouteState();
   initMap();
   elements.form.addEventListener("submit", handleSubmit);
   elements.regenerateButton.addEventListener("click", generateAndRender);
@@ -186,21 +190,28 @@ async function generateAndRender() {
   variantSeed += 1;
   setRouteLoading(true);
 
-  const selectedStart = starts.find((item) => item.id === elements.start.value) || starts[0];
-  const selectedAnchor = pois.find((item) => item.id === elements.anchor.value);
-  const targetKm = Number(elements.distance.value);
-  const theme = new FormData(elements.form).get("theme");
-  const start = (await resolveSearchPoint(elements.startSearch.value, "Старт из поиска", "search")) || selectedStart;
-  const anchor = (await resolveSearchPoint(elements.anchorSearch.value, "Место из поиска", "search")) || selectedAnchor;
+  try {
+    const selectedStart = starts.find((item) => item.id === elements.start.value) || starts[0];
+    const selectedAnchor = pois.find((item) => item.id === elements.anchor.value);
+    const targetKm = Number(elements.distance.value);
+    const theme = new FormData(elements.form).get("theme");
+    const start = (await resolveSearchPoint(elements.startSearch.value, "Старт из поиска", "search")) || selectedStart;
+    const anchor = (await resolveSearchPoint(elements.anchorSearch.value, "Место из поиска", "search")) || selectedAnchor;
 
-  if (run !== latestRun) return;
-  currentRoute = buildRoute({ start, targetKm, anchor, theme, variantSeed });
-  const walking = await buildWalkingRoute(currentRoute);
+    if (run !== latestRun) return;
+    currentRoute = buildRoute({ start, targetKm, anchor, theme, variantSeed });
+    const walking = await buildWalkingRoute(currentRoute);
 
-  if (run !== latestRun) return;
-  currentWalkingLine = walking.coordinates;
-  renderRoute(currentRoute, walking);
-  setRouteLoading(false);
+    if (run !== latestRun) return;
+    currentWalkingLine = walking.coordinates;
+    renderRoute(currentRoute, walking);
+  } catch (error) {
+    console.warn("Не удалось построить маршрут", error);
+    elements.routeStatus.textContent = "Не удалось построить маршрут. Проверьте интернет и попробуйте ещё раз.";
+    showToast("Маршрут не построен — попробуйте ещё раз.");
+  } finally {
+    if (run === latestRun) setRouteLoading(false);
+  }
 }
 
 async function resolveSearchPoint(query, note, area) {
@@ -219,7 +230,7 @@ async function resolveSearchPoint(query, note, area) {
       bounded: "1",
       addressdetails: "0",
     });
-    const response = await fetch(`${NOMINATIM_URL}?${params.toString()}`, {
+    const response = await fetchWithTimeout(`${NOMINATIM_URL}?${params.toString()}`, {
       headers: { Accept: "application/json" },
     });
     if (!response.ok) return null;
@@ -365,7 +376,7 @@ async function buildWalkingRoute(route) {
 
   try {
     for (const baseUrl of OSRM_FOOT_URLS) {
-      const response = await fetch(`${baseUrl}${coords}?${params.toString()}`);
+      const response = await fetchWithTimeout(`${baseUrl}${coords}?${params.toString()}`);
       if (!response.ok) continue;
       const data = await response.json();
       const osrmRoute = data.routes?.[0];
@@ -412,6 +423,7 @@ function renderRoute(route, walking) {
     walking.source === "osrm"
       ? "Линия построена по пешеходной сети OpenStreetMap через бесплатный OSRM."
       : "OSRM сейчас недоступен, показана локальная схема маршрута.";
+  persistRouteState();
   renderStops(route);
   renderFallbackMap(walking.coordinates, route);
   renderLeafletRoute(route, walking.coordinates);
@@ -525,34 +537,135 @@ function explainRoute(route, area, walking) {
 }
 
 function setRouteLoading(isLoading) {
+  const primaryButton = elements.form.querySelector(".primary-button");
   elements.regenerateButton.disabled = isLoading;
   elements.form.querySelector(".primary-button").disabled = isLoading;
+  primaryButton.classList.toggle("is-loading", isLoading);
+  primaryButton.setAttribute("aria-busy", String(isLoading));
+  primaryButton.textContent = isLoading ? "Строим маршрут…" : "Собрать прогулку";
   elements.form.setAttribute("aria-busy", String(isLoading));
   elements.routeStatus.textContent = isLoading ? "Строю пеший маршрут по дорожкам..." : elements.routeStatus.textContent;
 }
 
-function copyRoute() {
+async function copyRoute() {
   const text = buildShareText();
-  const share = navigator.share
-    ? navigator.share({ title: elements.routeTitle.textContent || "Прогулка по Москве", text })
-    : navigator.clipboard?.writeText(text);
+  const url = buildShareUrl();
+  let shared = false;
 
-  Promise.resolve(share)
-    .then(() => {
-      elements.copyButton.textContent = navigator.share ? "Отправлено" : "Скопировано";
-      window.setTimeout(() => {
-        elements.copyButton.textContent = "Поделиться";
-      }, 1400);
-    })
-    .catch(() => {
-      elements.routeStatus.textContent = "Не удалось открыть меню отправки. Попробуйте ещё раз.";
-    });
+  try {
+    if (navigator.share) {
+      await navigator.share({ title: elements.routeTitle.textContent || "Прогулка по Москве", text, url });
+      shared = true;
+    } else {
+      await copyText(`${text}\n\nСсылка на маршрут: ${url}`);
+    }
+  } catch (error) {
+    try {
+      await copyText(`${text}\n\nСсылка на маршрут: ${url}`);
+    } catch (copyError) {
+      elements.routeStatus.textContent = "Не удалось поделиться маршрутом. Скопируйте ссылку вручную.";
+      showToast("Не удалось открыть меню отправки.");
+      return;
+    }
+  }
+
+  elements.copyButton.textContent = shared ? "Отправлено" : "Скопировано";
+  showToast(shared ? "Меню отправки открыто." : "Ссылка и описание скопированы.");
+  window.setTimeout(() => {
+    elements.copyButton.textContent = "Поделиться";
+  }, 1400);
+}
+
+function copyText(text) {
+  if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
+
+  return new Promise((resolve, reject) => {
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand("copy") ? resolve() : reject(new Error("Copy failed"));
+    } finally {
+      textarea.remove();
+    }
+  });
 }
 
 function buildShareText() {
   const title = elements.routeTitle.textContent || "Прогулка по Москве";
   const stops = currentRoute.map((stop, index) => `${index + 1}. ${stop.name}`).join("\n");
   return `${title}\n${currentSummary.distanceKm.toFixed(1)} км · ${currentSummary.durationMin} мин\n\n${stops}\n\nСобрано в Moscow Walks`;
+}
+
+function buildShareUrl() {
+  const params = new URLSearchParams({
+    start: elements.start.value,
+    distance: elements.distance.value,
+    theme: new FormData(elements.form).get("theme") || "classic",
+  });
+  if (elements.anchor.value) params.set("anchor", elements.anchor.value);
+  if (elements.startSearch.value.trim()) params.set("startSearch", elements.startSearch.value.trim());
+  if (elements.anchorSearch.value.trim()) params.set("anchorSearch", elements.anchorSearch.value.trim());
+  return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
+}
+
+function persistRouteState() {
+  const state = {
+    start: elements.start.value,
+    distance: elements.distance.value,
+    theme: new FormData(elements.form).get("theme") || "classic",
+    anchor: elements.anchor.value,
+    startSearch: elements.startSearch.value,
+    anchorSearch: elements.anchorSearch.value,
+  };
+  try {
+    localStorage.setItem(ROUTE_STATE_KEY, JSON.stringify(state));
+    window.history.replaceState({}, "", buildShareUrl());
+  } catch (error) {
+    console.warn("Не удалось сохранить параметры маршрута", error);
+  }
+}
+
+function restoreRouteState() {
+  let state = {};
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const saved = JSON.parse(localStorage.getItem(ROUTE_STATE_KEY) || "{}");
+    state = Object.fromEntries(params.entries());
+    if (!Object.keys(state).length) state = saved;
+  } catch (error) {
+    console.warn("Не удалось восстановить параметры маршрута", error);
+  }
+
+  if (starts.some((item) => item.id === state.start)) elements.start.value = state.start;
+  if (["3", "5", "8", "12"].includes(state.distance)) elements.distance.value = state.distance;
+  if (pois.some((item) => item.id === state.anchor)) elements.anchor.value = state.anchor;
+  if (state.startSearch) elements.startSearch.value = state.startSearch;
+  if (state.anchorSearch) elements.anchorSearch.value = state.anchorSearch;
+  const theme = [...elements.form.querySelectorAll('input[name="theme"]')].find((input) => input.value === (state.theme || "classic"));
+  if (theme) theme.checked = true;
+}
+
+function showToast(message) {
+  if (!elements.toast) return;
+  elements.toast.textContent = message;
+  elements.toast.classList.add("visible");
+  window.clearTimeout(showToast.timer);
+  showToast.timer = window.setTimeout(() => elements.toast.classList.remove("visible"), 2600);
+}
+
+async function fetchWithTimeout(url, options = {}) {
+  const controller = new AbortController();
+  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...options, signal: controller.signal });
+  } finally {
+    window.clearTimeout(timeout);
+  }
 }
 
 function escapeHtml(value) {

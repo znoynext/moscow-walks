@@ -1,4 +1,4 @@
-const CACHE_NAME = "moscow-walks-v2";
+const CACHE_NAME = "moscow-walks-v3";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -51,8 +51,14 @@ async function cacheFirst(request) {
   const cached = await caches.match(request);
   if (cached) return cached;
 
-  const response = await fetch(request);
-  const cache = await caches.open(CACHE_NAME);
-  cache.put(request, response.clone());
-  return response;
+  try {
+    const response = await fetch(request);
+    if (response.ok) {
+      const cache = await caches.open(CACHE_NAME);
+      cache.put(request, response.clone());
+    }
+    return response;
+  } catch (error) {
+    return new Response("Offline", { status: 503, statusText: "Offline" });
+  }
 }

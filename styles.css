@@ -31,6 +31,23 @@ body {
     linear-gradient(135deg, #0f1115 0%, #151820 48%, #0d0f13 100%);
 }
 
+.skip-link {
+  position: fixed;
+  z-index: 1000;
+  top: 10px;
+  left: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #fff;
+  background: var(--accent);
+  transform: translateY(-150%);
+  transition: transform 0.15s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
 button,
 select,
 input {
@@ -246,6 +263,29 @@ input[type="search"]::placeholder {
   background: var(--accent-dark);
 }
 
+.primary-button.is-loading {
+  position: relative;
+  color: transparent;
+}
+
+.primary-button.is-loading::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.42);
+  border-top-color: #fff;
+  border-radius: 50%;
+  content: "";
+  transform: translate(-50%, -50%);
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
 .primary-button:focus-visible,
 .ghost-button:focus-visible,
 summary:focus-visible {
@@ -426,6 +466,29 @@ button:disabled {
   font-size: 12px;
 }
 
+.toast {
+  position: fixed;
+  z-index: 20;
+  right: 20px;
+  bottom: 20px;
+  max-width: min(360px, calc(100vw - 40px));
+  padding: 12px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  color: var(--ink);
+  background: #20242d;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(12px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 .itinerary-head {
   display: flex;
   align-items: flex-start;
@@ -518,7 +581,7 @@ ol {
   }
 
   .workspace {
-    grid-template-rows: 58vh auto;
+    grid-template-rows: minmax(320px, 52vh) auto;
   }
 
   .itinerary {
@@ -549,6 +612,11 @@ ol {
     display: grid;
   }
 
+  .planner {
+    gap: 16px;
+    padding-bottom: 18px;
+  }
+
   .status {
     width: max-content;
   }
@@ -569,6 +637,28 @@ ol {
 
   .actions .ghost-button {
     flex: 1;
+  }
+
+  .primary-button {
+    position: sticky;
+    bottom: 10px;
+    z-index: 5;
+    min-height: 50px;
+  }
+
+  .map-panel {
+    min-height: 320px;
+  }
+
+  .workspace {
+    grid-template-rows: 48vh auto;
+  }
+
+  .toast {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    max-width: none;
   }
 
   .stop {

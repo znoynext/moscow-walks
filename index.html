@@ -4,17 +4,24 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Moscow Walks — пешие маршруты по Москве</title>
-    <meta name="description" content="Соберите красивый пеший маршрут по Москве: выберите старт, длину и настроение прогулки." />
+    <meta name="description" content="Бесплатный генератор пеших маршрутов по Москве. Выберите метро, длину и настроение — получите прогулку с картой, достопримечательностями и временем в пути." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <link rel="canonical" href="https://znoynext.github.io/moscow-walks/" />
     <meta name="theme-color" content="#0f1115" />
     <meta property="og:title" content="Moscow Walks — прогулки по Москве" />
-    <meta property="og:description" content="Красивый пеший маршрут по Москве за несколько секунд." />
+    <meta property="og:description" content="Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени." />
+    <meta property="og:url" content="https://znoynext.github.io/moscow-walks/" />
     <meta property="og:type" content="website" />
     <meta property="og:locale" content="ru_RU" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Moscow Walks — пешие маршруты по Москве" />
+    <meta name="twitter:description" content="Соберите бесплатную прогулку по Москве за несколько секунд." />
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <a class="skip-link" href="#routeResult">К маршруту</a>
     <main class="app-shell">
       <aside class="planner" aria-label="Параметры маршрута">
         <header class="brand">
@@ -23,7 +30,7 @@
             <h1>Пеший маршрут по Москве</h1>
             <p class="brand-note">Выберите настроение — остальное соберём сами.</p>
           </div>
-          <span class="status" id="mapStatus">OpenStreetMap</span>
+          <span class="status" id="mapStatus" aria-label="Источник карты">OpenStreetMap</span>
         </header>
 
         <form id="routeForm" class="controls">
@@ -104,9 +111,9 @@
         </section>
       </aside>
 
-      <section class="workspace">
+      <section class="workspace" id="routeResult" aria-label="Результат маршрута">
         <div class="map-panel">
-          <div id="map" class="map"></div>
+          <div id="map" class="map" role="application" aria-label="Интерактивная карта пешего маршрута"></div>
           <svg id="fallbackMap" class="fallback-map" viewBox="0 0 1000 720" role="img" aria-label="Схема маршрута"></svg>
         </div>
 
@@ -117,12 +124,12 @@
               <h2 id="routeTitle">Маршрут</h2>
             </div>
             <div class="actions">
-              <button id="exportButton" class="ghost-button" type="button">JSON</button>
-              <button id="regenerateButton" class="ghost-button" type="button">Ещё вариант</button>
-              <button id="copyButton" class="ghost-button" type="button">Поделиться</button>
+              <button id="exportButton" class="ghost-button" type="button" aria-label="Скачать маршрут в формате JSON">JSON</button>
+              <button id="regenerateButton" class="ghost-button" type="button" aria-label="Построить другой вариант маршрута">Ещё вариант</button>
+              <button id="copyButton" class="ghost-button" type="button" aria-label="Скопировать ссылку и описание маршрута">Поделиться</button>
             </div>
           </div>
-          <ol id="stopsList"></ol>
+          <ol id="stopsList" aria-live="polite"></ol>
         </section>
       </section>
     </main>
@@ -143,6 +150,22 @@
       <span>© Moscow Walks</span>
       <span>Данные карты: OpenStreetMap</span>
     </footer>
+
+    <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Moscow Walks",
+        "url": "https://znoynext.github.io/moscow-walks/",
+        "description": "Бесплатный генератор пеших маршрутов по Москве.",
+        "applicationCategory": "TravelApplication",
+        "operatingSystem": "Any",
+        "inLanguage": "ru",
+        "isAccessibleForFree": true
+      }
+    </script>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="./app.js"></script>
