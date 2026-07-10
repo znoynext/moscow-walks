@@ -1,6 +1,5 @@
 const OSRM_FOOT_URLS = [
   "https://routing.openstreetmap.de/routed-foot/route/v1/foot/",
-  "https://router.project-osrm.org/route/v1/foot/",
 ];
 const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
 const ROUTE_STATE_KEY = "moscow-walks-route-state";
@@ -39,6 +38,7 @@ const translations = {
     stopNote: "Интересная точка по пути.",
     route: "Ваша прогулка",
     another: "Другой маршрут",
+    navigate: "Навигация",
     share: "Поделиться маршрутом",
     guideEyebrow: "Прогулки без подготовки",
     guideTitle: "Идея для вечера, свидания или выходного",
@@ -50,6 +50,7 @@ const translations = {
     building: "Обновляем маршрут…",
     routeBuilt: "Маршрут готов — можно идти.",
     routeFallback: "Маршрут готов — можно идти.",
+    walkUnavailable: "Не удалось проложить непрерывный путь по пешеходным дорожкам. Попробуйте другую точку.",
     routeError: "Не удалось построить маршрут. Проверьте интернет и попробуйте ещё раз.",
     tryAgain: "Маршрут не построен — попробуйте ещё раз.",
     copied: "Ссылка и маршрут скопированы.",
@@ -90,6 +91,7 @@ const translations = {
     stopNote: "An interesting stop along the way.",
     route: "Your walk",
     another: "Another route",
+    navigate: "Open navigation",
     share: "Share this walk",
     guideEyebrow: "Walks without planning",
     guideTitle: "An easy idea for an evening or weekend",
@@ -101,6 +103,7 @@ const translations = {
     building: "Updating route…",
     routeBuilt: "Your walk is ready.",
     routeFallback: "Your walk is ready.",
+    walkUnavailable: "A continuous walking path could not be found. Try another place.",
     routeError: "We couldn’t build the route. Check your connection and try again.",
     tryAgain: "Route failed — please try again.",
     copied: "Link and walk details copied.",
@@ -253,6 +256,7 @@ const elements = {
   stopsList: document.querySelector("#stopsList"),
   fallbackMap: document.querySelector("#fallbackMap"),
   copyButton: document.querySelector("#copyButton"),
+  navigationButton: document.querySelector("#navigationButton"),
   regenerateButton: document.querySelector("#regenerateButton"),
   placeHints: document.querySelector("#placeHints"),
   toast: document.querySelector("#toast"),
@@ -285,6 +289,7 @@ function init() {
   });
   elements.regenerateButton.addEventListener("click", generateAndRender);
   elements.copyButton.addEventListener("click", copyRoute);
+  elements.navigationButton.addEventListener("click", openNavigation);
   elements.locateButton.addEventListener("click", toggleLocationTracking);
   elements.addAnchorButton.addEventListener("click", addAnchorField);
   elements.anchorFields.addEventListener("click", (event) => {
@@ -511,6 +516,11 @@ async function generateAndRender() {
     const walking = await buildWalkingRoute(currentRoute);
 
     if (run !== latestRun) return;
+    if (!walking) {
+      currentWalkingLine = [];
+      renderUnroutableRoute(currentRoute);
+      return;
+    }
     currentWalkingLine = walking.coordinates;
     renderRoute(currentRoute, walking);
   } catch (error) {
@@ -675,9 +685,8 @@ function orderRoute(route, start) {
   return ordered;
 }
 
-async function buildWalkingRoute(route) {
-  if (route.length < 2) return routeFallback(route);
-  const coords = route.map((stop) => `${stop.lon},${stop.lat}`).join(";");
+async function requestWalkingRoute(stops) {
+  const coords = stops.map((stop) => `${stop.lon},${stop.lat}`).join(";");
   const params = new URLSearchParams({
     overview: "full",
     geometries: "geojson",
@@ -685,33 +694,47 @@ async function buildWalkingRoute(route) {
     continue_straight: "false",
   });
 
-  try {
-    for (const baseUrl of OSRM_FOOT_URLS) {
+  for (const baseUrl of OSRM_FOOT_URLS) {
+    try {
       const response = await fetchWithTimeout(`${baseUrl}${coords}?${params.toString()}`);
       if (!response.ok) continue;
       const data = await response.json();
-      const osrmRoute = data.routes?.[0];
-      if (!osrmRoute?.geometry?.coordinates) continue;
+      const walkingRoute = data.routes?.[0];
+      if (data.code && data.code !== "Ok") continue;
+      if (!walkingRoute?.geometry?.coordinates?.length) continue;
       return {
-        source: "osrm",
-        distanceKm: osrmRoute.distance / 1000,
-        durationMin: Math.round(osrmRoute.duration / 60),
-        coordinates: osrmRoute.geometry.coordinates.map(([lon, lat]) => [lat, lon]),
+        distanceKm: walkingRoute.distance / 1000,
+        durationMin: Math.max(1, Math.round(walkingRoute.duration / 60)),
+        coordinates: walkingRoute.geometry.coordinates.map(([lon, lat]) => [lat, lon]),
       };
+    } catch (error) {
+      console.warn("Пешеходный сервис временно недоступен", error);
     }
-    throw new Error("No OSRM provider returned a route");
-  } catch (error) {
-    console.warn("OSRM недоступен, включена локальная схема", error);
-    return routeFallback(route);
   }
+  return null;
 }
 
-function routeFallback(route) {
+async function buildWalkingRoute(route) {
+  if (route.length < 2) return null;
+
+  const fullRoute = await requestWalkingRoute(route);
+  if (fullRoute) return { source: "pedestrian", ...fullRoute };
+
+  // A multi-stop request can fail even when every individual leg is routable.
+  // Retry leg by leg, but never draw a straight line between places.
+  const legs = [];
+  for (let index = 1; index < route.length; index += 1) {
+    const leg = await requestWalkingRoute([route[index - 1], route[index]]);
+    if (!leg) return null;
+    legs.push(leg);
+  }
+
+  const coordinates = legs.flatMap((leg, index) => index === 0 ? leg.coordinates : leg.coordinates.slice(1));
   return {
-    source: "fallback",
-    distanceKm: roughRouteDistance(route),
-    durationMin: Math.round((roughRouteDistance(route) / 4.2) * 60),
-    coordinates: route.map((stop) => [stop.lat, stop.lon]),
+    source: "pedestrian",
+    distanceKm: legs.reduce((sum, leg) => sum + leg.distanceKm, 0),
+    durationMin: legs.reduce((sum, leg) => sum + leg.durationMin, 0),
+    coordinates,
   };
 }
 
@@ -740,6 +763,22 @@ function renderRoute(route, walking) {
   elements.itinerary.classList.add("updated");
 }
 
+function renderUnroutableRoute(route) {
+  const area = routeArea(route);
+  elements.totalDistance.textContent = "—";
+  elements.totalTime.textContent = "—";
+  elements.stopCount.textContent = String(route.length);
+  elements.caloriesCount.textContent = "—";
+  currentSummary = { distanceKm: 0, durationMin: 0, calories: 0 };
+  elements.routeTitle.textContent = buildRouteTitle(route);
+  elements.routeArea.textContent = localizedArea(area);
+  elements.routeReason.textContent = currentLanguage === "en" ? "The selected places are shown below. Try another start to get a continuous walking line." : "Выбранные места показаны ниже. Попробуйте другой старт, чтобы получить непрерывную линию для пешей прогулки.";
+  elements.routeStatus.textContent = t("walkUnavailable");
+  renderStops(route);
+  renderLeafletStopsOnly(route);
+  renderFallbackStops(route);
+}
+
 function renderLeafletRoute(route, line) {
   if (!map || !window.L) return;
   markersLayer.clearLayers();
@@ -762,6 +801,18 @@ function renderLeafletRoute(route, line) {
   });
 
   map.fitBounds(polyline.getBounds(), { padding: [36, 36], maxZoom: 16 });
+}
+
+function renderLeafletStopsOnly(route) {
+  if (!map || !window.L) return;
+  markersLayer.clearLayers();
+  routeLayer.clearLayers();
+  route.forEach((stop, index) => {
+    L.marker([stop.lat, stop.lon], { icon: createMarkerIcon(index + 1, index === 0) })
+      .bindPopup(`<strong>${index + 1}. ${articleLinkForStop(stop, true)}</strong><br>${escapeHtml(localizedNote(stop, index))}`)
+      .addTo(markersLayer);
+  });
+  map.fitBounds(L.latLngBounds(route.map((stop) => [stop.lat, stop.lon])), { padding: [36, 36], maxZoom: 15 });
 }
 
 function createMarkerIcon(number, isStart) {
@@ -888,6 +939,16 @@ function renderFallbackMap(line, route) {
   `;
 }
 
+function renderFallbackStops(route) {
+  if (!elements.fallbackMap || (map && window.L)) return;
+  const stopPoints = route.map((stop) => projectPoint(stop));
+  elements.fallbackMap.classList.remove("hidden");
+  elements.fallbackMap.innerHTML = `
+    <rect width="1000" height="720" fill="#f3f5f0"></rect>
+    ${stopPoints.map((point, index) => `<circle cx="${point.x}" cy="${point.y}" r="17" fill="${index === 0 ? "#b9903c" : "#ce4a3b"}"></circle><text x="${point.x}" y="${point.y + 5}" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">${index + 1}</text>`).join("")}
+  `;
+}
+
 function explainRoute(route, area, walking) {
   if (currentLanguage === "en") {
     const areaText = area ? `${localizedArea(area)} · ` : "";
@@ -955,6 +1016,12 @@ function copyText(text) {
       textarea.remove();
     }
   });
+}
+
+function openNavigation() {
+  if (!currentRoute.length) return;
+  const routeText = currentRoute.map((stop) => `${stop.lat},${stop.lon}`).join("~");
+  window.open(`https://yandex.ru/maps/?rtext=${routeText}&rtt=pedestrian`, "_blank", "noopener");
 }
 
 function buildShareText() {
