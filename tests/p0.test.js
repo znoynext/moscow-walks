@@ -103,9 +103,12 @@ test("Leaflet assets are pinned with integrity metadata", () => {
 test("map tiles keep their layout if the Leaflet CDN stylesheet is unavailable", () => {
   const fallback = fs.readFileSync("leaflet-fallback.css", "utf8");
   const serviceWorker = fs.readFileSync("sw.js", "utf8");
-  assert.match(html, /href="\.\/leaflet-fallback\.css"/);
+  assert.match(html, /href="\.\/leaflet-fallback\.css\?v=2026-07-11-2"/);
   assert.match(fallback, /\.leaflet-tile[\s\S]*?position:\s*absolute/);
   assert.match(fallback, /\.leaflet-tile-loaded[\s\S]*?visibility:\s*inherit/);
+  assert.match(fallback, /\.leaflet-tile-pane\s*\{\s*z-index:\s*200/);
+  assert.match(fallback, /\.leaflet-overlay-pane\s*\{\s*z-index:\s*400/);
+  assert.match(fallback, /\.leaflet-marker-pane\s*\{\s*z-index:\s*600/);
   assert.match(serviceWorker, /\.\/leaflet-fallback\.css/);
 });
 

@@ -17,6 +17,36 @@
   left: 0;
 }
 
+/* Leaflet's CDN stylesheet normally sets this stack. Keep route lines and
+   guide markers above map tiles when that stylesheet cannot be loaded. */
+.leaflet-pane {
+  z-index: 400;
+}
+
+.leaflet-tile-pane {
+  z-index: 200;
+}
+
+.leaflet-overlay-pane {
+  z-index: 400;
+}
+
+.leaflet-shadow-pane {
+  z-index: 500;
+}
+
+.leaflet-marker-pane {
+  z-index: 600;
+}
+
+.leaflet-tooltip-pane {
+  z-index: 650;
+}
+
+.leaflet-popup-pane {
+  z-index: 700;
+}
+
 .leaflet-tile {
   visibility: hidden;
 }
@@ -36,4 +66,10 @@
 .leaflet-container img.leaflet-image-layer {
   max-width: none !important;
   max-height: none !important;
+}
+
+.leaflet-container .leaflet-overlay-pane svg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
 }
