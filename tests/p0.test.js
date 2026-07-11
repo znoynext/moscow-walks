@@ -78,7 +78,7 @@ test("service worker refreshes deployed files without a hard reload", () => {
 });
 
 test("public HTML has no placeholder contacts and keeps the public brand", () => {
-  const publicPages = ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", ...curatedRoutes.map((route) => `routes/${route.slug}.html`)];
+  const publicPages = ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", ...curatedRoutes.map((route) => `routes/${route.slug}/index.html`), "articles/index.html", "areas/index.html", "routes/index.html", "privacy/index.html"];
   for (const page of publicPages) {
     const source = fs.readFileSync(page, "utf8");
     assert.doesNotMatch(source, /@example\.com/i);
@@ -91,9 +91,9 @@ test("every curated route has an indexed static page and sitemap entry", () => {
   const sitemap = fs.readFileSync("sitemap.xml", "utf8");
   assert.equal(new Set(curatedRoutes.map((route) => route.slug)).size, curatedRoutes.length);
   for (const route of curatedRoutes) {
-    const filename = `routes/${route.slug}.html`;
+    const filename = `routes/${route.slug}/index.html`;
     const source = fs.readFileSync(filename, "utf8");
-    const url = `https://znoynext.github.io/moscow-walks/${filename}`;
+    const url = `https://znoynext.github.io/moscow-walks/routes/${route.slug}/`;
     assert.match(source, new RegExp(`<link rel="canonical" href="${url}"`));
     assert.match(source, /<h1>/);
     assert.equal((source.match(/<h1(?:\s|>)/g) || []).length, 1);
@@ -101,6 +101,15 @@ test("every curated route has an indexed static page and sitemap entry", () => {
     assert.match(source, /<meta name="description" content="[^"]+"/);
     assert.match(source, /"@type":"TouristTrip"/);
     assert.match(sitemap, new RegExp(url));
+  }
+});
+
+test("public catalogue pages use clean directory URLs", () => {
+  const pages = ["articles", "areas", "privacy", "routes"];
+  for (const page of pages) {
+    const source = fs.readFileSync(`${page}/index.html`, "utf8");
+    assert.match(source, new RegExp(`canonical" href="https://znoynext.github.io/moscow-walks/${page}/`));
+    assert.doesNotMatch(source, new RegExp(`https://znoynext.github.io/moscow-walks/${page}\\.html`));
   }
 });
 

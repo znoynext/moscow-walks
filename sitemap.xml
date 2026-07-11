@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://znoynext.github.io/moscow-walks/</loc><lastmod>2026-07-11</lastmod><changefreq>weekly</changefreq><priority>1.0</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/articles.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes.html</loc><lastmod>2026-07-11</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/privacy.html</loc><lastmod>2026-07-11</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/areas.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/red-square-classic.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/gorky-waterfront.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/patriki-architecture.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/vdnh-green.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/arbat-prechistenka.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/kolomenskoye-park.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/zamoskvorechye-art.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/novodevichy-river.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/sokolniki-green.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/moscow-city-river.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/tsaritsyno-estate.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/bolshoi-boulevards.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/sparrow-hills-view.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://znoynext.github.io/moscow-walks/routes/pokrovka-chistye.html</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/articles/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/</loc><lastmod>2026-07-11</lastmod><changefreq>weekly</changefreq><priority>0.9</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/privacy/</loc><lastmod>2026-07-11</lastmod><changefreq>yearly</changefreq><priority>0.2</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/areas/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/red-square-classic/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/gorky-waterfront/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/patriki-architecture/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/vdnh-green/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/arbat-prechistenka/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/kolomenskoye-park/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/zamoskvorechye-art/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/novodevichy-river/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/sokolniki-green/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/moscow-city-river/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/tsaritsyno-estate/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/bolshoi-boulevards/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/sparrow-hills-view/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://znoynext.github.io/moscow-walks/routes/pokrovka-chistye/</loc><lastmod>2026-07-11</lastmod><changefreq>monthly</changefreq><priority>0.8</priority></url>
 </urlset>

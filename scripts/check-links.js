@@ -1,7 +1,14 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const files = ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", ...fs.readdirSync("routes").filter((file) => file.endsWith(".html")).map((file) => path.join("routes", file))];
+function htmlFiles(directory) {
+  return fs.readdirSync(directory, { withFileTypes: true }).flatMap((entry) => {
+    const entryPath = path.join(directory, entry.name);
+    return entry.isDirectory() ? htmlFiles(entryPath) : entry.name.endsWith(".html") ? [entryPath] : [];
+  });
+}
+
+const files = ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", ...htmlFiles("articles"), ...htmlFiles("areas"), ...htmlFiles("privacy"), ...htmlFiles("routes")];
 const missing = [];
 const resourcePattern = /(?:href|src)=["']([^"'#]+)["']/g;
 
@@ -10,8 +17,9 @@ for (const file of files) {
   for (const match of source.matchAll(resourcePattern)) {
     const target = match[1].split("?")[0];
     if (!target || target.includes("${") || /^(https?:|mailto:|data:)/.test(target)) continue;
-    const resolved = target === "./" || target === "../" ? path.resolve(path.dirname(file), target, "index.html") : path.resolve(path.dirname(file), target);
-    if (!fs.existsSync(resolved)) missing.push(`${file} -> ${target}`);
+    const resolved = path.resolve(path.dirname(file), target);
+    const checkedPath = fs.existsSync(resolved) && fs.statSync(resolved).isDirectory() ? path.join(resolved, "index.html") : resolved;
+    if (!fs.existsSync(checkedPath)) missing.push(`${file} -> ${target}`);
   }
 }
 
