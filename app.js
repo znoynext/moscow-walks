@@ -27,11 +27,9 @@ const WALK_DURATION_LABELS = {
   "8": { ru: "2 часа · около 8 км", en: "2 hours · about 8 km" },
   "12": { ru: "3 часа · около 12 км", en: "3 hours · about 12 km" },
 };
-
 const analytics = window.analytics && typeof window.analytics.track === "function"
   ? window.analytics
   : { track() {} };
-
 function readStorage(key) {
   try {
     return window.localStorage.getItem(key);
@@ -39,7 +37,6 @@ function readStorage(key) {
     return null;
   }
 }
-
 function writeStorage(key, value) {
   try {
     window.localStorage.setItem(key, value);
@@ -47,18 +44,13 @@ function writeStorage(key, value) {
     // Private browsing and locked-down WebViews may disable storage.
   }
 }
-
 const translations = {
   ru: {
     heroTitle: "Пешеходные маршруты по Москве",
     heroNote: "Выберите старт, длину и настроение — соберём маршрут для прогулки по Москве.",
-    freeBadge: "Бесплатно",
-    noRegistration: "Без регистрации",
-    secondsBadge: "Маршрут за несколько секунд",
     articlesLink: "Что посмотреть",
     start: "Откуда начать?",
     useLocation: "Начать от меня",
-    locationHint: "Координаты используются только для создания маршрута.",
     stopLocation: "Остановить геолокацию",
     locationOn: "Местоположение обновляется",
     locationDenied: "Не удалось получить местоположение",
@@ -66,13 +58,9 @@ const translations = {
     distance: "Сколько есть времени?",
     mood: "Как хочется провести прогулку?",
     themeClassic: "Главные места",
-    themeClassicNote: "Известные достопримечательности и атмосферные улицы",
     themeGreen: "Парки и зелень",
-    themeGreenNote: "Больше скверов, парков и спокойных участков",
     themeArchitecture: "Архитектура и особняки",
-    themeArchitectureNote: "Исторические здания, переулки и интересные фасады",
     themeWater: "Набережные и виды",
-    themeWaterNote: "Маршрут ближе к воде и открытым панорамам",
     optionalPoint: "Есть место, которое обязательно нужно включить?",
     anchor: "Что обязательно увидеть",
     addAnotherPlace: "+ Добавить ещё место",
@@ -115,17 +103,14 @@ const translations = {
     lightTheme: "Переключить светлую тему",
     darkTheme: "Переключить тёмную тему",
     toRoute: "К маршруту",
+    menu: "Меню", more: "Ещё", collapsePanel: "Свернуть", expandPanel: "Развернуть", layersTitle: "Что показать",
   },
   en: {
     heroTitle: "Walking routes in Moscow",
     heroNote: "Choose a start, distance and mood — we will build a route for your walk in Moscow.",
-    freeBadge: "Free",
-    noRegistration: "No sign-up",
-    secondsBadge: "A walk in seconds",
     articlesLink: "Things to see",
     start: "Where do you want to start?",
     useLocation: "Start from me",
-    locationHint: "Coordinates are used only to create this walk.",
     stopLocation: "Stop location",
     locationOn: "Location is updating",
     locationDenied: "Could not get your location",
@@ -133,13 +118,9 @@ const translations = {
     distance: "How much time do you have?",
     mood: "How would you like to spend the walk?",
     themeClassic: "Key sights",
-    themeClassicNote: "Famous landmarks and atmospheric streets",
     themeGreen: "Parks and greenery",
-    themeGreenNote: "More parks, squares and quieter stretches",
     themeArchitecture: "Architecture and mansions",
-    themeArchitectureNote: "Historic buildings, lanes and facades",
     themeWater: "Embankments and views",
-    themeWaterNote: "A walk closer to water and open views",
     optionalPoint: "Is there a place you must include?",
     anchor: "Must-see place",
     addAnotherPlace: "+ Add another place",
@@ -182,9 +163,9 @@ const translations = {
     lightTheme: "Switch to light theme",
     darkTheme: "Switch to dark theme",
     toRoute: "To route",
+    menu: "Menu", more: "More", collapsePanel: "Collapse", expandPanel: "Expand", layersTitle: "Show on map",
   },
 };
-
 const areaNames = {
   center: "Historic centre",
   boulevards: "Boulevard Ring",
@@ -197,7 +178,6 @@ const areaNames = {
   kolomenskoye: "Kolomenskoye",
   tsaritsyno: "Tsaritsyno",
 };
-
 const englishPlaceNames = {
   "м. Охотный Ряд": "Okhotny Ryad Metro",
   "м. Кропоткинская": "Kropotkinskaya Metro",
@@ -230,14 +210,11 @@ const englishPlaceNames = {
   "Нескучный сад": "Neskuchny Garden", "Аптекарский огород": "Aptekarsky Ogorod", "Измайловский парк": "Izmaylovo Park",
   "Усадьба Кусково": "Kuskovo Estate", "Москва-Сити": "Moscow City", "Набережная Тараса Шевченко": "Taras Shevchenko Embankment",
 };
-
 let currentLanguage = readStorage(LANGUAGE_KEY) === "en" ? "en" : "ru";
 let currentTheme = readStorage(THEME_KEY) === "light" ? "light" : "dark";
-
 function t(key) {
   return translations[currentLanguage][key] || translations.ru[key] || key;
 }
-
 const starts = [
   { id: "metro-okhotny", name: "м. Охотный Ряд", lat: 55.7577, lon: 37.6156, area: "center" },
   { id: "metro-kropotkinskaya", name: "м. Кропоткинская", lat: 55.7453, lon: 37.6037, area: "arbat" },
@@ -249,7 +226,6 @@ const starts = [
   { id: "metro-smolenskaya", name: "м. Смоленская", lat: 55.7473, lon: 37.5822, area: "arbat" },
   { id: "metro-chistye", name: "м. Чистые пруды", lat: 55.7648, lon: 37.6387, area: "boulevards" },
 ];
-
 const routespace = [
   { id: "center", name: "Исторический центр", center: [55.7558, 37.6202], themes: ["classic", "architecture"], mood: "плотный центр, площади и пешеходные улицы" },
   { id: "boulevards", name: "Бульварное кольцо", center: [55.7622, 37.6156], themes: ["classic", "green", "architecture"], mood: "тенистые бульвары и спокойные переходы" },
@@ -262,7 +238,6 @@ const routespace = [
   { id: "kolomenskoye", name: "Коломенское", center: [55.6712, 37.6697], themes: ["green", "architecture", "view"], mood: "усадьба, сады и виды на реку" },
   { id: "tsaritsyno", name: "Царицыно", center: [55.6197, 37.6827], themes: ["green", "architecture", "water"], mood: "дворцы, пруды и большая прогулка" },
 ];
-
 const pois = [
   point("red-square", "Красная площадь", 55.7539, 37.6208, "center", ["classic", "architecture"], 99, "Главная площадь Москвы, сильный якорь для коротких и средних прогулок."),
   point("alexander-garden", "Александровский сад", 55.7521, 37.6137, "center", ["classic", "green"], 92, "Зелёный проход у Кремля, удобен как спокойная пауза в центре."),
@@ -324,7 +299,6 @@ const pois = [
   point("kuskovo", "Усадьба Кусково", 55.7353, 37.8131, "vdnh", ["green", "architecture", "water"], 88, "Усадьба, дворец и регулярный парк для длинной прогулки."),
   point("moscow-city", "Москва-Сити", 55.7481, 37.5395, "river-west", ["architecture", "water", "view"], 86, "Небоскрёбы и панорама современной Москвы у реки."),
 ];
-
 let map;
 let markersLayer;
 let routeLayer;
@@ -335,14 +309,12 @@ let currentWalkingLine = [];
 let currentSummary = { distanceKm: 0, durationMin: 0, calories: 0 };
 let latestRun = 0;
 let variantSeed = 0;
-
 const svgBounds = {
   minLat: 55.69,
   maxLat: 55.85,
   minLon: 37.52,
   maxLon: 37.66,
 };
-
 const elements = {
   form: document.querySelector("#routeForm"),
   start: document.querySelector("#startSelect"),
@@ -383,7 +355,6 @@ const elements = {
   ratingButtons: document.querySelectorAll("#ratingButtons [data-rating]"),
   ratingStatus: document.querySelector("#ratingStatus"),
 };
-
 let userPosition = null;
 let userLocationMarker = null;
 let pickedStart = null;
@@ -395,11 +366,9 @@ let isNavigationMode = false;
 let lastNavigationPosition = null;
 let orientationEventName = null;
 let navigationProgressIndex = 0;
-
 function point(id, name, lat, lon, area, themes, score, note) {
   return { id, name, lat, lon, area, themes, score, note };
 }
-
 function init() {
   if (!elements.form || !elements.start || !elements.distance) return;
   fillSelects();
@@ -409,6 +378,7 @@ function init() {
   restoreRouteState();
   applyTheme();
   applyLanguage();
+  initMapControls();
   renderHistory();
   initMap();
   elements.form.addEventListener("change", (event) => {
@@ -442,12 +412,10 @@ function init() {
   analytics.track("planner_view");
   window.addEventListener("pagehide", () => stopNavigation({ silent: true }), { once: true });
 }
-
 function markSettingsChanged() {
   if (elements.settingsStatus) elements.settingsStatus.textContent = t("settingsChanged");
   elements.buildButton?.classList.add("is-ready");
 }
-
 function fillSelects() {
   const selectedStart = elements.start.value;
   const selectedAnchors = [...document.querySelectorAll(".anchor-select")].map((select) => select.value);
@@ -467,27 +435,23 @@ function fillSelects() {
   syncAnchorOptions();
   updateAnchorControls();
 }
-
 function targetDistanceKm() {
   if (elements.distance.value !== "custom") return Number(elements.distance.value);
   const value = Number(elements.customDistance?.value);
   return Number.isFinite(value) && value >= 1 && value <= 25 ? value : 4;
 }
-
 function syncCustomDistance() {
   if (!elements.customDistance) return;
   const isCustom = elements.distance.value === "custom";
   elements.customDistance.hidden = !isCustom;
   elements.customDistance.disabled = !isCustom;
 }
-
 function getSelectedAnchorIds() {
   return [...document.querySelectorAll(".anchor-select")]
     .map((select) => select.value)
     .filter(Boolean)
     .filter((value, index, values) => values.indexOf(value) === index);
 }
-
 function syncAnchorOptions() {
   const selects = [...document.querySelectorAll(".anchor-select")];
   const selected = selects.map((select) => select.value).filter(Boolean);
@@ -497,7 +461,6 @@ function syncAnchorOptions() {
     });
   });
 }
-
 function updateAnchorControls() {
   const rows = document.querySelectorAll(".anchor-row");
   const hasSelection = getSelectedAnchorIds().length > 0;
@@ -508,7 +471,6 @@ function updateAnchorControls() {
     if (index > 0 && label) label.textContent = `${currentLanguage === "en" ? "Place" : "Место"} ${index + 1}`;
   });
 }
-
 function addAnchorField() {
   const rows = document.querySelectorAll(".anchor-row");
   if (rows.length >= 4) return;
@@ -518,14 +480,12 @@ function addAnchorField() {
   elements.anchorFields.append(row);
   fillSelects();
 }
-
 function fillHints() {
   if (!elements.placeHints) return;
   elements.placeHints.innerHTML = [...starts, ...pois]
     .map((place) => `<option value="${place.name}"></option>`)
     .join("");
 }
-
 function applyLanguage() {
   document.documentElement.lang = currentLanguage;
   document.title = currentLanguage === "en" ? "Walking routes in Moscow | Пешком.Москва" : "Где погулять в Москве — пешеходные маршруты | Пешком.Москва";
@@ -562,32 +522,27 @@ function applyLanguage() {
     elements.routeReason.textContent = explainRoute(currentRoute, routeArea(currentRoute), { source: currentWalkingLine.length ? "osrm" : "fallback" });
   }
 }
-
 function toggleLanguage() {
   currentLanguage = currentLanguage === "ru" ? "en" : "ru";
   writeStorage(LANGUAGE_KEY, currentLanguage);
   applyLanguage();
   if (currentRoute.length) window.history.replaceState({}, "", buildShareUrl());
 }
-
 function applyTheme() {
   document.documentElement.dataset.theme = currentTheme;
   elements.themeToggle.textContent = currentTheme === "dark" ? "☼" : "☾";
   document.querySelector('meta[name="theme-color"]')?.setAttribute("content", currentTheme === "dark" ? "#0f1115" : "#f5f7f8");
 }
-
 function toggleTheme() {
   currentTheme = currentTheme === "dark" ? "light" : "dark";
   writeStorage(THEME_KEY, currentTheme);
   applyTheme();
   if (currentRoute.length) window.history.replaceState({}, "", buildShareUrl());
 }
-
 function initMap() {
   if (!window.L) {
     return;
   }
-
   map = L.map("map", {
     zoomControl: false,
     scrollWheelZoom: true,
@@ -596,13 +551,10 @@ function initMap() {
     minZoom: MAP_MIN_ZOOM,
     maxZoom: 19,
   }).setView(MAP_VIEW, MAP_INITIAL_ZOOM);
-
-  L.control.zoom({ position: "bottomright" }).addTo(map);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
-
   markersLayer = L.layerGroup().addTo(map);
   routeLayer = L.layerGroup().addTo(map);
   progressLayer = L.layerGroup().addTo(map);
@@ -614,7 +566,6 @@ function initMap() {
   });
   elements.fallbackMap.classList.add("hidden");
 }
-
 function toggleMapPicking() {
   if (!map || !window.L) {
     elements.locationStatus.textContent = currentLanguage === "en" ? "The map is still loading. Try again in a moment." : "Карта ещё загружается. Попробуйте через секунду.";
@@ -628,7 +579,6 @@ function toggleMapPicking() {
     : (currentLanguage === "en" ? "Pick a point on the map" : "Выбрать точку на карте");
   elements.locationStatus.textContent = isPickingStart ? (currentLanguage === "en" ? "Tap the map to set your start." : "Нажмите на карту, чтобы задать старт.") : "";
 }
-
 function setPickedStart(latlng) {
   pickedStart = point("map-start", currentLanguage === "en" ? "Selected point" : "Выбранная точка", latlng.lat, latlng.lng, "custom", ["classic"], 100, "");
   if (elements.startSearch) elements.startSearch.value = "";
@@ -642,18 +592,15 @@ function setPickedStart(latlng) {
   elements.locationStatus.textContent = currentLanguage === "en" ? "Start set from the map." : "Старт задан точкой на карте.";
   markSettingsChanged();
 }
-
 function toggleLocationTracking() {
   requestUserLocation();
 }
-
 function requestUserLocation() {
   if (!navigator.geolocation) {
     elements.locationStatus.textContent = t("locationDenied");
     analytics.track("location_error", { reason: "unsupported" });
     return;
   }
-
   elements.locateButton.disabled = true;
   analytics.track("location_requested");
   navigator.geolocation.getCurrentPosition(
@@ -674,7 +621,6 @@ function requestUserLocation() {
     { enableHighAccuracy: true, maximumAge: 10000, timeout: 12000 },
   );
 }
-
 function updateUserPosition(position) {
   const latitude = position.coords.latitude;
   const longitude = position.coords.longitude;
@@ -686,7 +632,6 @@ function updateUserPosition(position) {
     analytics.track("location_error", { reason: "outside_map_bounds" });
     return false;
   }
-
   userPosition = { id: "user-location", name: t("yourLocation"), lat: latitude, lon: longitude, area: "custom", themes: ["classic", "view"], score: 100, note: "" };
   if (map && window.L) {
     if (!userLocationMarker) {
@@ -700,7 +645,6 @@ function updateUserPosition(position) {
   elements.locationStatus.textContent = t("locationOn");
   return true;
 }
-
 function toggleNavigationMode() {
   if (isNavigationMode) {
     stopNavigation();
@@ -708,7 +652,6 @@ function toggleNavigationMode() {
   }
   startNavigation();
 }
-
 function startNavigation() {
   if (!currentRoute.length || !currentWalkingLine.length) {
     elements.routeStatus.textContent = currentLanguage === "en" ? "Build a route first." : "Сначала постройте маршрут.";
@@ -718,7 +661,6 @@ function startNavigation() {
     elements.routeStatus.textContent = t("locationDenied");
     return;
   }
-
   isNavigationMode = true;
   lastNavigationPosition = null;
   navigationProgressIndex = 0;
@@ -739,7 +681,6 @@ function startNavigation() {
   elements.locationStatus.textContent = t("navigationOn");
   updateNavigationPosition();
 }
-
 function stopNavigation({ silent = false } = {}) {
   if (navigationWatchId !== null && navigator.geolocation) navigator.geolocation.clearWatch(navigationWatchId);
   navigationWatchId = null;
@@ -760,7 +701,6 @@ function stopNavigation({ silent = false } = {}) {
   elements.navigationModeButton.textContent = t("startNavigation");
   if (!silent) elements.locationStatus.textContent = "";
 }
-
 function enableDeviceOrientation() {
   const orientation = window.DeviceOrientationEvent;
   const addListener = () => {
@@ -775,14 +715,12 @@ function enableDeviceOrientation() {
   }
   addListener();
 }
-
 function handleDeviceOrientation(event) {
   const compassHeading = Number.isFinite(event.webkitCompassHeading)
     ? event.webkitCompassHeading
     : Number.isFinite(event.alpha) ? (360 - event.alpha) % 360 : null;
   if (Number.isFinite(compassHeading)) updateNavigationPosition(compassHeading);
 }
-
 function updateNavigationPosition(heading) {
   if (!isNavigationMode || !userPosition || !window.L || !map) return;
   const current = [userPosition.lat, userPosition.lon];
@@ -791,7 +729,6 @@ function updateNavigationPosition(heading) {
     ? heading
     : previous ? bearingBetween(previous, current) : 0;
   lastNavigationPosition = current;
-
   const icon = L.divIcon({
     className: "navigation-arrow-icon",
     html: `<span class="navigation-arrow" style="transform:rotate(${calculatedHeading}deg)">▲</span>`,
@@ -806,7 +743,6 @@ function updateNavigationPosition(heading) {
   renderNavigationProgress();
   map.panTo(current, { animate: true, duration: 0.35 });
 }
-
 function renderNavigationProgress() {
   if (!progressLayer || !currentWalkingLine.length || !userPosition) return;
   navigationProgressIndex = Math.max(navigationProgressIndex, nearestRoutePointIndex(userPosition, currentWalkingLine));
@@ -820,7 +756,6 @@ function renderNavigationProgress() {
     lineJoin: "round",
   }).addTo(progressLayer);
 }
-
 function nearestRoutePointIndex(position, line) {
   return line.reduce((nearestIndex, pointValue, index) => {
     const nearestDistance = distanceKm(position, { lat: line[nearestIndex][0], lon: line[nearestIndex][1] });
@@ -828,7 +763,6 @@ function nearestRoutePointIndex(position, line) {
     return distance < nearestDistance ? index : nearestIndex;
   }, 0);
 }
-
 function bearingBetween(from, to) {
   const startLat = toRad(from[0]);
   const endLat = toRad(to[0]);
@@ -837,23 +771,19 @@ function bearingBetween(from, to) {
   const x = Math.cos(startLat) * Math.sin(endLat) - Math.sin(startLat) * Math.cos(endLat) * Math.cos(deltaLon);
   return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
 }
-
 function handleLocationError() {
   elements.locationStatus.textContent = t("locationDenied");
 }
-
 function handleSubmit(event) {
   event.preventDefault();
   generateAndRender();
 }
-
 async function generateAndRender({ alternative = false } = {}) {
   if (isNavigationMode) stopNavigation({ silent: true });
   const run = ++latestRun;
   variantSeed += 1;
   setRouteLoading(true);
   analytics.track(alternative ? "route_alternative_requested" : "route_build_started");
-
   try {
     const selectedStart = pickedStart || userPosition || starts.find((item) => item.id === elements.start.value) || starts[0];
     const selectedAnchors = getSelectedAnchorIds().map((id) => pois.find((item) => item.id === id)).filter(Boolean);
@@ -867,12 +797,10 @@ async function generateAndRender({ alternative = false } = {}) {
     }
     const start = pickedStart || userPosition || searchedStart || selectedStart;
     const anchor = (await resolveSearchPoint(elements.anchorSearch?.value, "Место из поиска", "search")) || selectedAnchor;
-
     if (run !== latestRun) return;
     const candidate = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
     const walking = await buildWalkingRoute(candidate);
     currentRoute = candidate;
-
     if (run !== latestRun) return;
     if (!walking) {
       currentWalkingLine = [];
@@ -900,19 +828,15 @@ async function generateAndRender({ alternative = false } = {}) {
     if (run === latestRun) setRouteLoading(false);
   }
 }
-
 function scrollToResult() {
   const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   elements.itinerary?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
-
 async function resolveSearchPoint(query, note, area) {
   const text = (query || "").trim();
   if (text.length < 3) return null;
-
   const local = [...starts, ...pois].find((place) => place.name.toLowerCase() === text.toLowerCase());
   if (local) return point(local.id, local.name, local.lat, local.lon, local.area, local.themes || [], local.score || 76, local.note || note);
-
   try {
     const params = new URLSearchParams({
       q: `${text}, Москва`,
@@ -944,14 +868,12 @@ async function resolveSearchPoint(query, note, area) {
     return null;
   }
 }
-
 function buildRoute({ start, targetKm, anchor, anchors = [], theme, variantSeed }) {
   const area = chooseArea(start, anchor, theme);
   const requiredPlaces = anchors.length ? anchors : anchor ? [anchor] : [];
   const candidatePool = rankCandidates({ start, anchor, anchors: requiredPlaces, theme, area, targetKm, variantSeed });
   const desiredStops = targetKm <= 3 ? 4 : targetKm <= 5 ? 6 : targetKm <= 8 ? 8 : 10;
   const route = [asRouteStop(start, "Старт: удобно начать рядом с метро или выбранной точкой.")];
-
   if (requiredPlaces.length) {
     requiredPlaces.forEach((place) => {
       if (!route.some((stop) => stop.id === place.id)) route.push(asRouteStop(place, place.note || "Интересное место, которое вы выбрали для прогулки."));
@@ -959,7 +881,6 @@ function buildRoute({ start, targetKm, anchor, anchors = [], theme, variantSeed 
   } else {
     route.push(candidatePool[0]);
   }
-
   let attempts = 0;
   while (route.length < desiredStops && attempts < 80) {
     attempts += 1;
@@ -969,10 +890,8 @@ function buildRoute({ start, targetKm, anchor, anchors = [], theme, variantSeed 
     if (projected > targetKm * 1.25 && route.length >= desiredStops - 2) break;
     route.push(next);
   }
-
   return orderRoute(addUsefulFinish(route, targetKm), start);
 }
-
 function chooseArea(start, anchor, theme) {
   const pointForArea = anchor || start;
   return routespace
@@ -983,7 +902,6 @@ function chooseArea(start, anchor, theme) {
     })
     .sort((a, b) => b.value - a.value)[0].area;
 }
-
 function rankCandidates({ start, anchor, anchors = [], theme, area, targetKm, variantSeed }) {
   const origin = anchor || start;
   return pois
@@ -999,7 +917,6 @@ function rankCandidates({ start, anchor, anchors = [], theme, area, targetKm, va
     .sort((a, b) => b.value - a.value)
     .map((poi) => asRouteStop(poi, poi.note));
 }
-
 function chooseNextStop({ route, candidates, start, area, theme, targetKm, variantSeed }) {
   const last = route[route.length - 1];
   const currentKm = roughRouteDistance(route);
@@ -1028,7 +945,6 @@ function chooseNextStop({ route, candidates, start, area, theme, targetKm, varia
     })
     .sort((a, b) => b.value - a.value)[0]?.candidate;
 }
-
 function addUsefulFinish(route, targetKm) {
   const last = route[route.length - 1];
   const finish = starts
@@ -1036,18 +952,15 @@ function addUsefulFinish(route, targetKm) {
     .filter(({ station }) => !route.some((stop) => stop.id === station.id))
     .sort((a, b) => a.km - b.km)[0];
   if (!finish) return route;
-
   const withFinish = [...route, asRouteStop(finish.station, "Финиш рядом с метро, чтобы прогулку было легко завершить.")];
   if (roughRouteDistance(withFinish) <= targetKm * 1.28 || finish.km < 0.75) return withFinish;
   return route;
 }
-
 function orderRoute(route, start) {
   const fixedStart = route[0];
   const rest = route.slice(1);
   const ordered = [fixedStart];
   let current = start;
-
   while (rest.length) {
     const nextIndex = rest
       .map((stop, index) => ({ index, km: distanceKm(current, stop), score: stop.score }))
@@ -1058,7 +971,6 @@ function orderRoute(route, start) {
   }
   return ordered;
 }
-
 async function requestWalkingRoute(stops) {
   const coords = stops.map((stop) => `${stop.lon},${stop.lat}`).join(";");
   const params = new URLSearchParams({
@@ -1067,7 +979,6 @@ async function requestWalkingRoute(stops) {
     steps: "false",
     continue_straight: "false",
   });
-
   for (const baseUrl of OSRM_FOOT_URLS.slice(0, 1)) {
     try {
       const response = await requestPublicService("osrm", `${baseUrl}${coords}?${params.toString()}`);
@@ -1087,15 +998,12 @@ async function requestWalkingRoute(stops) {
   }
   return null;
 }
-
 async function buildWalkingRoute(route) {
   if (route.length < 2) return null;
-
   const fullRoute = await requestWalkingRoute(route);
   if (!fullRoute) throw serviceState.osrm.lastError || Object.assign(new Error("OSRM route unavailable"), { service: "osrm" });
   return { source: "pedestrian", ...fullRoute };
 }
-
 function renderRoute(route, walking) {
   if (!route.length) return;
   const area = routeArea(route);
@@ -1121,21 +1029,18 @@ function renderRoute(route, walking) {
   void elements.itinerary.offsetWidth;
   elements.itinerary.classList.add("updated");
 }
-
 function readHistory() {
   try {
     const value = JSON.parse(readStorage(HISTORY_KEY) || "[]");
     return Array.isArray(value) ? value.slice(0, 8) : [];
   } catch (error) { return []; }
 }
-
 function saveHistoryEntry(route, walking) {
   const entry = { id: `${Date.now()}-${route[0]?.id || "walk"}`, title: buildRouteTitle(route), distanceKm: Number(walking.distanceKm.toFixed(1)), durationMin: walking.durationMin, start: elements.start.value, customDistance: elements.customDistance?.value || "", distance: elements.distance.value, theme: new FormData(elements.form).get("theme") || "classic", anchor: getSelectedAnchorIds()[0] || "", createdAt: new Date().toISOString() };
   const history = [entry, ...readHistory().filter((item) => item.title !== entry.title)].slice(0, 8);
   writeStorage(HISTORY_KEY, JSON.stringify(history));
   renderHistory();
 }
-
 function renderHistory() {
   if (!elements.historyList) return;
   const history = readHistory();
@@ -1143,7 +1048,6 @@ function renderHistory() {
   elements.historyList.innerHTML = history.map((item) => `<button class="history-item" type="button" data-history-id="${escapeHtml(item.id)}"><span>${escapeHtml(item.title)}</span><small>${formatDistance(item.distanceKm)} · ${formatDuration(item.durationMin)}</small></button>`).join("");
   elements.historyList.querySelectorAll("[data-history-id]").forEach((button) => button.addEventListener("click", () => loadHistoryEntry(history.find((item) => item.id === button.dataset.historyId))));
 }
-
 function loadHistoryEntry(entry) {
   if (!entry) return;
   if (starts.some((item) => item.id === entry.start)) elements.start.value = entry.start;
@@ -1155,9 +1059,7 @@ function loadHistoryEntry(entry) {
   syncCustomDistance();
   generateAndRender();
 }
-
 function clearHistory() { writeStorage(HISTORY_KEY, "[]"); renderHistory(); }
-
 function rateCurrentRoute(rating) {
   if (!currentRoute.length || rating < 1 || rating > 5) return;
   const ratings = (() => { try { return JSON.parse(readStorage(RATING_KEY) || "{}"); } catch (error) { return {}; } })();
@@ -1168,7 +1070,6 @@ function rateCurrentRoute(rating) {
   if (elements.ratingStatus) elements.ratingStatus.textContent = currentLanguage === "en" ? "Thanks — your rating is saved on this device." : "Спасибо — оценка сохранена на этом устройстве.";
   analytics.track("route_rated", { rating });
 }
-
 function renderUnroutableRoute(route) {
   const area = routeArea(route);
   elements.totalDistance.textContent = "—";
@@ -1184,32 +1085,28 @@ function renderUnroutableRoute(route) {
   renderLeafletStopsOnly(route);
   renderFallbackStops(route);
 }
-
 function renderLeafletRoute(route, line) {
   if (!map || !window.L) return;
   markersLayer.clearLayers();
   routeLayer.clearLayers();
   progressLayer?.clearLayers();
-
+  const polylineUnderlay = L.polyline(line, { color: "#fff", weight: 10, opacity: 0.86, lineCap: "round", lineJoin: "round" }).addTo(routeLayer);
   const polyline = L.polyline(line, {
-    color: "#ce4a3b",
-    weight: 6,
-    opacity: 0.92,
+    color: "#c84f3d",
+    weight: 5,
+    opacity: 1,
     lineCap: "round",
     lineJoin: "round",
   }).addTo(routeLayer);
-
   route.forEach((stop, index) => {
     L.marker([stop.lat, stop.lon], {
       icon: createMarkerIcon(index + 1, index === 0),
     })
-      .bindPopup(`<strong>${index + 1}. ${articleLinkForStop(stop, true)}</strong><br>${escapeHtml(localizedNote(stop, index))}`)
+      .bindPopup(`<div class="route-popup"><span class="route-popup-number">${index + 1}</span><span class="route-popup-category">${escapeHtml(stop.themes?.[0] ? themeLabel(stop.themes[0]) : t("route"))}</span><strong>${articleLinkForStop(stop, true)}</strong><p>${escapeHtml(localizedNote(stop, index))}</p></div>`, { maxWidth: 260 })
       .addTo(markersLayer);
   });
-
   map.fitBounds(polyline.getBounds(), { padding: [36, 36], maxZoom: 16 });
 }
-
 function renderLeafletStopsOnly(route) {
   if (!map || !window.L) return;
   markersLayer.clearLayers();
@@ -1221,34 +1118,31 @@ function renderLeafletStopsOnly(route) {
   });
   map.fitBounds(L.latLngBounds(route.map((stop) => [stop.lat, stop.lon])), { padding: [36, 36], maxZoom: 15 });
 }
-
 function createMarkerIcon(number, isStart) {
-  const color = isStart ? "#b9903c" : "#ce4a3b";
+  const color = isStart ? "#c84f3d" : "#fff";
+  const className = isStart ? "walk-marker walk-marker--start" : "walk-marker walk-marker--stop";
+  const size = isStart ? 34 : 29;
   return L.divIcon({
-    className: "walk-marker",
-    html: `<span style="background:${color}">${number}</span>`,
-    iconSize: [30, 30],
-    iconAnchor: [15, 15],
+    className,
+    html: `<span style="--marker-color:${color}">${number}</span>`,
+    iconSize: [size, size],
+    iconAnchor: [size / 2, size / 2],
     popupAnchor: [0, -14],
   });
 }
-
 function buildRouteTitle(route) {
   const primary = routeArea(route);
   if (primary) return `${localizedArea(primary)}: ${localizedPlaceName(route[0].name)} → ${localizedPlaceName(route[route.length - 1].name)}`;
   return `${localizedPlaceName(route[0].name)} → ${localizedPlaceName(route[route.length - 1].name)}`;
 }
-
 function localizedArea(area) {
   if (!area) return currentLanguage === "en" ? "City walk" : "Городская прогулка";
   return currentLanguage === "en" ? areaNames[area.id] || area.name : area.name;
 }
-
 function localizedPlaceName(name) {
   if (currentLanguage === "en") return englishPlaceNames[name] || String(name).replace(/^м\.\s*/, "Metro ");
   return name;
 }
-
 function localizedNote(stop, index) {
   if (currentLanguage === "ru") return stop.note || t("stopNote");
   if (index === 0) return t("startNote");
@@ -1263,7 +1157,6 @@ function localizedNote(stop, index) {
   };
   return notes[theme] || "A carefully chosen stop for this walk.";
 }
-
 const articleSlugByPoint = {
   "alexander-garden": "red-square",
   "st-basil": "st-basil",
@@ -1286,7 +1179,6 @@ const articleSlugByPoint = {
   kuskovo: "kuskovo",
   "moscow-city": "moscow-city",
 };
-
 function articleLinkForStop(stop, compact = false) {
   const label = escapeHtml(localizedPlaceName(stop.name));
   const slug = articleSlugByPoint[stop.id];
@@ -1294,7 +1186,6 @@ function articleLinkForStop(stop, compact = false) {
   const className = compact ? "map-popup-link" : "stop-link";
   return `<a class="${className}" href="./articles.html#article-${slug}">${label}</a>`;
 }
-
 function routeArea(route) {
   const counts = route.reduce((acc, stop) => {
     acc[stop.area] = (acc[stop.area] || 0) + 1;
@@ -1303,7 +1194,6 @@ function routeArea(route) {
   const areaId = Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0];
   return routespace.find((area) => area.id === areaId);
 }
-
 function renderStops(route) {
   elements.stopsList.innerHTML = route
     .map((stop, index) => {
@@ -1323,14 +1213,12 @@ function renderStops(route) {
     })
     .join("");
 }
-
 function renderFallbackMap(line, route) {
   const points = line.map(([lat, lon]) => projectPoint({ lat, lon }));
   const stopPoints = route.map(projectPoint);
   const polyline = points.map((mapPoint) => `${mapPoint.x},${mapPoint.y}`).join(" ");
   const river = "M40,430 C190,360 260,490 390,420 C520,350 570,470 710,400 C810,350 880,380 960,330";
   const gardenRing = "M235,140 C420,40 705,115 780,300 C850,470 650,640 420,610 C190,580 105,410 145,260 C160,210 190,170 235,140";
-
   elements.fallbackMap.innerHTML = `
     <rect width="1000" height="720" fill="#f3f5f0"></rect>
     <path d="${river}" fill="none" stroke="#8bb9cd" stroke-width="38" stroke-linecap="round" opacity="0.72"></path>
@@ -1353,7 +1241,6 @@ function renderFallbackMap(line, route) {
       .join("")}
   `;
 }
-
 function renderFallbackStops(route) {
   if (!elements.fallbackMap || (map && window.L)) return;
   const stopPoints = route.map((stop) => projectPoint(stop));
@@ -1363,7 +1250,6 @@ function renderFallbackStops(route) {
     ${stopPoints.map((point, index) => `<circle cx="${point.x}" cy="${point.y}" r="17" fill="${index === 0 ? "#b9903c" : "#ce4a3b"}"></circle><text x="${point.x}" y="${point.y + 5}" text-anchor="middle" fill="#fff" font-size="14" font-weight="800">${index + 1}</text>`).join("")}
   `;
 }
-
 function explainRoute(route, area, walking) {
   if (currentLanguage === "en") {
     const areaText = area ? `${localizedArea(area)} · ` : "";
@@ -1372,7 +1258,6 @@ function explainRoute(route, area, walking) {
   const areaText = area ? `${area.name} · ` : "";
   return `${areaText}Спокойный маршрут через ${route.length} интересных мест — с удобным завершением рядом с метро.`;
 }
-
 function setRouteLoading(isLoading) {
   const primaryButton = elements.buildButton;
   elements.regenerateButton.disabled = isLoading;
@@ -1386,7 +1271,6 @@ function setRouteLoading(isLoading) {
   elements.routeSummary.classList.toggle("is-updating", isLoading);
   elements.routeStatus.textContent = isLoading ? t("routeLoading") : elements.routeStatus.textContent;
 }
-
 async function copyRoute() {
   const text = buildShareText();
   const url = buildShareUrl();
@@ -1399,7 +1283,6 @@ async function copyRoute() {
     showToast(t("shareFailed"));
     return;
   }
-
   if (navigator.share && window.matchMedia?.("(pointer: coarse)").matches) {
     try {
       await navigator.share({ title: elements.routeTitle.textContent || t("shareTitle"), text, url });
@@ -1413,10 +1296,8 @@ async function copyRoute() {
     elements.copyButton.textContent = t("share");
   }, 1400);
 }
-
 function copyText(text) {
   if (navigator.clipboard?.writeText) return navigator.clipboard.writeText(text);
-
   return new Promise((resolve, reject) => {
     const textarea = document.createElement("textarea");
     textarea.value = text;
@@ -1432,36 +1313,29 @@ function copyText(text) {
     }
   });
 }
-
 function openNavigation() {
   if (!currentRoute.length) return;
   const routeText = currentRoute.map((stop) => `${stop.lat},${stop.lon}`).join("~");
   window.open(`https://yandex.ru/maps/?rtext=${routeText}&rtt=pedestrian`, "_blank", "noopener");
 }
-
 function buildShareText() {
   const title = elements.routeTitle.textContent || t("shareTitle");
   const stops = currentRoute.map((stop, index) => `${index + 1}. ${localizedPlaceName(stop.name)}`).join("\n");
   return `${title}\n${formatDistance(currentSummary.distanceKm)} · ${formatDuration(currentSummary.durationMin)}\n\n${stops}\n\nПешком.Москва`;
 }
-
 function formatDistance(distance) {
   return `${distance.toFixed(1)} ${currentLanguage === "ru" ? "км" : "km"}`;
 }
-
 function formatDuration(minutes) {
   if (currentLanguage === "en") return `${minutes} min`;
   return `${minutes} мин`;
 }
-
 function formatCalories(calories) {
   return `${calories} ${currentLanguage === "ru" ? "ккал" : "kcal"}`;
 }
-
 function isRouteDistanceAcceptable(actualKm, targetKm) {
   return Number.isFinite(actualKm) && Number.isFinite(targetKm) && targetKm > 0 && Math.abs(actualKm - targetKm) / targetKm <= ROUTE_TOLERANCE;
 }
-
 function buildShareUrl() {
   const params = new URLSearchParams({
     start: elements.start.value,
@@ -1478,7 +1352,6 @@ function buildShareUrl() {
   if (elements.anchorSearch?.value.trim()) params.set("anchorSearch", elements.anchorSearch.value.trim());
   return `${window.location.origin}${window.location.pathname}?${params.toString()}`;
 }
-
 function persistRouteState() {
   const state = {
     start: elements.start.value,
@@ -1499,7 +1372,6 @@ function persistRouteState() {
     console.warn("Не удалось сохранить параметры маршрута", error);
   }
 }
-
 function restoreRouteState() {
   let state = {};
   try {
@@ -1510,7 +1382,6 @@ function restoreRouteState() {
   } catch (error) {
     console.warn("Не удалось восстановить параметры маршрута", error);
   }
-
   if (starts.some((item) => item.id === state.start)) elements.start.value = state.start;
   if (["3", "4", "6", "8", "12", "custom"].includes(state.distance)) elements.distance.value = state.distance;
   if (elements.customDistance && state.customDistance) elements.customDistance.value = state.customDistance;
@@ -1526,7 +1397,6 @@ function restoreRouteState() {
   if (state.lang === "en" || state.lang === "ru") currentLanguage = state.lang;
   if (state.mode === "light" || state.mode === "dark") currentTheme = state.mode;
 }
-
 function showToast(message) {
   if (!elements.toast) return;
   elements.toast.textContent = message;
@@ -1534,7 +1404,6 @@ function showToast(message) {
   window.clearTimeout(showToast.timer);
   showToast.timer = window.setTimeout(() => elements.toast.classList.remove("visible"), 2600);
 }
-
 async function requestPublicService(service, url, options = {}) {
   const state = serviceState[service];
   const cached = state.cache.get(url);
@@ -1576,7 +1445,6 @@ async function requestPublicService(service, url, options = {}) {
     if (generation === state.generation) { state.inFlight = null; state.controller = null; }
   }
 }
-
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -1585,7 +1453,6 @@ function escapeHtml(value) {
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
 }
-
 function asRouteStop(pointData, fallbackNote) {
   return {
     id: pointData.id,
@@ -1598,7 +1465,6 @@ function asRouteStop(pointData, fallbackNote) {
     note: pointData.note || fallbackNote,
   };
 }
-
 function sameCluster(a, b) {
   const clusters = [
     ["center", "boulevards", "patriki", "arbat", "zamoskvorechye"],
@@ -1607,20 +1473,17 @@ function sameCluster(a, b) {
   ];
   return clusters.some((cluster) => cluster.includes(a) && cluster.includes(b));
 }
-
 function idealLeg(targetKm) {
   if (targetKm <= 3) return 0.55;
   if (targetKm <= 5) return 0.8;
   if (targetKm <= 8) return 1.05;
   return 1.3;
 }
-
 function estimateCalories(distanceKm) {
   const averageWeightKg = 75;
   const kcalPerKgPerKm = 0.72;
   return Math.round(distanceKm * averageWeightKg * kcalPerKgPerKm);
 }
-
 function themeLabel(theme) {
   const labels = {
     classic: currentLanguage === "en" ? "history" : "история",
@@ -1631,7 +1494,6 @@ function themeLabel(theme) {
   };
   return labels[theme] || theme;
 }
-
 function seededNoise(text, seed) {
   let hash = seed * 131;
   for (let index = 0; index < text.length; index += 1) {
@@ -1639,20 +1501,17 @@ function seededNoise(text, seed) {
   }
   return hash / 9973 - 0.5;
 }
-
 function projectPoint(mapPoint) {
   const x = ((mapPoint.lon - svgBounds.minLon) / (svgBounds.maxLon - svgBounds.minLon)) * 880 + 60;
   const y = (1 - (mapPoint.lat - svgBounds.minLat) / (svgBounds.maxLat - svgBounds.minLat)) * 600 + 60;
   return { x: Math.round(x), y: Math.round(y) };
 }
-
 function roughRouteDistance(route) {
   return route.reduce((sum, mapPoint, index) => {
     if (index === 0) return 0;
     return sum + distanceKm(route[index - 1], mapPoint);
   }, 0) * 1.18;
 }
-
 function distanceKm(a, b) {
   const radius = 6371;
   const dLat = toRad(b.lat - a.lat);
@@ -1664,13 +1523,10 @@ function distanceKm(a, b) {
     Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
   return radius * 2 * Math.atan2(Math.sqrt(h), Math.sqrt(1 - h));
 }
-
 function toRad(value) {
   return (value * Math.PI) / 180;
 }
-
 init();
-
 window.MoscowWalksCore = {
   estimateCalories,
   buildRoute: (options) => buildRoute(options),
@@ -1681,7 +1537,6 @@ window.MoscowWalksCore = {
   isRouteDistanceAcceptable,
   validateCatalogueData,
 };
-
 function validateCatalogueData(catalogue = { starts, pois, routespace }) {
   const errors = [];
   const ids = new Set();

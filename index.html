@@ -42,57 +42,56 @@
           <div>
             <p class="eyebrow">Пешком.Москва</p>
             <h1 data-i18n="heroTitle">Пешеходные маршруты по Москве</h1>
-            <p class="brand-note" data-i18n="heroNote">Выберите старт, длину и настроение — соберём маршрут для прогулки по Москве.</p>
-            <ul class="hero-badges" aria-label="Преимущества сервиса">
-              <li data-i18n="freeBadge">Бесплатно</li>
-              <li data-i18n="noRegistration">Без регистрации</li>
-              <li data-i18n="secondsBadge">Маршрут за несколько секунд</li>
-            </ul>
-            <nav class="site-nav" aria-label="Навигация">
-              <a href="./articles/" data-i18n="articlesLink">Что посмотреть</a>
-              <a href="./routes/">Готовые прогулки</a>
-              <a href="./areas/">Районы и метро</a>
-            </nav>
+            <p class="brand-note" data-i18n="heroNote">Выберите старт, время и настроение — соберём маршрут для прогулки по Москве.</p>
           </div>
           <div class="utility-actions">
             <button id="languageToggle" class="utility-button" type="button" aria-label="Switch language">EN</button>
             <button id="themeToggle" class="utility-button" type="button" aria-label="Switch color theme">☼</button>
+            <button id="plannerToggle" class="utility-button planner-toggle" type="button" aria-expanded="true" aria-controls="routeForm" data-i18n="collapsePanel">Свернуть</button>
           </div>
         </header>
+
+        <details class="compact-nav">
+          <summary><span class="icon icon-menu" aria-hidden="true"></span><span data-i18n="menu">Меню</span></summary>
+          <nav class="site-nav" aria-label="Навигация">
+            <a href="./articles/" data-i18n="articlesLink">Что посмотреть</a>
+            <a href="./routes/">Готовые прогулки</a>
+            <a href="./areas/">Районы и метро</a>
+          </nav>
+        </details>
 
         <form id="routeForm" class="controls">
           <div class="field-pair">
             <label class="field">
               <span data-i18n="start">Откуда начать?</span>
               <select id="startSelect" name="start"></select>
-              <input id="startSearch" name="startSearch" type="search" list="placeHints" autocomplete="street-address" placeholder="Адрес или место в Москве" />
+              <div class="search-with-action"><input id="startSearch" name="startSearch" type="search" list="placeHints" autocomplete="street-address" placeholder="Адрес или место" /><button id="locateButton" class="field-action" type="button" aria-label="Определить моё местоположение"><span class="icon icon-locate" aria-hidden="true"></span></button></div>
               <button id="pickOnMapButton" class="location-button" type="button" aria-pressed="false">Выбрать точку на карте</button>
-              <button id="locateButton" class="location-button" type="button" data-i18n="useLocation">Начать от меня</button>
-              <small class="field-hint" data-i18n="locationHint">Координаты используются только для создания маршрута.</small>
               <span id="locationStatus" class="location-status" role="status" aria-live="polite"></span>
             </label>
 
             <label class="field">
               <span data-i18n="distance">Сколько есть времени?</span>
               <select id="distanceSelect" name="distance">
-                <option value="3">45 минут · около 3 км</option>
-                <option value="4" selected>1 час · около 4 км</option>
-                <option value="6">1,5 часа · около 6 км</option>
-                <option value="8">2 часа · около 8 км</option>
-                <option value="12">3 часа · около 12 км</option>
-                <option value="custom">Свой вариант</option>
+                <option value="3">45 мин</option>
+                <option value="4" selected>1 час</option>
+                <option value="6">1,5 часа</option>
+                <option value="8">2 часа</option>
+                <option value="12" hidden>3 часа</option>
+                <option value="custom" hidden>Свой вариант</option>
               </select>
               <input id="customDistance" name="customDistance" type="number" min="1" max="25" step="0.5" inputmode="decimal" placeholder="Длина в км" hidden disabled />
+              <details class="more-options"><summary data-i18n="more">Ещё</summary><div><button type="button" data-distance-option="12">3 часа</button><button type="button" data-distance-option="custom">Свой вариант</button></div></details>
             </label>
           </div>
 
           <fieldset class="field">
             <legend data-i18n="mood">Как хочется провести прогулку?</legend>
             <div class="segments" id="themeGroup">
-              <label><input type="radio" name="theme" value="classic" checked /><span data-i18n="themeClassic">Главные места</span><small data-i18n="themeClassicNote">Известные достопримечательности и атмосферные улицы</small></label>
-              <label><input type="radio" name="theme" value="green" /><span data-i18n="themeGreen">Парки и зелень</span><small data-i18n="themeGreenNote">Больше скверов, парков и спокойных участков</small></label>
-              <label><input type="radio" name="theme" value="architecture" /><span data-i18n="themeArchitecture">Архитектура и особняки</span><small data-i18n="themeArchitectureNote">Исторические здания, переулки и интересные фасады</small></label>
-              <label><input type="radio" name="theme" value="water" /><span data-i18n="themeWater">Набережные и виды</span><small data-i18n="themeWaterNote">Маршрут ближе к воде и открытым панорамам</small></label>
+              <label><input type="radio" name="theme" value="classic" checked /><span class="icon icon-landmark" aria-hidden="true"></span><span data-i18n="themeClassic">Главное</span></label>
+              <label><input type="radio" name="theme" value="green" /><span class="icon icon-trees" aria-hidden="true"></span><span data-i18n="themeGreen">Парки</span></label>
+              <label><input type="radio" name="theme" value="architecture" /><span class="icon icon-building" aria-hidden="true"></span><span data-i18n="themeArchitecture">Архитектура</span></label>
+              <label><input type="radio" name="theme" value="water" /><span class="icon icon-waves" aria-hidden="true"></span><span data-i18n="themeWater">Набережные</span></label>
             </div>
           </fieldset>
 
@@ -108,7 +107,7 @@
               <button id="addAnchorButton" class="add-anchor-button" type="button" data-i18n="addAnotherPlace">+ Добавить ещё место</button>
             </div>
           </details>
-          <p id="settingsStatus" class="form-note" role="status" aria-live="polite"></p>
+          <p id="settingsStatus" class="form-note" role="status" aria-live="polite">Бесплатно · без регистрации</p>
           <button id="buildButton" class="primary-button" type="submit" data-i18n="buildRoute">Собрать прогулку</button>
 
         </form>
@@ -137,11 +136,11 @@
       <section class="workspace" id="routeResult" aria-label="Результат маршрута">
         <div class="map-panel">
           <div id="map" class="map" role="application" aria-label="Интерактивная карта пешего маршрута"></div>
-          <div class="map-guide-legend" aria-label="Фильтры объектов на карте">
-            <label><input type="checkbox" data-map-filter="metro" checked /> <i class="map-guide-dot map-guide-dot--metro"></i>Метро</label>
-            <label><input type="checkbox" data-map-filter="park" checked /> <i class="map-guide-dot map-guide-dot--park"></i>Парки</label>
-            <label><input type="checkbox" data-map-filter="sight" checked /> <i class="map-guide-dot map-guide-dot--sight"></i>Достопримечательности</label>
+          <div class="map-controls" aria-label="Управление картой">
+            <div class="map-control-group"><button type="button" class="map-control" data-map-action="locate"><span class="icon icon-locate" aria-hidden="true"></span><span>Моё положение</span></button><button type="button" class="map-control" data-map-action="fit"><span class="icon icon-scan" aria-hidden="true"></span><span>Весь маршрут</span></button><button type="button" class="map-control" data-map-action="layers"><span class="icon icon-layers" aria-hidden="true"></span><span>Слои</span></button></div>
+            <div class="map-control-group map-zoom-controls"><button type="button" class="map-control map-control-icon" data-map-action="zoom-in" aria-label="Увеличить"><span class="icon icon-plus" aria-hidden="true"></span></button><button type="button" class="map-control map-control-icon" data-map-action="zoom-out" aria-label="Уменьшить"><span class="icon icon-minus" aria-hidden="true"></span></button></div>
           </div>
+          <div id="mapLayersPanel" class="map-layers-panel" hidden><strong data-i18n="layersTitle">Что показать</strong><label><input type="checkbox" data-layer-filter="route" checked /> Точки маршрута</label><label><input type="checkbox" data-layer-filter="sight" data-map-filter="sight" /> Достопримечательности</label><label><input type="checkbox" data-layer-filter="park" data-map-filter="park" /> Парки</label><label><input type="checkbox" data-layer-filter="metro" data-map-filter="metro" /> Метро</label></div>
           <svg id="fallbackMap" class="fallback-map" viewBox="0 0 1000 720" role="img" aria-label="Схема маршрута"></svg>
         </div>
 
@@ -212,10 +211,13 @@
       }
     </script>
 
+    <svg class="icon-sprite" aria-hidden="true"><symbol id="icon-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></symbol><symbol id="icon-landmark" viewBox="0 0 24 24"><path d="m3 21 9-18 9 18M5 17h14M7 13h10"/></symbol><symbol id="icon-trees" viewBox="0 0 24 24"><path d="M12 21V10m0 4-4-4m4 1 4-5M5 21h14"/></symbol><symbol id="icon-building" viewBox="0 0 24 24"><path d="M4 21V5l8-3 8 3v16M8 9h1m6 0h1M8 13h1m6 0h1M10 21v-4h4v4"/></symbol><symbol id="icon-waves" viewBox="0 0 24 24"><path d="M2 8c3 0 3 2 6 2s3-2 6-2 3 2 6 2M2 14c3 0 3 2 6 2s3-2 6-2 3 2 6 2M2 20c3 0 3 2 6 2s3-2 6-2 3 2 6 2"/></symbol><symbol id="icon-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></symbol><symbol id="icon-scan" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m16-5h-3m3 0v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></symbol><symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol></svg>
+
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="./api-config.js"></script>
     <script defer src="./map-places.js"></script>
     <script defer src="./map-guide.js"></script>
+    <script defer src="./map-controls.js"></script>
     <script defer src="./app.js?v=2026-07-11-8"></script>
     <script defer src="./sw-register.js"></script>
   </body>

@@ -1,4 +1,5 @@
-const mapGuideFilters = { metro: true, park: true, sight: true };
+const mapGuideFilters = { metro: false, park: false, sight: false };
+window.mapGuideFilters = mapGuideFilters;
 const MAP_PLACE_FALLBACK_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Red_Square%2C_Moscow%2C_Russia.jpg?width=640";
 
 function resolveMapImage(source) {
@@ -69,26 +70,27 @@ window.renderMapGuide = function renderMapGuide() {
       const description = currentLanguage === "en" ? place.descriptionEn : place.description;
       const article = place.article ? ` <a class="map-popup-link" href="./articles.html#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
       const imageAlt = escapeHtml(name);
-      const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${MAP_PLACE_FALLBACK_IMAGE}'"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
+      const category = place.type === "metro" ? (currentLanguage === "en" ? "Metro" : "Метро") : place.type === "park" ? (currentLanguage === "en" ? "Park" : "Парк") : (currentLanguage === "en" ? "Landmark" : "Достопримечательность");
+      const popup = `<div class="map-guide-popup"><span class="route-popup-category">${category}</span><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
       L.marker([place.lat, place.lon], { icon: createGuideIcon(place.type, name), keyboard: true, title: name })
         .bindPopup(popup, { maxWidth: 220, className: "map-guide-leaflet-popup" })
         .addTo(guideLayer);
     });
 };
 function createGuideIcon(type, name) {
-  const symbols = { metro: "M", park: "✦", sight: "•" };
+  const symbols = { metro: "<path d='M5 19h14M7 19V5h10v14M9 8h6M9 12h6'/>", park: "<path d='M12 21V9m0 4-4-4m4 1 4-5M5 21h14'/>", sight: "<circle cx='12' cy='12' r='5'/>" };
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
-    html: `<span aria-hidden="true">${symbols[type] || "•"}</span><b>${escapeHtml(name)}</b>`,
+    html: `<span aria-hidden="true"><svg viewBox="0 0 24 24">${symbols[type] || symbols.sight}</svg></span><b>${escapeHtml(name)}</b>`,
     iconSize: [16, 16],
     iconAnchor: [8, 8],
     popupAnchor: [0, -8],
   });
 }
 
-document.querySelectorAll("[data-map-filter]").forEach((input) => {
+document.querySelectorAll("[data-layer-filter]").forEach((input) => {
   input.addEventListener("change", () => {
-    mapGuideFilters[input.dataset.mapFilter] = input.checked;
+    mapGuideFilters[input.dataset.layerFilter] = input.checked;
     window.renderMapGuide();
   });
 });
