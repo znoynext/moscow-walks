@@ -10,8 +10,8 @@ const HISTORY_KEY = "moscow-walks-history";
 const RATING_KEY = "moscow-walks-ratings";
 const REQUEST_TIMEOUT_MS = 15000;
 const ROUTE_TOLERANCE = 0.35;
-// Moscow and a small surrounding area. Coordinates are [latitude, longitude].
-const MAP_BOUNDS = [[55.45, 37.0], [56.05, 38.35]];
+// Moscow and the nearest suburbs. Coordinates are [latitude, longitude].
+const MAP_BOUNDS = [[55.52, 37.15], [55.98, 38.15]];
 const MAP_VIEW = [55.7539, 37.6208];
 const MAP_MIN_ZOOM = 10;
 const WALK_DURATION_LABELS = {
@@ -738,7 +738,7 @@ async function resolveSearchPoint(query, note, area) {
       q: `${text}, Москва`,
       format: "jsonv2",
       limit: "1",
-      viewbox: "37.0,56.05,38.35,55.45",
+      viewbox: "37.15,55.98,38.15,55.52",
       bounded: "1",
       addressdetails: "0",
     });
