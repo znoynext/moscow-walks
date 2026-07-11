@@ -32,6 +32,13 @@ test("SEO route catalogue and privacy surface exist", () => {
   assert.match(fs.readFileSync("privacy.html", "utf8"), /Геолокация/);
 });
 
+test("catalogue cards keep their content inside a padded body", () => {
+  assert.match(fs.readFileSync("areas.html", "utf8"), /<article class="article-card"><div class="article-card-body">/);
+  assert.match(fs.readFileSync("routes.html", "utf8"), /<article class="article-card"><div class="article-card-body">/);
+  assert.match(fs.readFileSync("route.html", "utf8"), /<div class="article-card-body"><div class="article-card-top">/);
+  assert.match(fs.readFileSync("styles.css", "utf8"), /\.article-card-body \{[\s\S]*?min-width: 0;/);
+});
+
 test("quality scripts are part of CI", () => {
   const workflow = fs.readFileSync(".github/workflows/ci.yml", "utf8");
   assert.match(workflow, /check-links/);

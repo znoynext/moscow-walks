@@ -1321,7 +1321,12 @@ ol {
   display: flex;
   min-height: 300px;
   flex-direction: column;
+  min-width: 0;
   padding: 18px;
+}
+
+.article-card-body > .article-primary {
+  margin-top: auto;
 }
 
 .article-card-top {
