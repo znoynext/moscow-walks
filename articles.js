@@ -133,6 +133,22 @@ const articleMeta = [
 const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno", "novodevichy", "sparrow-hills", "sokolniki", "neskuchny", "aptekarsky-ogorod", "izmaylovo", "kuskovo", "moscow-city", "bolshoi", "moscow-zoo", "muzeon", "botanical-garden"];
 const articleFallbackImage = "data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1200 675'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23b54738'/%3E%3Cstop offset='1' stop-color='%23273b54'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='1200' height='675' fill='url(%23g)'/%3E%3Ccircle cx='260' cy='150' r='190' fill='%23ffc670' fill-opacity='.3'/%3E%3C/svg%3E";
 
+function articleVisualImage(item, index) {
+  const palettes = {
+    centre: ["#b54738", "#233b5c", "#ffc670"],
+    parks: ["#287c68", "#183b50", "#a7df9b"],
+    museums: ["#7651a8", "#263650", "#f0c27b"],
+  };
+  const [from, to, glow] = palettes[item.category] || palettes.centre;
+  const icon = item.category === "parks"
+    ? `<path d="M600 150c-70 0-126 56-126 126 0 45 24 85 61 107v73h130v-73c37-22 61-62 61-107 0-70-56-126-126-126Z" fill="none" stroke="${glow}" stroke-width="18"/><path d="M600 456v-112M548 395l52-52 52 52" fill="none" stroke="${glow}" stroke-width="18" stroke-linecap="round"/>`
+    : item.category === "museums"
+      ? `<path d="M410 470h380M450 430h300M470 220h260M430 220 600 125l170 95M490 220v210M560 220v210M640 220v210M710 220v210" fill="none" stroke="${glow}" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>`
+      : `<path d="M400 470h400M455 470V285l145-135 145 135v185M515 470V320h170v150M600 150v-45" fill="none" stroke="${glow}" stroke-width="18" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675"><defs><linearGradient id="g${index}" x1="0" y1="0" x2="1" y2="1"><stop stop-color="${from}"/><stop offset="1" stop-color="${to}"/></linearGradient></defs><rect width="1200" height="675" fill="url(#g${index})"/><circle cx="270" cy="130" r="210" fill="${glow}" fill-opacity=".24"/>${icon}<text x="56" y="606" fill="white" fill-opacity=".72" font-family="Arial,sans-serif" font-size="22" font-weight="700" letter-spacing="4">WALK MOSCOW</text></svg>`;
+  return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
+}
+
 const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && readArticleStorage(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
 let articleTheme = readArticleStorage(ARTICLE_THEME_KEY) === "light" ? "light" : "dark";
@@ -149,7 +165,7 @@ function renderArticles(filter = "all") {
   }).map((item) => {
     const articleIndex = articles.indexOf(item);
     const meta = articleMeta[articleIndex];
-    const imageSource = meta.image || articleFallbackImage;
+    const imageSource = articleVisualImage(item, articleIndex) || articleFallbackImage;
     const mapUrl = `https://yandex.ru/maps/?pt=${meta.lon},${meta.lat}&z=16&l=map`;
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `

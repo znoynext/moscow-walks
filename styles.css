@@ -237,6 +237,7 @@ h2 {
 
 .field-pair {
   display: grid;
+  align-items: start;
   grid-template-columns: 1fr 104px;
   gap: 10px;
 }
@@ -272,13 +273,20 @@ input[type="search"] {
 }
 
 #distanceSelect {
+  height: 38px;
   min-height: 38px;
+  margin: 0;
   padding-right: 28px;
   border-radius: 10px;
   font-size: 13px;
 }
 
 .field-pair > .field:last-child {
+  display: flex;
+  align-self: start;
+  flex-direction: column;
+  gap: 8px;
+  height: fit-content;
   max-width: 108px;
 }
 
@@ -1015,6 +1023,10 @@ ol {
   .field-pair,
   .segments {
     grid-template-columns: 1fr;
+  }
+
+  .field-pair > .field:last-child {
+    max-width: none;
   }
 
   .segments {
