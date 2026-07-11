@@ -130,6 +130,33 @@ const articleMeta = [
   { image: "https://images.unsplash.com/photo-1497250681960-ef046c08a56e?auto=format&fit=crop&w=1200&q=84", price: "Свободный вход", enPrice: "Free entry", address: "ул. Ботаническая, 4", enAddress: "4 Botanicheskaya Street", lat: 55.8467, lon: 37.6047, anchor: "botanical-garden", official: "https://www.gbsad.ru/" },
 ];
 
+const stableArticleImages = [
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Red_Square%2C_Moscow%2C_Russia.jpg/1280px-Red_Square%2C_Moscow%2C_Russia.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Russia-Moscow-Saint_Basil%27s_Cathedral-2.jpg/1280px-Russia-Moscow-Saint_Basil%27s_Cathedral-2.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/5/59/GUM_w_Moskwie.JPG/1280px-GUM_w_Moskwie.JPG",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9b/Zaryadye_Park%2C_Moscow.jpg/1280px-Zaryadye_Park%2C_Moscow.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/State_Tretyakov_Gallery_Moscow.jpg/1280px-State_Tretyakov_Gallery_Moscow.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/f/f5/Cathedral_of_Christ_the_Saviour%2C_Moscow%2C_Russia.jpg/1280px-Cathedral_of_Christ_the_Saviour%2C_Moscow%2C_Russia.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Patriarch_Ponds.jpg/1280px-Patriarch_Ponds.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/ArbatMoscow.jpg/1280px-ArbatMoscow.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Gorky_Park_%282013-07-16%29_01.jpg/1280px-Gorky_Park_%282013-07-16%29_01.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Moscow_VDNKh_Armenia_Pavilion_asv2018-08_img1.jpg/1280px-Moscow_VDNKh_Armenia_Pavilion_asv2018-08_img1.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Kolomenskoye%2C_Moscow%2C_Russia_-_30062345825.jpg/1280px-Kolomenskoye%2C_Moscow%2C_Russia_-_30062345825.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Moscow%2C_Russia%2C_Tsaritsyno_Palace.jpg/1280px-Moscow%2C_Russia%2C_Tsaritsyno_Palace.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/2024_Novodevichy_Convent_in_Moscow.jpg/1280px-2024_Novodevichy_Convent_in_Moscow.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Sparrow_Hills.jpg/1280px-Sparrow_Hills.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Sokolniki_Park%2C_Moskva%2C_Russia_%28Unsplash%29.jpg/1280px-Sokolniki_Park%2C_Moskva%2C_Russia_%28Unsplash%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Gorky_Park_%282013-07-16%29_01.jpg/1280px-Gorky_Park_%282013-07-16%29_01.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c2/Moscow%2C_Aptekarsky_Ogorod_%2830669418873%29.jpg/1280px-Moscow%2C_Aptekarsky_Ogorod_%2830669418873%29.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/7a/Moscow_Izmaylovo_Park_2025-09_27.jpg/1280px-Moscow_Izmaylovo_Park_2025-09_27.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Italian_House_in_Kuskovo_2014_%282%29.JPG/1280px-Italian_House_in_Kuskovo_2014_%282%29.JPG",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Moscow_International_Business_Centre%2C_Marc_2008.JPG/1280px-Moscow_International_Business_Centre%2C_Marc_2008.JPG",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Teatro_Bolsh%C3%B3i%2C_Mosc%C3%BA%2C_Rusia%2C_2016-10-03%2C_DD_42-43_HDR.jpg/1280px-Teatro_Bolsh%C3%B3i%2C_Mosc%C3%BA%2C_Rusia%2C_2016-10-03%2C_DD_42-43_HDR.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d7/Sobyanin_on_150th_anniversary_of_Moscow_Zoo_07.jpg/1280px-Sobyanin_on_150th_anniversary_of_Moscow_Zoo_07.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Moscow%2C_Muzeon_Park%2C_children%2C_Nov_2025_01.jpg/1280px-Moscow%2C_Muzeon_Park%2C_children%2C_Nov_2025_01.jpg",
+  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Botanical_Garden%2C_Moscow.jpg/1280px-Botanical_Garden%2C_Moscow.jpg",
+];
+
 const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", "christ-cathedral", "patriarshiye", "arbat", "gorky", "vdnh", "kolomenskoye", "tsaritsyno", "novodevichy", "sparrow-hills", "sokolniki", "neskuchny", "aptekarsky-ogorod", "izmaylovo", "kuskovo", "moscow-city", "bolshoi", "moscow-zoo", "muzeon", "botanical-garden"];
 const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && readArticleStorage(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
@@ -147,7 +174,7 @@ function renderArticles(filter = "all") {
   }).map((item) => {
     const articleIndex = articles.indexOf(item);
     const meta = articleMeta[articleIndex];
-    const imageSource = meta.image;
+    const imageSource = stableArticleImages[articleIndex] || meta.image;
     const mapUrl = `https://yandex.ru/maps/?pt=${meta.lon},${meta.lat}&z=16&l=map`;
     const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
