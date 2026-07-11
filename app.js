@@ -1,10 +1,12 @@
-const OSRM_FOOT_URLS = [
+const API_CONFIG = window.WALK_MOSCOW_CONFIG || {};
+const OSRM_FOOT_URLS = API_CONFIG.osrmFootUrls || [
   "https://routing.openstreetmap.de/routed-foot/route/v1/foot/",
 ];
-const NOMINATIM_URL = "https://nominatim.openstreetmap.org/search";
+const NOMINATIM_URL = API_CONFIG.nominatimUrl || "https://nominatim.openstreetmap.org/search";
 const ROUTE_STATE_KEY = "moscow-walks-route-state";
 const LANGUAGE_KEY = "moscow-walks-language";
 const THEME_KEY = "moscow-walks-theme";
+const HISTORY_KEY = "moscow-walks-history";
 const REQUEST_TIMEOUT_MS = 15000;
 const ROUTE_TOLERANCE = 0.35;
 // Moscow and a small surrounding area. Coordinates are [latitude, longitude].
@@ -358,6 +360,8 @@ const elements = {
   itinerary: document.querySelector(".itinerary"),
   languageToggle: document.querySelector("#languageToggle"),
   themeToggle: document.querySelector("#themeToggle"),
+  historyList: document.querySelector("#historyList"),
+  clearHistoryButton: document.querySelector("#clearHistoryButton"),
 };
 
 let userPosition = null;
@@ -379,6 +383,7 @@ function init() {
   restoreRouteState();
   applyTheme();
   applyLanguage();
+  renderHistory();
   initMap();
   elements.form.addEventListener("change", (event) => {
     if (event.target === elements.distance) syncCustomDistance();
@@ -405,6 +410,7 @@ function init() {
   });
   elements.languageToggle?.addEventListener("click", toggleLanguage);
   elements.themeToggle?.addEventListener("click", toggleTheme);
+  elements.clearHistoryButton?.addEventListener("click", clearHistory);
   analytics.track("planner_view");
 }
 
@@ -939,6 +945,7 @@ function renderRoute(route, walking) {
   elements.routeReason.textContent = explainRoute(route, area, walking);
   elements.routeStatus.textContent = "";
   persistRouteState();
+  saveHistoryEntry(route, walking);
   renderStops(route);
   renderFallbackMap(walking.coordinates, route);
   renderLeafletRoute(route, walking.coordinates);
@@ -946,6 +953,42 @@ function renderRoute(route, walking) {
   void elements.itinerary.offsetWidth;
   elements.itinerary.classList.add("updated");
 }
+
+function readHistory() {
+  try {
+    const value = JSON.parse(readStorage(HISTORY_KEY) || "[]");
+    return Array.isArray(value) ? value.slice(0, 8) : [];
+  } catch (error) { return []; }
+}
+
+function saveHistoryEntry(route, walking) {
+  const entry = { id: `${Date.now()}-${route[0]?.id || "walk"}`, title: buildRouteTitle(route), distanceKm: Number(walking.distanceKm.toFixed(1)), durationMin: walking.durationMin, start: elements.start.value, customDistance: elements.customDistance?.value || "", distance: elements.distance.value, theme: new FormData(elements.form).get("theme") || "classic", anchor: getSelectedAnchorIds()[0] || "", createdAt: new Date().toISOString() };
+  const history = [entry, ...readHistory().filter((item) => item.title !== entry.title)].slice(0, 8);
+  writeStorage(HISTORY_KEY, JSON.stringify(history));
+  renderHistory();
+}
+
+function renderHistory() {
+  if (!elements.historyList) return;
+  const history = readHistory();
+  if (!history.length) { elements.historyList.innerHTML = `<p class="field-hint">${currentLanguage === "en" ? "Built walks will appear here." : "Построенные маршруты появятся здесь."}</p>`; return; }
+  elements.historyList.innerHTML = history.map((item) => `<button class="history-item" type="button" data-history-id="${escapeHtml(item.id)}"><span>${escapeHtml(item.title)}</span><small>${formatDistance(item.distanceKm)} · ${formatDuration(item.durationMin)}</small></button>`).join("");
+  elements.historyList.querySelectorAll("[data-history-id]").forEach((button) => button.addEventListener("click", () => loadHistoryEntry(history.find((item) => item.id === button.dataset.historyId))));
+}
+
+function loadHistoryEntry(entry) {
+  if (!entry) return;
+  if (starts.some((item) => item.id === entry.start)) elements.start.value = entry.start;
+  elements.distance.value = entry.distance || "4";
+  if (elements.customDistance) elements.customDistance.value = entry.customDistance || "";
+  const theme = [...elements.form.querySelectorAll('input[name="theme"]')].find((input) => input.value === entry.theme);
+  if (theme) theme.checked = true;
+  if (elements.anchor) elements.anchor.value = entry.anchor || "";
+  syncCustomDistance();
+  generateAndRender();
+}
+
+function clearHistory() { writeStorage(HISTORY_KEY, "[]"); renderHistory(); }
 
 function renderUnroutableRoute(route) {
   const area = routeArea(route);
@@ -1414,7 +1457,7 @@ init();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-11-5").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-6").catch((error) => {
       console.warn("Service worker не зарегистрирован", error);
     });
   });

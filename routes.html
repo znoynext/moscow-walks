@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Готовые прогулки по Москве — Walk Moscow</title>
+    <meta name="description" content="Проверенные идеи пеших прогулок по Москве: центр, парки, набережные и архитектура." />
+    <link rel="canonical" href="https://znoynext.github.io/moscow-walks/routes.html" />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body class="articles-page">
+    <header class="articles-header"><a class="articles-brand" href="./">Walk Moscow</a><a class="back-link" href="./articles.html">Что посмотреть</a></header>
+    <main class="articles-main">
+      <div class="articles-intro"><p class="eyebrow">Готовые сценарии</p><h1>Прогулки, которые можно начать сразу</h1><p class="articles-lead">Выберите настроение и откройте готовую идею. Параметры можно изменить в конструкторе.</p></div>
+      <nav class="article-filters" aria-label="Фильтр прогулок"><button class="article-filter is-active" type="button" data-filter="all">Все</button><button class="article-filter" type="button" data-filter="центр">Центр</button><button class="article-filter" type="button" data-filter="парки">Парки</button><button class="article-filter" type="button" data-filter="вода">Вода</button><button class="article-filter" type="button" data-filter="архитектура">Архитектура</button></nav>
+      <div id="routeGrid" class="article-grid"></div>
+    </main>
+    <footer class="site-footer"><a href="./privacy.html">Приватность</a><a href="mailto:walkmoscow@example.com?subject=Walk%20Moscow%20feedback">Обратная связь</a></footer>
+    <script src="./routes.js"></script>
+    <script>
+      const grid = document.querySelector("#routeGrid");
+      function render(filter = "all") { grid.innerHTML = curatedRoutes.filter((route) => filter === "all" || route.tags.some((tag) => tag.includes(filter))).map((route, index) => `<article class="article-card"><div class="article-card-top"><span class="article-tag">${route.tags.join(" · ")}</span><span class="article-number">${String(index + 1).padStart(2, "0")}</span></div><h2>${route.title}</h2><p>${route.description}</p><div class="article-facts"><span><b>Длина</b> около ${route.distance} км</span><span><b>Точки</b> ${route.stops.length}</span></div><div class="article-actions"><a class="article-primary" href="./route.html?slug=${route.slug}">Открыть прогулку</a><a class="article-secondary" href="./?start=${route.start}&distance=${route.distance}&theme=${route.theme}&anchor=${route.anchor}">Изменить маршрут</a></div></article>`).join(""); }
+      document.querySelectorAll(".article-filter").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll(".article-filter").forEach((item) => item.classList.remove("is-active")); button.classList.add("is-active"); render(button.dataset.filter); })); render();
+    </script>
+  </body>
+</html>

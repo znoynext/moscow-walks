@@ -48,6 +48,7 @@
             </ul>
             <nav class="site-nav" aria-label="Навигация">
               <a href="./articles.html" data-i18n="articlesLink">Что посмотреть</a>
+              <a href="./routes.html">Готовые прогулки</a>
             </nav>
           </div>
           <div class="utility-actions">
@@ -149,6 +150,10 @@
             </div>
           </div>
           <ol id="stopsList" aria-live="polite"></ol>
+          <section class="saved-walks" aria-labelledby="savedWalksTitle">
+            <div class="saved-walks-head"><h3 id="savedWalksTitle">Мои прогулки</h3><button id="clearHistoryButton" class="text-button" type="button">Очистить</button></div>
+            <div id="historyList" class="history-list"><p class="field-hint">Построенные маршруты появятся здесь.</p></div>
+          </section>
         </section>
       </section>
     </main>
@@ -164,6 +169,8 @@
     <footer class="site-footer">
       <span>© Walk Moscow</span>
       <span data-i18n="mapData">Прогулка начинается здесь</span>
+      <a href="./privacy.html">Приватность</a>
+      <a href="mailto:walkmoscow@example.com?subject=Walk%20Moscow%20feedback">Обратная связь</a>
     </footer>
 
     <div id="toast" class="toast" role="status" aria-live="polite" aria-atomic="true"></div>
@@ -189,6 +196,7 @@
     </script>
 
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script defer src="./app.js?v=2026-07-11-5"></script>
+    <script defer src="./api-config.js"></script>
+    <script defer src="./app.js?v=2026-07-11-6"></script>
   </body>
 </html>

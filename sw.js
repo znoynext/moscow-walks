@@ -1,11 +1,16 @@
-const CACHE_NAME = "moscow-walks-v14";
+const CACHE_NAME = "moscow-walks-v15";
 const APP_SHELL = [
   "./",
   "./index.html",
   "./styles.css",
   "./app.js",
+  "./api-config.js",
   "./articles.html",
   "./articles.js",
+  "./routes.html",
+  "./routes.js",
+  "./route.html",
+  "./privacy.html",
   "./manifest.webmanifest",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",

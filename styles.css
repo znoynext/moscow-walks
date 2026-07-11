@@ -200,6 +200,17 @@ button {
   margin-top: 16px;
 }
 
+.site-nav a { display: inline-flex; align-items: center; min-height: 36px; }
+
+.saved-walks { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); }
+.saved-walks-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; }
+.saved-walks h3 { margin: 0; font-size: 14px; }
+.text-button { border: 0; padding: 4px; color: var(--soft); background: transparent; cursor: pointer; font-size: 12px; }
+.history-list { display: grid; gap: 6px; }
+.history-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--ink); background: var(--field); text-align: left; cursor: pointer; }
+.history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.history-item small { flex: 0 0 auto; color: var(--soft); font-size: 11px; }
+
 .site-nav a,
 .back-link,
 .article-link {
