@@ -1,6 +1,7 @@
 const API_CONFIG = window.WALK_MOSCOW_CONFIG || {};
 const OSRM_FOOT_URLS = API_CONFIG.osrmFootUrls || [
   "https://routing.openstreetmap.de/routed-foot/route/v1/foot/",
+  "https://router.project-osrm.org/route/v1/foot/",
 ];
 const NOMINATIM_URL = API_CONFIG.nominatimUrl || "https://nominatim.openstreetmap.org/search";
 const ROUTE_STATE_KEY = "moscow-walks-route-state";
@@ -985,7 +986,7 @@ async function requestWalkingRoute(stops) {
     steps: "false",
     continue_straight: "false",
   });
-  for (const baseUrl of OSRM_FOOT_URLS.slice(0, 1)) {
+  for (const baseUrl of OSRM_FOOT_URLS) {
     try {
       const response = await requestPublicService("osrm", `${baseUrl}${coords}?${params.toString()}`);
       if (!response.ok) continue;

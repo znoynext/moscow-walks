@@ -109,6 +109,14 @@ test("map tiles keep their layout if the Leaflet CDN stylesheet is unavailable",
   assert.match(serviceWorker, /\.\/leaflet-fallback\.css/);
 });
 
+test("walking routes use a backup service when the primary router is unavailable", () => {
+  const config = fs.readFileSync("api-config.js", "utf8");
+  assert.match(app, /for \(const baseUrl of OSRM_FOOT_URLS\)/);
+  assert.doesNotMatch(app, /OSRM_FOOT_URLS\.slice\(0, 1\)/);
+  assert.match(config, /routing\.openstreetmap\.de/);
+  assert.match(config, /router\.project-osrm\.org/);
+});
+
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);
