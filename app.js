@@ -373,7 +373,6 @@ function init() {
   if (!elements.form || !elements.start || !elements.distance) return;
   fillSelects();
   fillHints();
-  if (elements.locateButton) elements.locateButton.textContent = t("useLocation");
   if (userPosition) userPosition.name = t("yourLocation");
   restoreRouteState();
   applyTheme();
@@ -1006,6 +1005,7 @@ async function buildWalkingRoute(route) {
 }
 function renderRoute(route, walking) {
   if (!route.length) return;
+  document.body.classList.add("has-route");
   const area = routeArea(route);
   elements.totalDistance.textContent = formatDistance(walking.distanceKm);
   elements.totalTime.textContent = formatDuration(walking.durationMin);
@@ -1071,6 +1071,7 @@ function rateCurrentRoute(rating) {
   analytics.track("route_rated", { rating });
 }
 function renderUnroutableRoute(route) {
+  document.body.classList.add("has-route");
   const area = routeArea(route);
   elements.totalDistance.textContent = "—";
   elements.totalTime.textContent = "—";

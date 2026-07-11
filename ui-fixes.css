@@ -1,0 +1,93 @@
+/* Stable layout corrections kept separate from the compressed legacy stylesheet. */
+.field-action {
+  overflow: hidden;
+  font-size: 0;
+  white-space: nowrap;
+}
+
+.field-action .icon {
+  font-size: initial;
+}
+
+@media (max-width: 560px) {
+  .app-shell {
+    position: relative;
+    display: block;
+    min-height: 100vh;
+  }
+
+  .workspace {
+    position: relative;
+    display: block;
+    min-height: 100vh;
+  }
+
+  .map-panel {
+    width: 100%;
+    min-height: 100vh;
+    height: 100vh;
+  }
+
+  .planner {
+    position: absolute;
+    z-index: 700;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: 10px;
+    width: auto;
+    max-height: min(46vh, 480px);
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .planner .route-summary {
+    display: none;
+  }
+
+  .itinerary {
+    position: absolute;
+    z-index: 680;
+    right: 10px;
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    left: 10px;
+    display: none;
+    max-height: min(52vh, 560px);
+    padding: 18px;
+    overflow: auto;
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  body.has-route .planner {
+    display: none;
+  }
+
+  body.has-route .itinerary {
+    display: block;
+  }
+
+  .map-controls {
+    right: 14px;
+    bottom: calc(46vh + 22px + env(safe-area-inset-bottom));
+  }
+
+  body.has-route .map-controls {
+    bottom: calc(52vh + 22px + env(safe-area-inset-bottom));
+  }
+
+  .map-layers-panel {
+    right: 14px;
+    bottom: calc(46vh + 92px + env(safe-area-inset-bottom));
+  }
+
+  body.has-route .map-layers-panel {
+    bottom: calc(52vh + 92px + env(safe-area-inset-bottom));
+  }
+
+  .map-zoom-controls {
+    display: none;
+  }
+}
