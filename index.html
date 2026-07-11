@@ -13,6 +13,8 @@
     <link rel="alternate" hreflang="x-default" href="https://znoynext.github.io/moscow-walks/" />
     <meta name="theme-color" content="#0f1115" />
     <meta name="color-scheme" content="dark light" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta http-equiv="Permissions-Policy" content="geolocation=(self)" />
     <meta property="og:title" content="Walk Moscow — прогулки по Москве" />
     <meta property="og:description" content="Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени." />
     <meta property="og:url" content="https://znoynext.github.io/moscow-walks/" />
@@ -37,8 +39,13 @@
         <header class="brand">
           <div>
             <p class="eyebrow">Walk Moscow</p>
-            <h1 data-i18n="heroTitle">Пеший маршрут по Москве</h1>
-            <p class="brand-note" data-i18n="heroNote">Выберите настроение — остальное соберём сами.</p>
+            <h1 data-i18n="heroTitle">Соберите прогулку по Москве под своё настроение</h1>
+            <p class="brand-note" data-i18n="heroNote">Выберите старт, время и формат — получите готовый пеший маршрут через интересные места с картой, длиной и удобным финишем.</p>
+            <ul class="hero-badges" aria-label="Преимущества сервиса">
+              <li data-i18n="freeBadge">Бесплатно</li>
+              <li data-i18n="noRegistration">Без регистрации</li>
+              <li data-i18n="secondsBadge">Маршрут за несколько секунд</li>
+            </ul>
             <nav class="site-nav" aria-label="Навигация">
               <a href="./articles.html" data-i18n="articlesLink">Что посмотреть</a>
             </nav>
@@ -52,30 +59,31 @@
         <form id="routeForm" class="controls">
           <div class="field-pair">
             <label class="field">
-              <span data-i18n="start">Откуда начнём</span>
+              <span data-i18n="start">Откуда начать?</span>
               <select id="startSelect" name="start"></select>
-              <button id="locateButton" class="location-button" type="button" data-i18n="useLocation">Использовать моё местоположение</button>
+              <button id="locateButton" class="location-button" type="button" data-i18n="useLocation">Начать от меня</button>
+              <small class="field-hint" data-i18n="locationHint">Координаты используются только для создания маршрута.</small>
               <span id="locationStatus" class="location-status" role="status" aria-live="polite"></span>
             </label>
 
             <label class="field">
-              <span data-i18n="distance">Сколько идти</span>
+              <span data-i18n="distance">Сколько есть времени?</span>
               <select id="distanceSelect" name="distance">
-                <option value="3">3 km</option>
-                <option value="5" selected>5 km</option>
-                <option value="8">8 km</option>
-                <option value="12">12 km</option>
+                <option value="3">45 минут · около 3 км</option>
+                <option value="5" selected>1 час 15 минут · около 5 км</option>
+                <option value="8">2 часа · около 8 км</option>
+                <option value="12">3 часа · около 12 км</option>
               </select>
             </label>
           </div>
 
           <fieldset class="field">
-            <legend data-i18n="mood">Как хочется гулять</legend>
+            <legend data-i18n="mood">Как хочется провести прогулку?</legend>
             <div class="segments" id="themeGroup">
-              <label><input type="radio" name="theme" value="classic" checked /><span data-i18n="themeClassic">Классика</span></label>
-              <label><input type="radio" name="theme" value="green" /><span data-i18n="themeGreen">Парки</span></label>
-              <label><input type="radio" name="theme" value="architecture" /><span data-i18n="themeArchitecture">Красивые здания</span></label>
-              <label><input type="radio" name="theme" value="water" /><span data-i18n="themeWater">Вдоль реки</span></label>
+              <label><input type="radio" name="theme" value="classic" checked /><span data-i18n="themeClassic">Главные места</span><small data-i18n="themeClassicNote">Известные достопримечательности и атмосферные улицы</small></label>
+              <label><input type="radio" name="theme" value="green" /><span data-i18n="themeGreen">Парки и зелень</span><small data-i18n="themeGreenNote">Больше скверов, парков и спокойных участков</small></label>
+              <label><input type="radio" name="theme" value="architecture" /><span data-i18n="themeArchitecture">Архитектура и особняки</span><small data-i18n="themeArchitectureNote">Исторические здания, переулки и интересные фасады</small></label>
+              <label><input type="radio" name="theme" value="water" /><span data-i18n="themeWater">Набережные и виды</span><small data-i18n="themeWaterNote">Маршрут ближе к воде и открытым панорамам</small></label>
             </div>
           </fieldset>
 
@@ -91,6 +99,8 @@
               <button id="addAnchorButton" class="add-anchor-button" type="button" data-i18n="addAnotherPlace">+ Добавить ещё место</button>
             </div>
           </details>
+          <p id="settingsStatus" class="form-note" role="status" aria-live="polite"></p>
+          <button id="buildButton" class="primary-button" type="submit" data-i18n="buildRoute">Собрать прогулку</button>
 
         </form>
 

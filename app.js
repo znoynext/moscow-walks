@@ -6,6 +6,16 @@ const ROUTE_STATE_KEY = "moscow-walks-route-state";
 const LANGUAGE_KEY = "moscow-walks-language";
 const THEME_KEY = "moscow-walks-theme";
 const REQUEST_TIMEOUT_MS = 15000;
+const WALK_DURATION_LABELS = {
+  "3": { ru: "45 минут · около 3 км", en: "45 minutes · about 3 km" },
+  "5": { ru: "1 час 15 минут · около 5 км", en: "1 hour 15 minutes · about 5 km" },
+  "8": { ru: "2 часа · около 8 км", en: "2 hours · about 8 km" },
+  "12": { ru: "3 часа · около 12 км", en: "3 hours · about 12 km" },
+};
+
+const analytics = window.analytics && typeof window.analytics.track === "function"
+  ? window.analytics
+  : { track() {} };
 
 function readStorage(key) {
   try {
@@ -25,27 +35,35 @@ function writeStorage(key, value) {
 
 const translations = {
   ru: {
-    heroTitle: "Пеший маршрут по Москве",
-    heroNote: "Выберите настроение — остальное соберём сами.",
+    heroTitle: "Соберите прогулку по Москве под своё настроение",
+    heroNote: "Выберите старт, время и формат — получите готовый маршрут через интересные места с картой, длиной и удобным финишем.",
     freeBadge: "Бесплатно",
+    noRegistration: "Без регистрации",
+    secondsBadge: "Маршрут за несколько секунд",
     articlesLink: "Что посмотреть",
-    start: "Откуда начнём",
-    useLocation: "Использовать моё местоположение",
+    start: "Откуда начать?",
+    useLocation: "Начать от меня",
+    locationHint: "Координаты используются только для создания маршрута.",
     stopLocation: "Остановить геолокацию",
     locationOn: "Местоположение обновляется",
     locationDenied: "Не удалось получить местоположение",
     yourLocation: "Ваше местоположение",
-    distance: "Сколько идти",
-    mood: "Как хочется гулять",
-    themeClassic: "Классика",
-    themeGreen: "Парки",
-    themeArchitecture: "Красивые здания",
-    themeWater: "Вдоль реки",
-    optionalPoint: "Добавить место (необязательно)",
+    distance: "Сколько есть времени?",
+    mood: "Как хочется провести прогулку?",
+    themeClassic: "Главные места",
+    themeClassicNote: "Известные достопримечательности и атмосферные улицы",
+    themeGreen: "Парки и зелень",
+    themeGreenNote: "Больше скверов, парков и спокойных участков",
+    themeArchitecture: "Архитектура и особняки",
+    themeArchitectureNote: "Исторические здания, переулки и интересные фасады",
+    themeWater: "Набережные и виды",
+    themeWaterNote: "Маршрут ближе к воде и открытым панорамам",
+    optionalPoint: "Есть место, которое обязательно нужно включить?",
     anchor: "Что обязательно увидеть",
     addAnotherPlace: "+ Добавить ещё место",
     removePlace: "Убрать место",
-    buildRoute: "Обновить маршрут",
+    buildRoute: "Собрать прогулку",
+    settingsChanged: "Настройки изменены — соберите прогулку, когда будете готовы.",
     time: "Время",
     stops: "Точек",
     caloriesLabel: "Примерно потрачено",
@@ -80,27 +98,35 @@ const translations = {
     toRoute: "К маршруту",
   },
   en: {
-    heroTitle: "A walking route through Moscow",
-    heroNote: "Choose a mood — we’ll do the planning.",
+    heroTitle: "Build a Moscow walk for your mood",
+    heroNote: "Choose a start, time and style — get a ready walking route through interesting places with a map, distance and an easy finish.",
     freeBadge: "Free",
+    noRegistration: "No sign-up",
+    secondsBadge: "A walk in seconds",
     articlesLink: "Things to see",
-    start: "Where to start",
-    useLocation: "Use my location",
+    start: "Where do you want to start?",
+    useLocation: "Start from me",
+    locationHint: "Coordinates are used only to create this walk.",
     stopLocation: "Stop location",
     locationOn: "Location is updating",
     locationDenied: "Could not get your location",
     yourLocation: "Your location",
-    distance: "How far",
-    mood: "Choose a mood",
-    themeClassic: "Classic",
-    themeGreen: "Parks",
-    themeArchitecture: "Beautiful buildings",
-    themeWater: "Along the river",
-    optionalPoint: "Add a place (optional)",
+    distance: "How much time do you have?",
+    mood: "How would you like to spend the walk?",
+    themeClassic: "Key sights",
+    themeClassicNote: "Famous landmarks and atmospheric streets",
+    themeGreen: "Parks and greenery",
+    themeGreenNote: "More parks, squares and quieter stretches",
+    themeArchitecture: "Architecture and mansions",
+    themeArchitectureNote: "Historic buildings, lanes and facades",
+    themeWater: "Embankments and views",
+    themeWaterNote: "A walk closer to water and open views",
+    optionalPoint: "Is there a place you must include?",
     anchor: "Must-see place",
     addAnotherPlace: "+ Add another place",
     removePlace: "Remove place",
-    buildRoute: "Update route",
+    buildRoute: "Build my walk",
+    settingsChanged: "Settings changed — build your walk when you are ready.",
     time: "Time",
     stops: "Stops",
     caloriesLabel: "Estimated energy",
@@ -303,6 +329,8 @@ const elements = {
   anchorSearch: document.querySelector("#anchorSearch"),
   locateButton: document.querySelector("#locateButton"),
   locationStatus: document.querySelector("#locationStatus"),
+  buildButton: document.querySelector("#buildButton"),
+  settingsStatus: document.querySelector("#settingsStatus"),
   totalDistance: document.querySelector("#totalDistance"),
   totalTime: document.querySelector("#totalTime"),
   stopCount: document.querySelector("#stopCount"),
@@ -325,7 +353,6 @@ const elements = {
 };
 
 let userPosition = null;
-let userLocationWatch = null;
 let userLocationMarker = null;
 
 function point(id, name, lat, lon, area, themes, score, note) {
@@ -335,18 +362,21 @@ function point(id, name, lat, lon, area, themes, score, note) {
 function init() {
   if (!elements.form || !elements.start || !elements.distance) return;
   fillSelects();
-  if (elements.locateButton) elements.locateButton.textContent = userLocationWatch ? t("stopLocation") : t("useLocation");
+  if (elements.locateButton) elements.locateButton.textContent = t("useLocation");
   if (userPosition) userPosition.name = t("yourLocation");
   restoreRouteState();
   applyTheme();
   applyLanguage();
   initMap();
-  elements.form.addEventListener("change", () => {
+  elements.form.addEventListener("change", (event) => {
     syncAnchorOptions();
-    window.clearTimeout(init.routeTimer);
-    init.routeTimer = window.setTimeout(generateAndRender, 120);
+    updateAnchorControls();
+    markSettingsChanged();
+    const eventName = event.target.name === "distance" ? "duration_selected" : event.target.name === "theme" ? "mood_selected" : "start_selected";
+    analytics.track(eventName, { value: event.target.value });
   });
-  elements.regenerateButton?.addEventListener("click", generateAndRender);
+  elements.form.addEventListener("submit", handleSubmit);
+  elements.regenerateButton?.addEventListener("click", () => generateAndRender({ alternative: true }));
   elements.copyButton?.addEventListener("click", copyRoute);
   elements.navigationButton?.addEventListener("click", openNavigation);
   elements.locateButton?.addEventListener("click", toggleLocationTracking);
@@ -356,11 +386,16 @@ function init() {
     if (!removeButton) return;
     removeButton.closest(".anchor-row")?.remove();
     fillSelects();
-    generateAndRender();
+    markSettingsChanged();
   });
   elements.languageToggle?.addEventListener("click", toggleLanguage);
   elements.themeToggle?.addEventListener("click", toggleTheme);
-  generateAndRender();
+  analytics.track("planner_view");
+}
+
+function markSettingsChanged() {
+  if (elements.settingsStatus) elements.settingsStatus.textContent = t("settingsChanged");
+  elements.buildButton?.classList.add("is-ready");
 }
 
 function fillSelects() {
@@ -453,7 +488,7 @@ function applyLanguage() {
   document.querySelector(".guide")?.setAttribute("aria-label", currentLanguage === "en" ? "About the service" : "О сервисе");
   fillSelects();
   [...elements.distance.options].forEach((option) => {
-    option.textContent = `${option.value} ${currentLanguage === "ru" ? "км" : "km"}`;
+    option.textContent = WALK_DURATION_LABELS[option.value]?.[currentLanguage] || option.value;
   });
   if (currentRoute.length) {
     elements.routeTitle.textContent = buildRouteTitle(currentRoute);
@@ -505,35 +540,26 @@ function initMap() {
 }
 
 function toggleLocationTracking() {
-  if (userLocationWatch !== null) {
-    navigator.geolocation.clearWatch(userLocationWatch);
-    userLocationWatch = null;
-    userPosition = null;
-    userLocationMarker?.remove();
-    userLocationMarker = null;
-    elements.locateButton.textContent = t("useLocation");
-    elements.locationStatus.textContent = "";
-    generateAndRender();
-    return;
-  }
-
   if (!navigator.geolocation) {
     elements.locationStatus.textContent = t("locationDenied");
+    analytics.track("location_error", { reason: "unsupported" });
     return;
   }
 
   elements.locateButton.disabled = true;
+  analytics.track("location_requested");
   navigator.geolocation.getCurrentPosition(
     (position) => {
       updateUserPosition(position);
-      userLocationWatch = navigator.geolocation.watchPosition(updateUserPosition, handleLocationError, { enableHighAccuracy: true, maximumAge: 10000, timeout: 12000 });
       elements.locateButton.disabled = false;
-      elements.locateButton.textContent = t("stopLocation");
-      generateAndRender();
+      elements.locationStatus.textContent = currentLanguage === "en" ? "Start set to your location." : "Старт установлен по вашему местоположению.";
+      analytics.track("location_success");
+      markSettingsChanged();
     },
     () => {
       elements.locateButton.disabled = false;
       elements.locationStatus.textContent = t("locationDenied");
+      analytics.track("location_error", { reason: "denied_or_unavailable" });
     },
     { enableHighAccuracy: true, maximumAge: 10000, timeout: 12000 },
   );
@@ -550,8 +576,6 @@ function updateUserPosition(position) {
     map.setView([userPosition.lat, userPosition.lon], Math.max(map.getZoom(), 13), { animate: true });
   }
   elements.locationStatus.textContent = t("locationOn");
-  window.clearTimeout(updateUserPosition.timer);
-  updateUserPosition.timer = window.setTimeout(generateAndRender, 800);
 }
 
 function handleLocationError() {
@@ -563,10 +587,11 @@ function handleSubmit(event) {
   generateAndRender();
 }
 
-async function generateAndRender() {
+async function generateAndRender({ alternative = false } = {}) {
   const run = ++latestRun;
   variantSeed += 1;
   setRouteLoading(true);
+  analytics.track(alternative ? "route_alternative_requested" : "route_build_started");
 
   try {
     const selectedStart = userPosition || starts.find((item) => item.id === elements.start.value) || starts[0];
@@ -589,13 +614,23 @@ async function generateAndRender() {
     }
     currentWalkingLine = walking.coordinates;
     renderRoute(currentRoute, walking);
+    if (elements.settingsStatus) elements.settingsStatus.textContent = "";
+    elements.buildButton?.classList.remove("is-ready");
+    analytics.track("route_build_success", { stops: currentRoute.length, distance_km: Number(walking.distanceKm.toFixed(1)) });
+    scrollToResult();
   } catch (error) {
     console.warn("Не удалось построить маршрут", error);
     elements.routeStatus.textContent = t("routeError");
     showToast(t("tryAgain"));
+    analytics.track("route_build_error", { message: error instanceof Error ? error.message : "unknown" });
   } finally {
     if (run === latestRun) setRouteLoading(false);
   }
+}
+
+function scrollToResult() {
+  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  elements.itinerary?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
 
 async function resolveSearchPoint(query, note, area) {
@@ -1033,7 +1068,7 @@ function explainRoute(route, area, walking) {
 }
 
 function setRouteLoading(isLoading) {
-  const primaryButton = elements.form.querySelector(".primary-button");
+  const primaryButton = elements.buildButton;
   elements.regenerateButton.disabled = isLoading;
   if (primaryButton) {
     primaryButton.disabled = isLoading;

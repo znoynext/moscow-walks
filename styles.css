@@ -168,11 +168,30 @@ button {
 }
 
 .brand-note {
-  max-width: 290px;
+  max-width: 360px;
   margin-top: 12px;
   color: var(--muted);
   font-size: 14px;
   line-height: 1.45;
+}
+
+.hero-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hero-badges li {
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--soft);
+  background: var(--field);
+  font-size: 11px;
+  font-weight: 750;
 }
 
 .site-nav {
@@ -238,7 +257,7 @@ h2 {
 .field-pair {
   display: grid;
   align-items: start;
-  grid-template-columns: 1fr 104px;
+  grid-template-columns: 1fr;
   gap: 10px;
 }
 
@@ -272,22 +291,8 @@ input[type="search"] {
   transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
 }
 
-#distanceSelect {
-  height: 38px;
-  min-height: 38px;
-  margin: 0;
-  padding-right: 28px;
-  border-radius: 10px;
-  font-size: 13px;
-}
-
 .field-pair > .field:last-child {
-  display: flex;
-  align-self: start;
-  flex-direction: column;
-  gap: 8px;
-  height: fit-content;
-  max-width: 108px;
+  max-width: none;
 }
 
 select {
@@ -335,15 +340,24 @@ input[type="search"]::placeholder {
 }
 
 .segments label {
-  display: flex;
-  align-items: center;
-  min-height: 40px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: start;
+  min-height: 66px;
   padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--field);
   cursor: pointer;
   font-size: 14px;
+}
+
+.segments small {
+  grid-column: 2;
+  margin-top: 3px;
+  color: var(--soft);
+  font-size: 11px;
+  line-height: 1.28;
 }
 
 .segments label:has(input:checked) {
@@ -354,6 +368,12 @@ input[type="search"]::placeholder {
 .segments input {
   accent-color: var(--accent);
   margin: 0 8px 0 0;
+}
+
+.field-hint {
+  color: var(--soft);
+  font-size: 11px;
+  line-height: 1.35;
 }
 
 .advanced-settings {
@@ -409,6 +429,15 @@ input[type="search"]::placeholder {
   transform: translateY(-1px);
 }
 
+.primary-button.is-ready {
+  animation: ready-pulse 1.5s ease-in-out infinite alternate;
+}
+
+@keyframes ready-pulse {
+  from { box-shadow: 0 12px 34px rgba(255, 106, 85, 0.26); }
+  to { box-shadow: 0 12px 42px rgba(255, 106, 85, 0.5); }
+}
+
 .primary-button.is-loading {
   position: relative;
   color: transparent;
@@ -434,6 +463,8 @@ input[type="search"]::placeholder {
 
 .primary-button:focus-visible,
 .ghost-button:focus-visible,
+.location-button:focus-visible,
+.add-anchor-button:focus-visible,
 summary:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
