@@ -8,8 +8,6 @@ function initMapControls() {
   document.querySelector("[data-map-action=layers]")?.addEventListener("click", () => { const panel = document.querySelector("#mapLayersPanel"); if (panel) panel.hidden = !panel.hidden; });
   document.querySelectorAll("[data-map-action]").forEach((button) => button.addEventListener("click", () => handleMapAction(button.dataset.mapAction)));
   document.querySelectorAll("[data-layer-filter]").forEach((input) => input.addEventListener("change", () => handleLayerChange(input.dataset.layerFilter, input.checked)));
-  elements.plannerToggle = document.querySelector("#plannerToggle");
-  elements.plannerToggle?.addEventListener("click", togglePlanner);
 }
 
 function handleMapAction(action) {
@@ -23,13 +21,4 @@ function handleMapAction(action) {
 function handleLayerChange(type, enabled) {
   if (type === "route") { if (enabled && currentRoute.length) renderLeafletRoute(currentRoute, currentWalkingLine); else markersLayer?.clearLayers(); }
   else if (window.mapGuideFilters) { window.mapGuideFilters[type] = enabled; window.renderMapGuide?.(); }
-}
-
-function togglePlanner() {
-  const planner = document.querySelector(".planner");
-  const collapsed = planner?.classList.toggle("is-collapsed");
-  elements.plannerToggle?.setAttribute("aria-expanded", String(!collapsed));
-  elements.plannerToggle?.setAttribute("data-i18n", collapsed ? "expandPanel" : "collapsePanel");
-  if (elements.plannerToggle) elements.plannerToggle.textContent = t(collapsed ? "expandPanel" : "collapsePanel");
-  setTimeout(() => map?.invalidateSize(), 180);
 }

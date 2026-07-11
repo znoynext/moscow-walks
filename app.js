@@ -103,7 +103,7 @@ const translations = {
     lightTheme: "Переключить светлую тему",
     darkTheme: "Переключить тёмную тему",
     toRoute: "К маршруту",
-    menu: "Меню", more: "Ещё", collapsePanel: "Свернуть", expandPanel: "Развернуть", layersTitle: "Что показать",
+    menu: "Меню", more: "Ещё", layersTitle: "Что показать",
   },
   en: {
     heroTitle: "Walking routes in Moscow",
@@ -163,7 +163,7 @@ const translations = {
     lightTheme: "Switch to light theme",
     darkTheme: "Switch to dark theme",
     toRoute: "To route",
-    menu: "Menu", more: "More", collapsePanel: "Collapse", expandPanel: "Expand", layersTitle: "Show on map",
+    menu: "Menu", more: "More", layersTitle: "Show on map",
   },
 };
 const areaNames = {
