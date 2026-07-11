@@ -13,7 +13,7 @@ const ROUTE_TOLERANCE = 0.35;
 // Moscow and the nearest suburbs. Coordinates are [latitude, longitude].
 const MAP_BOUNDS = [[55.52, 37.15], [55.98, 38.15]];
 const MAP_VIEW = [55.7539, 37.6208];
-const MAP_MIN_ZOOM = 11;
+const MAP_MIN_ZOOM = 12;
 const MAP_INITIAL_ZOOM = 12;
 const WALK_DURATION_LABELS = {
   "3": { ru: "45 минут · около 3 км", en: "45 minutes · about 3 km" },
