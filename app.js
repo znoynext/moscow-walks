@@ -6,6 +6,10 @@ const ROUTE_STATE_KEY = "moscow-walks-route-state";
 const LANGUAGE_KEY = "moscow-walks-language";
 const THEME_KEY = "moscow-walks-theme";
 const REQUEST_TIMEOUT_MS = 15000;
+// Moscow and a small surrounding area. Coordinates are [latitude, longitude].
+const MAP_BOUNDS = [[55.45, 37.0], [56.05, 38.35]];
+const MAP_VIEW = [55.7539, 37.6208];
+const MAP_MIN_ZOOM = 10;
 const WALK_DURATION_LABELS = {
   "3": { ru: "45 минут · около 3 км", en: "45 minutes · about 3 km" },
   "5": { ru: "1 час 15 минут · около 5 км", en: "1 hour 15 minutes · about 5 km" },
@@ -526,7 +530,11 @@ function initMap() {
   map = L.map("map", {
     zoomControl: false,
     scrollWheelZoom: true,
-  }).setView([55.7539, 37.6208], 12);
+    maxBounds: MAP_BOUNDS,
+    maxBoundsViscosity: 1,
+    minZoom: MAP_MIN_ZOOM,
+    maxZoom: 19,
+  }).setView(MAP_VIEW, 12);
 
   L.control.zoom({ position: "bottomright" }).addTo(map);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
@@ -550,8 +558,8 @@ function toggleLocationTracking() {
   analytics.track("location_requested");
   navigator.geolocation.getCurrentPosition(
     (position) => {
-      updateUserPosition(position);
       elements.locateButton.disabled = false;
+      if (!updateUserPosition(position)) return;
       elements.locationStatus.textContent = currentLanguage === "en" ? "Start set to your location." : "Старт установлен по вашему местоположению.";
       analytics.track("location_success");
       markSettingsChanged();
@@ -566,7 +574,18 @@ function toggleLocationTracking() {
 }
 
 function updateUserPosition(position) {
-  userPosition = { id: "user-location", name: t("yourLocation"), lat: position.coords.latitude, lon: position.coords.longitude, area: "custom", themes: ["classic", "view"], score: 100, note: "" };
+  const latitude = position.coords.latitude;
+  const longitude = position.coords.longitude;
+  const [[minLatitude, minLongitude], [maxLatitude, maxLongitude]] = MAP_BOUNDS;
+  if (latitude < minLatitude || latitude > maxLatitude || longitude < minLongitude || longitude > maxLongitude) {
+    elements.locationStatus.textContent = currentLanguage === "en"
+      ? "Your location is outside Moscow and the selected area."
+      : "Вы находитесь за пределами Москвы и выбранной области.";
+    analytics.track("location_error", { reason: "outside_map_bounds" });
+    return false;
+  }
+
+  userPosition = { id: "user-location", name: t("yourLocation"), lat: latitude, lon: longitude, area: "custom", themes: ["classic", "view"], score: 100, note: "" };
   if (map && window.L) {
     if (!userLocationMarker) {
       userLocationMarker = L.circleMarker([userPosition.lat, userPosition.lon], { radius: 8, color: "#fff", weight: 3, fillColor: "#3b82f6", fillOpacity: 1 }).addTo(map);
@@ -576,6 +595,7 @@ function updateUserPosition(position) {
     map.setView([userPosition.lat, userPosition.lon], Math.max(map.getZoom(), 13), { animate: true });
   }
   elements.locationStatus.textContent = t("locationOn");
+  return true;
 }
 
 function handleLocationError() {
@@ -645,7 +665,7 @@ async function resolveSearchPoint(query, note, area) {
       q: `${text}, Москва`,
       format: "jsonv2",
       limit: "1",
-      viewbox: "37.25,56.02,38.02,55.56",
+      viewbox: "37.0,56.05,38.35,55.45",
       bounded: "1",
       addressdetails: "0",
     });
