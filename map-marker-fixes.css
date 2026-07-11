@@ -1,0 +1,33 @@
+.map-guide-marker {
+  width: 20px !important;
+  height: 20px !important;
+  min-width: 20px;
+  min-height: 20px;
+  margin: 0;
+  transform: translateZ(0);
+  transform-origin: 50% 50%;
+}
+
+.map-guide-marker > span {
+  inset: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.map-guide-marker b {
+  transform: translate3d(0, 0, 0);
+  transform-origin: 0 50%;
+}
+
+.walk-marker {
+  width: 29px !important;
+  height: 29px !important;
+  margin: 0;
+  transform: translateZ(0);
+  transform-origin: 50% 50%;
+}
+
+.walk-marker--start {
+  width: 34px !important;
+  height: 34px !important;
+}

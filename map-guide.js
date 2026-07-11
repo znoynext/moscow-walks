@@ -1,5 +1,6 @@
 const mapGuideFilters = { metro: false, park: false, sight: false };
 window.mapGuideFilters = mapGuideFilters;
+let lastGuideZoomBucket = null;
 const MAP_PLACE_FALLBACK_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Red_Square%2C_Moscow%2C_Russia.jpg?width=640";
 
 function resolveMapImage(source) {
@@ -59,9 +60,13 @@ function visibleGuidePlaces(places) {
   return places.filter((place) => place.type === "park" || place.isHub || (place.type === "sight" && place.score >= 90));
 }
 
-window.renderMapGuide = function renderMapGuide() {
+window.renderMapGuide = function renderMapGuide(force = false) {
   if (!map || !window.L || !guideLayer) return;
-  map.getContainer().classList.toggle("map-guide-labels-hidden", map.getZoom() < 15);
+  const zoom = map.getZoom();
+  const zoomBucket = zoom >= 15 ? "detailed" : zoom >= 13 ? "medium" : "overview";
+  map.getContainer().classList.toggle("map-guide-labels-hidden", zoom < 15);
+  if (!force && zoomBucket === lastGuideZoomBucket) return;
+  lastGuideZoomBucket = zoomBucket;
   guideLayer.clearLayers();
   visibleGuidePlaces(getMapGuidePlaces())
     .filter((place) => mapGuideFilters[place.type])
@@ -82,15 +87,15 @@ function createGuideIcon(type, name) {
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
     html: `<span aria-hidden="true"><svg viewBox="0 0 24 24">${symbols[type] || symbols.sight}</svg></span><b>${escapeHtml(name)}</b>`,
-    iconSize: [16, 16],
-    iconAnchor: [8, 8],
-    popupAnchor: [0, -8],
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, -10],
   });
 }
 
 document.querySelectorAll("[data-layer-filter]").forEach((input) => {
   input.addEventListener("change", () => {
     mapGuideFilters[input.dataset.layerFilter] = input.checked;
-    window.renderMapGuide();
+    window.renderMapGuide(true);
   });
 });
