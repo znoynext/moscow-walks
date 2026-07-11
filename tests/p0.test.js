@@ -39,6 +39,8 @@ test("map guide filters and follows the catalogue automatically", () => {
   assert.match(html, /data-map-filter="sight"/);
   assert.match(guide, /const attractions = pois\.map\(guidePlaceFromPoi\)/);
   assert.match(guide, /\.filter\(\(place\) => mapGuideFilters\[place\.type\]\)/);
+  assert.match(guide, /function visibleGuidePlaces/);
+  assert.match(guide, /zoom >= 15/);
   assert.match(places, /const metroStations =/);
   assert.ok((places.match(/"line":"/g) || []).length >= 100);
 });

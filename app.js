@@ -608,6 +608,7 @@ function initMap() {
   progressLayer = L.layerGroup().addTo(map);
   guideLayer = L.layerGroup().addTo(map);
   renderMapGuide();
+  map.on("zoomend", renderMapGuide);
   map.on("click", (event) => {
     if (isPickingStart) setPickedStart(event.latlng);
   });

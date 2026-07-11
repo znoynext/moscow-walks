@@ -12,6 +12,7 @@ function guidePlaceFromPoi(place) {
     descriptionEn: place.note || "An interesting place to discover on a walk through Moscow.",
     image: meta.image || DEFAULT_MAP_PLACE_IMAGE,
     article: articleSlugByPoint[place.id],
+    score: place.score || 0,
     lat: place.lat,
     lon: place.lon,
   };
@@ -19,9 +20,14 @@ function guidePlaceFromPoi(place) {
 
 function getMapGuidePlaces() {
   const attractions = pois.map(guidePlaceFromPoi);
+  const stationNames = metroStations.reduce((counts, station) => {
+    counts[station.name] = (counts[station.name] || 0) + 1;
+    return counts;
+  }, {});
   const metro = metroStations.map((station) => ({
     ...station,
     type: "metro",
+    isHub: stationNames[station.name] > 1 || station.line === "Кольцевая",
     nameEn: station.name,
     description: `Станция линии «${station.line}» рядом с местами для прогулок из каталога.`,
     descriptionEn: `${station.line} line station near places from the walking catalogue.`,
@@ -30,10 +36,18 @@ function getMapGuidePlaces() {
   return [...metro, ...attractions];
 }
 
+function visibleGuidePlaces(places) {
+  const zoom = map.getZoom();
+  if (zoom >= 15) return places;
+  if (zoom >= 13) return places.filter((place) => place.type !== "metro" || place.isHub);
+  return places.filter((place) => place.type === "park" || place.isHub || (place.type === "sight" && place.score >= 90));
+}
+
 window.renderMapGuide = function renderMapGuide() {
   if (!map || !window.L || !guideLayer) return;
+  map.getContainer().classList.toggle("map-guide-labels-hidden", map.getZoom() < 15);
   guideLayer.clearLayers();
-  getMapGuidePlaces()
+  visibleGuidePlaces(getMapGuidePlaces())
     .filter((place) => mapGuideFilters[place.type])
     .forEach((place) => {
       const name = currentLanguage === "en" ? place.nameEn : place.name;
