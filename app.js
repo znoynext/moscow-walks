@@ -803,19 +803,19 @@ async function generateAndRender({ alternative = false } = {}) {
     const anchor = (await resolveSearchPoint(elements.anchorSearch?.value, "Место из поиска", "search")) || selectedAnchor;
     if (run !== latestRun) return;
     const candidate = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
-    const walking = await buildWalkingRoute(candidate);
-    currentRoute = candidate;
+    const plan = await buildWalkingRoute(candidate);
+    currentRoute = plan.stops;
     if (run !== latestRun) return;
-    if (!walking) {
+    if (!plan.walking) {
       currentWalkingLine = [];
       renderUnroutableRoute(currentRoute);
       return;
     }
-    currentWalkingLine = walking.coordinates;
-    renderRoute(currentRoute, walking);
+    currentWalkingLine = plan.walking.coordinates;
+    renderRoute(currentRoute, plan.walking);
     if (elements.settingsStatus) elements.settingsStatus.textContent = "";
     elements.buildButton?.classList.remove("is-ready");
-    analytics.track("route_build_success", { stops: currentRoute.length, distance_km: Number(walking.distanceKm.toFixed(1)) });
+    analytics.track("route_build_success", { stops: currentRoute.length, distance_km: Number(plan.walking.distanceKm.toFixed(1)) });
     scrollToResult();
   } catch (error) {
     console.warn("Не удалось построить маршрут", error);
@@ -1007,9 +1007,11 @@ async function requestWalkingRoute(stops) {
 }
 async function buildWalkingRoute(route) {
   if (route.length < 2) return null;
+  const optimized = await window.requestOptimizedWalkingRoute?.(route);
+  if (optimized) return optimized;
   const fullRoute = await requestWalkingRoute(route);
   if (!fullRoute) throw serviceState.osrm.lastError || Object.assign(new Error("OSRM route unavailable"), { service: "osrm" });
-  return { source: "pedestrian", ...fullRoute };
+  return { stops: route, walking: { source: "pedestrian", ...fullRoute } };
 }
 function renderRoute(route, walking) {
   if (!route.length) return;

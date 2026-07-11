@@ -1,9 +1,9 @@
-const SHELL_CACHE = "moscow-walks-shell-v21";
+const SHELL_CACHE = "moscow-walks-shell-v22";
 const RUNTIME_CACHE = "moscow-walks-runtime-v1";
 const APP_SHELL = [
   "./", "./index.html", "./articles/", "./routes/", "./areas/", "./privacy/",
   "./styles.css", "./ui-fixes.css", "./map-marker-fixes.css", "./leaflet-fallback.css", "./app.js", "./api-config.js",
-  "./map-places.js", "./map-guide.js", "./map-controls.js", "./articles.js", "./routes.js",
+  "./map-places.js", "./map-guide.js", "./map-controls.js", "./route-optimizer.js", "./articles.js", "./routes.js",
   "./route.html", "./manifest.webmanifest", "./sw-register.js", "./offline.html",
   "./assets/favicon.svg", "./assets/icon-192.svg", "./assets/icon-512.svg", "./assets/icon-maskable-512.svg",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",

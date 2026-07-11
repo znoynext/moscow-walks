@@ -2,7 +2,7 @@
   "name": "walk-moscow",
   "private": true,
   "scripts": {
-    "check": "node --check map-places.js && node --check map-guide.js && node --check app.js && node --check articles.js && node --check routes.js && node --check sw.js && node --check sw-register.js && node --check scripts/validate-data.js && node --check scripts/generate-route-pages.js",
+    "check": "node --check map-places.js && node --check map-guide.js && node --check app.js && node --check route-optimizer.js && node --check articles.js && node --check routes.js && node --check sw.js && node --check sw-register.js && node --check scripts/validate-data.js && node --check scripts/generate-route-pages.js",
     "generate-route-pages": "node scripts/generate-route-pages.js",
     "validate-data": "node scripts/validate-data.js",
     "check-links": "node scripts/check-links.js",

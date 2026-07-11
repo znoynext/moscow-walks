@@ -117,6 +117,17 @@ test("walking routes use a backup service when the primary router is unavailable
   assert.match(config, /router\.project-osrm\.org/);
 });
 
+test("walking routes optimize stop order on the pedestrian network", () => {
+  const optimizer = fs.readFileSync("route-optimizer.js", "utf8");
+  assert.match(html, /route-optimizer\.js/);
+  assert.match(optimizer, /roundtrip:\s*"false"/);
+  assert.match(optimizer, /source:\s*"first"/);
+  assert.match(optimizer, /destination:\s*"any"/);
+  assert.match(optimizer, /routeServiceUrl\(baseUrl, "trip"\)/);
+  assert.match(optimizer, /orderedStopsFromTrip\(stops, data\.waypoints\)/);
+  assert.match(app, /window\.requestOptimizedWalkingRoute\?\.\(route\)/);
+});
+
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);
