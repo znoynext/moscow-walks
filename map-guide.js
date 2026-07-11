@@ -73,7 +73,7 @@ window.renderMapGuide = function renderMapGuide(force = false) {
     .forEach((place) => {
       const name = currentLanguage === "en" ? place.nameEn : place.name;
       const description = currentLanguage === "en" ? place.descriptionEn : place.description;
-      const article = place.article ? ` <a class="map-popup-link" href="./articles.html#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
+      const article = place.article ? ` <a class="map-popup-link" href="./articles/#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
       const imageAlt = escapeHtml(name);
       const category = place.type === "metro" ? (currentLanguage === "en" ? "Metro" : "Метро") : place.type === "park" ? (currentLanguage === "en" ? "Park" : "Парк") : (currentLanguage === "en" ? "Landmark" : "Достопримечательность");
       const popup = `<div class="map-guide-popup"><span class="route-popup-category">${category}</span><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;

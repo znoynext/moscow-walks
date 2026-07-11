@@ -32,6 +32,7 @@ const articleTranslations = {
     centre: "Центр",
     parks: "Парки и вода",
     museums: "Музеи и история",
+    noResults: "Ничего не найдено. Попробуйте другой запрос или выберите «Все места».",
     noteEyebrow: "Перед визитом",
     note: "Цены и режим работы могут меняться. Перед поездкой откройте официальный сайт места — карточка ведёт прямо к первоисточнику.",
     footer: "Идеи для прогулок по Москве",
@@ -60,6 +61,7 @@ const articleTranslations = {
     centre: "City centre",
     parks: "Parks & waterfronts",
     museums: "Museums & history",
+    noResults: "No places found. Try another search or choose “All places”.",
     noteEyebrow: "Before you go",
     note: "Prices and opening hours can change. Check the official website before your visit — every card links directly to a primary source.",
     footer: "Ideas for walking around Moscow",
@@ -161,17 +163,22 @@ const articleSlugs = ["red-square", "st-basil", "gum", "zaryadye", "tretyakov", 
 const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && readArticleStorage(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
 let articleTheme = readArticleStorage(ARTICLE_THEME_KEY) === "light" ? "light" : "dark";
-const initialArticleSearch = articleParams.get("search") || "";
+const initialArticleSearch = (articleParams.get("search") || "").slice(0, 100);
 
 function at(key) { return articleTranslations[articleLanguage][key] || articleTranslations.ru[key] || key; }
 
 function renderArticles(filter = "all") {
   const grid = document.querySelector("#articleGrid");
   const query = document.querySelector("#articleSearch")?.value.trim().toLowerCase() || "";
-  grid.innerHTML = articles.filter((item, index) => {
+  const matches = articles.filter((item) => {
     const haystack = `${item.title} ${item.en} ${item.text} ${item.enText} ${item.tags} ${item.enTags}`.toLowerCase();
     return (filter === "all" || item.filter === filter) && (!query || haystack.includes(query));
-  }).map((item) => {
+  });
+  if (!matches.length) {
+    grid.innerHTML = `<p class="article-empty" role="status">${at("noResults")}</p>`;
+    return;
+  }
+  grid.innerHTML = matches.map((item) => {
     const articleIndex = articles.indexOf(item);
     const meta = articleMeta[articleIndex];
     const imageSource = stableArticleImages[articleIndex] || meta.image;
@@ -215,7 +222,14 @@ function applyArticleTheme() {
 
 document.querySelector("#languageToggle")?.addEventListener("click", () => { articleLanguage = articleLanguage === "ru" ? "en" : "ru"; writeArticleStorage(ARTICLE_LANGUAGE_KEY, articleLanguage); applyArticleLanguage(); applyArticleTheme(); });
 document.querySelector("#themeToggle")?.addEventListener("click", () => { articleTheme = articleTheme === "dark" ? "light" : "dark"; writeArticleStorage(ARTICLE_THEME_KEY, articleTheme); applyArticleTheme(); });
-document.querySelectorAll(".article-filter").forEach((button) => button.addEventListener("click", () => { document.querySelectorAll(".article-filter").forEach((item) => item.classList.remove("is-active")); button.classList.add("is-active"); renderArticles(button.dataset.filter); }));
+document.querySelectorAll(".article-filter").forEach((button) => button.addEventListener("click", () => {
+  document.querySelectorAll(".article-filter").forEach((item) => {
+    const isActive = item === button;
+    item.classList.toggle("is-active", isActive);
+    item.setAttribute("aria-pressed", String(isActive));
+  });
+  renderArticles(button.dataset.filter);
+}));
 document.querySelector("#articleSearch")?.addEventListener("input", () => renderArticles(document.querySelector(".article-filter.is-active")?.dataset.filter || "all"));
 applyArticleTheme();
 applyArticleLanguage();

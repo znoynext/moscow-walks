@@ -73,7 +73,9 @@ const translations = {
     caloriesSpent: "Вы потратите",
     stopNote: "Интересная точка по пути.",
     route: "Ваша прогулка",
+    routeIdle: "Маршрут появится после нажатия «Собрать прогулку».",
     another: "Другой маршрут",
+    editSettings: "Изменить параметры",
     navigate: "Навигация",
     startNavigation: "Идти по маршруту",
     stopNavigation: "Остановить навигацию",
@@ -133,7 +135,9 @@ const translations = {
     caloriesSpent: "You will spend",
     stopNote: "An interesting stop along the way.",
     route: "Your walk",
+    routeIdle: "Your route will appear after you select “Build my walk”.",
     another: "Another route",
+    editSettings: "Edit settings",
     navigate: "Open navigation",
     startNavigation: "Follow this route",
     stopNavigation: "Stop navigation",
@@ -832,7 +836,7 @@ function scrollToResult() {
   elements.itinerary?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
 async function resolveSearchPoint(query, note, area) {
-  const text = (query || "").trim();
+  const text = (query || "").trim().slice(0, 120);
   if (text.length < 3) return null;
   const local = [...starts, ...pois].find((place) => place.name.toLowerCase() === text.toLowerCase());
   if (local) return point(local.id, local.name, local.lat, local.lon, local.area, local.themes || [], local.score || 76, local.note || note);
@@ -851,12 +855,15 @@ async function resolveSearchPoint(query, note, area) {
     if (!response.ok) return null;
     const data = await response.json();
     const result = data[0];
-    if (!result) return null;
+    const lat = Number(result?.lat);
+    const lon = Number(result?.lon);
+    const displayName = typeof result?.display_name === "string" ? result.display_name.trim() : "";
+    if (!displayName || !Number.isFinite(lat) || !Number.isFinite(lon) || lat < MAP_BOUNDS[0][0] || lat > MAP_BOUNDS[1][0] || lon < MAP_BOUNDS[0][1] || lon > MAP_BOUNDS[1][1]) return null;
     return point(
       `search-${text.toLowerCase().replace(/\s+/g, "-")}`,
-      result.display_name.split(",").slice(0, 2).join(", "),
-      Number(result.lat),
-      Number(result.lon),
+      displayName.split(",").slice(0, 2).join(", "),
+      lat,
+      lon,
       area,
       [],
       82,
@@ -1185,7 +1192,7 @@ function articleLinkForStop(stop, compact = false) {
   const slug = articleSlugByPoint[stop.id];
   if (!slug) return label;
   const className = compact ? "map-popup-link" : "stop-link";
-  return `<a class="${className}" href="./articles.html#article-${slug}">${label}</a>`;
+  return `<a class="${className}" href="./articles/#article-${slug}">${label}</a>`;
 }
 function routeArea(route) {
   const counts = route.reduce((acc, stop) => {

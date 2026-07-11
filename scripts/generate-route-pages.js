@@ -53,6 +53,7 @@ function routePage(route) {
     <link rel="manifest" href="../../manifest.webmanifest" />
     <link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../../styles.css" />
+    <link rel="stylesheet" href="../../ui-fixes.css" />
     <script type="application/ld+json">${trip}</script>
   </head>
   <body class="articles-page">
@@ -91,9 +92,9 @@ function writeCleanCopy(sourceName, directory, replacements) {
   fs.writeFileSync(path.join(targetDir, "index.html"), transformed);
 }
 
-writeCleanCopy("articles.html", "articles", [["/articles.html", "/articles/"], ["./routes.html", "../routes/"], ["./routes/", "../routes/"], ["./privacy.html", "../privacy/"], ["./privacy/", "../privacy/"], ["href=\"./\"", "href=\"../\""], ["src=\"./", "src=\"../"], ["href=\"./manifest", "href=\"../manifest"], ["href=\"./assets", "href=\"../assets"], ["href=\"./styles.css", "href=\"../styles.css"]]);
-writeCleanCopy("areas.html", "areas", [["/areas.html", "/areas/"], ["./routes.html", "../routes/"], ["./routes/", "../routes/"], ["./privacy.html", "../privacy/"], ["./privacy/", "../privacy/"], ["href=\"./\"", "href=\"../\""], ["src=\"./", "src=\"../"], ["href=\"./assets", "href=\"../assets"], ["href=\"./styles.css", "href=\"../styles.css"]]);
-writeCleanCopy("privacy.html", "privacy", [["/privacy.html", "/privacy/"], ["href=\"./\"", "href=\"../\""], ["src=\"./", "src=\"../"], ["href=\"./assets", "href=\"../assets"], ["href=\"./styles.css", "href=\"../styles.css"]]);
-writeCleanCopy("routes.html", "routes", [["/routes.html", "/routes/"], ["./routes/${route.slug}.html", "./${route.slug}/"], ["./articles.html", "../articles/"], ["./articles/", "../articles/"], ["./privacy.html", "../privacy/"], ["./privacy/", "../privacy/"], ["href=\"./\"", "href=\"../\""], ["href=\"./?", "href=\"../?"], ["src=\"./", "src=\"../"], ["href=\"./assets", "href=\"../assets"], ["href=\"./manifest", "href=\"../manifest"], ["href=\"./styles.css", "href=\"../styles.css"]]);
+writeCleanCopy("articles.html", "articles", [["/articles.html", "/articles/"], ["./routes.html", "../routes/"], ["./routes/", "../routes/"], ["./privacy.html", "../privacy/"], ["./privacy/", "../privacy/"], ["href=\"./\"", "href=\"../\""], ["src=\"./", "src=\"../"], ["href=\"./manifest", "href=\"../manifest"], ["href=\"./assets", "href=\"../assets"], ["href=\"./styles.css", "href=\"../styles.css"], ["href=\"./ui-fixes.css", "href=\"../ui-fixes.css"]]);
+writeCleanCopy("areas.html", "areas", [["/areas.html", "/areas/"], ["./routes.html", "../routes/"], ["./routes/", "../routes/"], ["./privacy.html", "../privacy/"], ["./privacy/", "../privacy/"], ["href=\"./\"", "href=\"../\""], ["src=\"./", "src=\"../"], ["href=\"./assets", "href=\"../assets"], ["href=\"./styles.css", "href=\"../styles.css"], ["href=\"./ui-fixes.css", "href=\"../ui-fixes.css"]]);
+writeCleanCopy("privacy.html", "privacy", [["/privacy.html", "/privacy/"], ["href=\"./\"", "href=\"../\""], ["src=\"./", "src=\"../"], ["href=\"./assets", "href=\"../assets"], ["href=\"./styles.css", "href=\"../styles.css"], ["href=\"./ui-fixes.css", "href=\"../ui-fixes.css"]]);
+writeCleanCopy("routes.html", "routes", [["/routes.html", "/routes/"], ["./routes/${route.slug}.html", "./${route.slug}/"], ["./articles.html", "../articles/"], ["./articles/", "../articles/"], ["./privacy.html", "../privacy/"], ["./privacy/", "../privacy/"], ["href=\"./\"", "href=\"../\""], ["href=\"./?", "href=\"../?"], ["src=\"./", "src=\"../"], ["href=\"./assets", "href=\"../assets"], ["href=\"./manifest", "href=\"../manifest"], ["href=\"./styles.css", "href=\"../styles.css"], ["href=\"./ui-fixes.css", "href=\"../ui-fixes.css"]]);
 fs.writeFileSync(path.join(root, "sitemap.xml"), sitemap());
 console.log(`Generated ${curatedRoutes.length} static route pages, clean catalogue pages and sitemap.xml.`);

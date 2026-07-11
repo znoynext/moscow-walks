@@ -31,7 +31,7 @@
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
     <link rel="preconnect" href="https://unpkg.com" />
     <link rel="preconnect" href="https://tile.openstreetmap.org" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIINfQ3ynhN6IP4Vu8YFL6Sss9jH7S4bXk=" crossorigin="anonymous" />
     <link rel="stylesheet" href="./styles.css" />
     <link rel="stylesheet" href="./ui-fixes.css" />
     <link rel="stylesheet" href="./map-marker-fixes.css" />
@@ -39,7 +39,7 @@
   <body>
     <a class="skip-link" href="#routeResult" data-i18n="toRoute">К маршруту</a>
     <main class="app-shell">
-      <aside class="planner" aria-label="Параметры маршрута">
+      <aside id="routePlanner" class="planner" aria-label="Параметры маршрута" tabindex="-1">
         <header class="brand">
           <div>
             <p class="eyebrow">Пешком.Москва</p>
@@ -66,7 +66,7 @@
             <label class="field">
               <span data-i18n="start">Откуда начать?</span>
               <select id="startSelect" name="start"></select>
-              <div class="search-with-action"><input id="startSearch" name="startSearch" type="search" list="placeHints" autocomplete="street-address" placeholder="Адрес или место" /><button id="locateButton" class="field-action" type="button" aria-label="Определить моё местоположение"><span class="icon icon-locate" aria-hidden="true"></span></button></div>
+              <div class="search-with-action"><input id="startSearch" name="startSearch" type="search" list="placeHints" autocomplete="street-address" maxlength="120" placeholder="Адрес или место" /><button id="locateButton" class="field-action" type="button" aria-label="Определить моё местоположение"><span class="icon icon-locate" aria-hidden="true"></span></button></div>
               <button id="pickOnMapButton" class="location-button" type="button" aria-pressed="false">Выбрать точку на карте</button>
               <span id="locationStatus" class="location-status" role="status" aria-live="polite"></span>
             </label>
@@ -130,7 +130,7 @@
           </div>
           <p class="calories-note"><span data-i18n="caloriesSpent">Вы потратите</span> <strong id="caloriesCount">—</strong></p>
           <p id="routeReason" class="reason"></p>
-          <p id="routeStatus" class="route-status" data-i18n="routeLoading">Ищем приятные места для прогулки…</p>
+          <p id="routeStatus" class="route-status" data-i18n="routeIdle">Маршрут появится после нажатия «Собрать прогулку».</p>
         </section>
       </aside>
 
@@ -138,10 +138,10 @@
         <div class="map-panel">
           <div id="map" class="map" role="application" aria-label="Интерактивная карта пешего маршрута"></div>
           <div class="map-controls" aria-label="Управление картой">
-            <div class="map-control-group"><button type="button" class="map-control" data-map-action="locate"><span class="icon icon-locate" aria-hidden="true"></span><span>Моё положение</span></button><button type="button" class="map-control" data-map-action="fit"><span class="icon icon-scan" aria-hidden="true"></span><span>Весь маршрут</span></button><button type="button" class="map-control" data-map-action="layers"><span class="icon icon-layers" aria-hidden="true"></span><span>Слои</span></button></div>
+            <div class="map-control-group"><button type="button" class="map-control" data-map-action="locate"><span class="icon icon-locate" aria-hidden="true"></span><span>Моё положение</span></button><button type="button" class="map-control" data-map-action="fit"><span class="icon icon-scan" aria-hidden="true"></span><span>Весь маршрут</span></button><button type="button" class="map-control" data-map-action="layers" aria-controls="mapLayersPanel" aria-expanded="false"><span class="icon icon-layers" aria-hidden="true"></span><span>Слои</span></button></div>
             <div class="map-control-group map-zoom-controls"><button type="button" class="map-control map-control-icon" data-map-action="zoom-in" aria-label="Увеличить"><span class="icon icon-plus" aria-hidden="true"></span></button><button type="button" class="map-control map-control-icon" data-map-action="zoom-out" aria-label="Уменьшить"><span class="icon icon-minus" aria-hidden="true"></span></button></div>
           </div>
-          <div id="mapLayersPanel" class="map-layers-panel" hidden><strong data-i18n="layersTitle">Что показать</strong><label><input type="checkbox" data-layer-filter="route" checked /> Точки маршрута</label><label><input type="checkbox" data-layer-filter="sight" data-map-filter="sight" /> Достопримечательности</label><label><input type="checkbox" data-layer-filter="park" data-map-filter="park" /> Парки</label><label><input type="checkbox" data-layer-filter="metro" data-map-filter="metro" /> Метро</label></div>
+          <div id="mapLayersPanel" class="map-layers-panel" role="group" aria-label="Слои карты" hidden><strong data-i18n="layersTitle">Что показать</strong><label><input type="checkbox" data-layer-filter="route" checked /> Точки маршрута</label><label><input type="checkbox" data-layer-filter="sight" data-map-filter="sight" /> Достопримечательности</label><label><input type="checkbox" data-layer-filter="park" data-map-filter="park" /> Парки</label><label><input type="checkbox" data-layer-filter="metro" data-map-filter="metro" /> Метро</label></div>
           <svg id="fallbackMap" class="fallback-map" viewBox="0 0 1000 720" role="img" aria-label="Схема маршрута"></svg>
         </div>
 
@@ -152,6 +152,7 @@
               <h2 id="routeTitle" data-i18n="route">Ваша прогулка</h2>
             </div>
             <div class="actions">
+              <button id="editSettingsButton" class="ghost-button mobile-only" type="button" data-i18n="editSettings">Изменить параметры</button>
               <button id="regenerateButton" class="ghost-button" type="button" aria-label="Построить другой вариант маршрута" data-i18n="another">Другой маршрут</button>
               <button id="navigationButton" class="ghost-button" type="button" aria-label="Открыть навигацию" data-i18n="navigate">Навигация</button>
               <button id="navigationModeButton" class="ghost-button" type="button" aria-label="Начать навигацию по маршруту" data-i18n="startNavigation">Идти по маршруту</button>
@@ -214,12 +215,12 @@
 
     <svg class="icon-sprite" aria-hidden="true"><symbol id="icon-locate" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></symbol><symbol id="icon-landmark" viewBox="0 0 24 24"><path d="m3 21 9-18 9 18M5 17h14M7 13h10"/></symbol><symbol id="icon-trees" viewBox="0 0 24 24"><path d="M12 21V10m0 4-4-4m4 1 4-5M5 21h14"/></symbol><symbol id="icon-building" viewBox="0 0 24 24"><path d="M4 21V5l8-3 8 3v16M8 9h1m6 0h1M8 13h1m6 0h1M10 21v-4h4v4"/></symbol><symbol id="icon-waves" viewBox="0 0 24 24"><path d="M2 8c3 0 3 2 6 2s3-2 6-2 3 2 6 2M2 14c3 0 3 2 6 2s3-2 6-2 3 2 6 2M2 20c3 0 3 2 6 2s3-2 6-2 3 2 6 2"/></symbol><symbol id="icon-layers" viewBox="0 0 24 24"><path d="m12 2 9 5-9 5-9-5 9-5Zm-9 10 9 5 9-5M3 17l9 5 9-5"/></symbol><symbol id="icon-scan" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m16-5h-3m3 0v3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 1-2 2h-3"/></symbol><symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol><symbol id="icon-minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol><symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol></svg>
 
-    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous"></script>
     <script defer src="./api-config.js"></script>
     <script defer src="./map-places.js"></script>
     <script defer src="./map-guide.js"></script>
     <script defer src="./map-controls.js"></script>
-    <script defer src="./app.js?v=2026-07-11-8"></script>
+    <script defer src="./app.js?v=2026-07-11-9"></script>
     <script defer src="./sw-register.js"></script>
   </body>
 </html>

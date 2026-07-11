@@ -5,8 +5,13 @@ if ("serviceWorker" in navigator) {
     notice.dataset.swUpdate = "true";
     notice.setAttribute("role", "status");
     notice.style.cssText = "position:fixed;right:1rem;bottom:1rem;z-index:1000;padding:.7rem 1rem;background:#18231f;color:#fff;border-radius:999px;box-shadow:0 8px 30px #0003;font:inherit";
-    notice.innerHTML = "Доступна новая версия <button type=button style=margin-left:.5rem>Обновить</button>";
-    notice.querySelector("button").addEventListener("click", () => registration.waiting?.postMessage({ type: "SKIP_WAITING" }));
+    notice.append(document.createTextNode("Доступна новая версия "));
+    const updateButton = document.createElement("button");
+    updateButton.type = "button";
+    updateButton.textContent = "Обновить";
+    updateButton.style.marginLeft = ".5rem";
+    updateButton.addEventListener("click", () => registration.waiting?.postMessage({ type: "SKIP_WAITING" }));
+    notice.append(updateButton);
     document.body.append(notice);
   };
   window.addEventListener("load", async () => {

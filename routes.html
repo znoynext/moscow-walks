@@ -18,12 +18,13 @@
     <link rel="manifest" href="./manifest.webmanifest" />
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="./styles.css" />
+    <link rel="stylesheet" href="./ui-fixes.css" />
   </head>
   <body class="articles-page">
     <header class="articles-header"><a class="articles-brand" href="./">Пешком.Москва</a><a class="back-link" href="./articles/">Что посмотреть</a></header>
     <main class="articles-main">
       <div class="articles-intro"><p class="eyebrow">Готовые сценарии</p><h1>Прогулки, которые можно начать сразу</h1><p class="articles-lead">Выберите настроение и откройте готовую идею. Параметры можно изменить в конструкторе.</p></div>
-      <nav class="article-filters" aria-label="Фильтр прогулок"><button class="article-filter is-active" type="button" data-filter="all">Все</button><button class="article-filter" type="button" data-filter="центр">Центр</button><button class="article-filter" type="button" data-filter="парки">Парки</button><button class="article-filter" type="button" data-filter="вода">Вода</button><button class="article-filter" type="button" data-filter="архитектура">Архитектура</button></nav>
+      <nav class="article-filters" aria-label="Фильтр прогулок"><button class="article-filter is-active" type="button" data-filter="all" aria-pressed="true">Все</button><button class="article-filter" type="button" data-filter="центр" aria-pressed="false">Центр</button><button class="article-filter" type="button" data-filter="парки" aria-pressed="false">Парки</button><button class="article-filter" type="button" data-filter="вода" aria-pressed="false">Вода</button><button class="article-filter" type="button" data-filter="архитектура" aria-pressed="false">Архитектура</button></nav>
       <div id="routeGrid" class="article-grid"></div>
     </main>
     <footer class="site-footer"><a href="./privacy/">Приватность</a><a href="https://github.com/znoynext/moscow-walks">Обратная связь</a></footer>
@@ -38,7 +39,11 @@
           .join("");
       }
       function selectFilter(filter) {
-        document.querySelectorAll(".article-filter").forEach((button) => button.classList.toggle("is-active", button.dataset.filter === filter));
+        document.querySelectorAll(".article-filter").forEach((button) => {
+          const isActive = button.dataset.filter === filter;
+          button.classList.toggle("is-active", isActive);
+          button.setAttribute("aria-pressed", String(isActive));
+        });
         render(filter);
       }
       document.querySelectorAll(".article-filter").forEach((button) => button.addEventListener("click", () => selectFilter(button.dataset.filter)));

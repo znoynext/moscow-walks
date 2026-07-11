@@ -22,6 +22,7 @@
     <link rel="manifest" href="../manifest.webmanifest" />
     <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
     <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" href="../ui-fixes.css" />
   </head>
   <body class="articles-page">
     <header class="articles-header">
@@ -41,12 +42,12 @@
         <div class="articles-stats"><span data-i18n="statPlaces">24 места</span><span data-i18n="statLinks">Официальные ссылки</span><span data-i18n="statRoutes">Маршрут в один клик</span></div>
       </div>
 
-      <label class="article-search"><span class="visually-hidden" data-i18n="searchLabel">Поиск по местам</span><input id="articleSearch" type="search" data-i18n-placeholder="searchPlaceholder" placeholder="Найти место…" /></label>
+      <label class="article-search"><span class="visually-hidden" data-i18n="searchLabel">Поиск по местам</span><input id="articleSearch" type="search" maxlength="100" data-i18n-placeholder="searchPlaceholder" placeholder="Найти место…" /></label>
       <nav class="article-filters" aria-label="Фильтр статей">
-        <button class="article-filter is-active" type="button" data-filter="all" data-i18n="all">Все места</button>
-        <button class="article-filter" type="button" data-filter="centre" data-i18n="centre">Центр</button>
-        <button class="article-filter" type="button" data-filter="parks" data-i18n="parks">Парки и вода</button>
-        <button class="article-filter" type="button" data-filter="museums" data-i18n="museums">Музеи и история</button>
+        <button class="article-filter is-active" type="button" data-filter="all" data-i18n="all" aria-pressed="true">Все места</button>
+        <button class="article-filter" type="button" data-filter="centre" data-i18n="centre" aria-pressed="false">Центр</button>
+        <button class="article-filter" type="button" data-filter="parks" data-i18n="parks" aria-pressed="false">Парки и вода</button>
+        <button class="article-filter" type="button" data-filter="museums" data-i18n="museums" aria-pressed="false">Музеи и история</button>
       </nav>
 
       <section id="articleGrid" class="article-grid" aria-live="polite">

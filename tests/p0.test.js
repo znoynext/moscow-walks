@@ -24,6 +24,38 @@ test("P0 time presets and factual-distance guard are present", () => {
   assert.match(app, /buildWalkingRoute\(candidate\)/);
 });
 
+test("map layers respect hidden state and expose expanded state", () => {
+  const controls = fs.readFileSync("map-controls.js", "utf8");
+  const fixes = fs.readFileSync("ui-fixes.css", "utf8");
+  assert.match(html, /id="mapLayersPanel"[^>]*hidden/);
+  assert.match(html, /data-map-action="layers"[^>]*aria-controls="mapLayersPanel"[^>]*aria-expanded="false"/);
+  assert.match(fixes, /\[hidden\]\s*\{\s*display:\s*none\s*!important/);
+  assert.match(controls, /layersButton\.setAttribute\("aria-expanded", String\(isOpen\)\)/);
+});
+
+test("mobile route results can return to settings without horizontal overflow", () => {
+  const fixes = fs.readFileSync("ui-fixes.css", "utf8");
+  const controls = fs.readFileSync("map-controls.js", "utf8");
+  assert.match(html, /id="editSettingsButton"/);
+  assert.match(controls, /function showPlanner\(\)/);
+  assert.match(controls, /classList\.remove\("has-route"\)/);
+  assert.match(fixes, /\.history-item\s*\{[\s\S]*?width:\s*100%;[\s\S]*?min-width:\s*0;/);
+  assert.match(fixes, /\.history-item span\s*\{[\s\S]*?min-width:\s*0;/);
+});
+
+test("interactive controls include practical touch and focus styles", () => {
+  const fixes = fs.readFileSync("ui-fixes.css", "utf8");
+  assert.match(fixes, /:where\(a, button, input, select, summary\):focus-visible/);
+  assert.match(fixes, /\.utility-button,[\s\S]*?min-width:\s*44px;[\s\S]*?min-height:\s*44px;/);
+});
+
+test("shared UI fixes load on every public page", () => {
+  for (const page of ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", "offline.html"]) {
+    assert.match(fs.readFileSync(page, "utf8"), /ui-fixes\.css/);
+  }
+  assert.match(fs.readFileSync("scripts/generate-route-pages.js", "utf8"), /\.\.\/\.\.\/ui-fixes\.css/);
+});
+
 test("map cannot zoom out past the Moscow overview scale", () => {
   assert.match(app, /const MAP_MIN_ZOOM = 12;/);
   assert.match(app, /const MAP_BOUNDS = \[\[55\.57, 37\.35\], \[55\.90, 37\.90\]\];/);
@@ -56,6 +88,18 @@ test("share URL keeps custom search and distance state", () => {
   assert.match(app, /validateCatalogueData/);
 });
 
+test("search input and geocoder response are bounded", () => {
+  assert.match(html, /id="startSearch"[^>]*maxlength="120"/);
+  assert.match(app, /\.trim\(\)\.slice\(0, 120\)/);
+  assert.match(app, /Number\.isFinite\(lat\)/);
+  assert.match(app, /lat < MAP_BOUNDS\[0\]\[0\]/);
+});
+
+test("Leaflet assets are pinned with integrity metadata", () => {
+  assert.match(html, /leaflet\.css" integrity="sha256-[^"]+" crossorigin="anonymous"/);
+  assert.match(html, /leaflet\.js" integrity="sha256-[^"]+" crossorigin="anonymous"/);
+});
+
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);
@@ -63,11 +107,29 @@ test("SEO route catalogue and privacy surface exist", () => {
   const routePage = fs.readFileSync("route.html", "utf8");
   assert.match(routePage, /id="routeDetail"/);
   assert.match(routePage, /startNames\[route\.start\]/);
+  assert.doesNotMatch(routePage, /\.innerHTML\s*=/);
+  assert.match(routePage, /Object\.hasOwn\(routeBySlug, slug\)/);
+  assert.match(routePage, /document\.createElement\("script"\)/);
   assert.doesNotMatch(routePage, /route\.start\.replace\("metro-"/);
   const inlineScript = routePage.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
   assert.ok(inlineScript);
   assert.doesNotThrow(() => new Function(inlineScript));
   assert.match(fs.readFileSync("privacy.html", "utf8"), /Геолокация/);
+});
+
+test("dynamic UI links use clean public catalogue URLs", () => {
+  assert.match(app, /href="\.\/articles\/#article-/);
+  assert.doesNotMatch(app, /href="\.\/articles\.html#article-/);
+  assert.match(fs.readFileSync("map-guide.js", "utf8"), /href="\.\/articles\/#article-/);
+});
+
+test("article search has an accessible empty state", () => {
+  const articleHtml = fs.readFileSync("articles.html", "utf8");
+  const articleJs = fs.readFileSync("articles.js", "utf8");
+  assert.match(articleHtml, /id="articleSearch"[^>]*maxlength="100"/);
+  assert.match(articleHtml, /data-filter="all"[^>]*aria-pressed="true"/);
+  assert.match(articleJs, /class="article-empty" role="status"/);
+  assert.match(articleJs, /setAttribute\("aria-pressed", String\(isActive\)\)/);
 });
 
 test("catalogue cards keep their content inside a padded body", () => {

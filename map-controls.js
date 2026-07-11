@@ -4,10 +4,31 @@ function installIcons() {
 
 function initMapControls() {
   installIcons();
+  document.querySelector("#editSettingsButton")?.addEventListener("click", showPlanner);
   document.querySelectorAll("[data-distance-option]").forEach((button) => button.addEventListener("click", () => { elements.distance.value = button.dataset.distanceOption; syncCustomDistance(); markSettingsChanged(); }));
-  document.querySelector("[data-map-action=layers]")?.addEventListener("click", () => { const panel = document.querySelector("#mapLayersPanel"); if (panel) panel.hidden = !panel.hidden; });
+  const layersButton = document.querySelector("[data-map-action=layers]");
+  const layersPanel = document.querySelector("#mapLayersPanel");
+  const setLayersOpen = (isOpen) => {
+    if (!layersPanel || !layersButton) return;
+    layersPanel.hidden = !isOpen;
+    layersButton.setAttribute("aria-expanded", String(isOpen));
+  };
+  layersButton?.addEventListener("click", () => setLayersOpen(layersPanel?.hidden));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && !layersPanel?.hidden) {
+      setLayersOpen(false);
+      layersButton?.focus();
+    }
+  });
   document.querySelectorAll("[data-map-action]").forEach((button) => button.addEventListener("click", () => handleMapAction(button.dataset.mapAction)));
   document.querySelectorAll("[data-layer-filter]").forEach((input) => input.addEventListener("change", () => handleLayerChange(input.dataset.layerFilter, input.checked)));
+}
+
+function showPlanner() {
+  document.body.classList.remove("has-route");
+  const planner = document.querySelector("#routePlanner");
+  planner?.scrollTo({ top: 0, behavior: "auto" });
+  planner?.focus({ preventScroll: true });
 }
 
 function handleMapAction(action) {
