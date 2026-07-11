@@ -16,6 +16,16 @@ const curatedRoutes = [
 ];
 
 const routeBySlug = Object.fromEntries(curatedRoutes.map((route) => [route.slug, route]));
+const startNames = {
+  "metro-okhotny": "Охотный Ряд",
+  "metro-park-kultury": "Парк культуры",
+  "metro-mayakovskaya": "Маяковская",
+  "metro-vdnkh": "ВДНХ",
+  "metro-kropotkinskaya": "Кропоткинская",
+  "metro-tretyakovskaya": "Третьяковская",
+  "metro-chistye": "Чистые пруды",
+  "metro-kievskaya": "Киевская",
+};
 
 const routeImages = {
   "red-square-classic": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Red_Square%2C_Moscow%2C_Russia.jpg/1280px-Red_Square%2C_Moscow%2C_Russia.jpg",
@@ -35,5 +45,5 @@ const routeImages = {
 };
 
 if (typeof module !== "undefined") {
-  module.exports = { curatedRoutes, routeBySlug, routeImages };
+  module.exports = { curatedRoutes, routeBySlug, routeImages, startNames };
 }

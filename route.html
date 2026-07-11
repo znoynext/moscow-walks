@@ -1,19 +1,7 @@
-<!doctype html>
-<html lang="ru">
-  <head>
-    <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Прогулка по Москве — Пешком.Москва</title><meta name="description" content="Готовая пешая прогулка по Москве." /><meta name="robots" content="noindex, follow" />
-    <link rel="canonical" href="https://znoynext.github.io/moscow-walks/route.html" /><link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" /><link rel="stylesheet" href="./styles.css" />
-  </head>
-  <body class="articles-page"><header class="articles-header"><a class="articles-brand" href="./">Пешком.Москва</a><a class="back-link" href="./routes.html">Все прогулки</a></header><main class="articles-main"><article id="routeDetail" class="article-card"></article></main><footer class="site-footer"><a href="./privacy.html">Приватность</a><a href="https://github.com/znoynext/moscow-walks">Обратная связь</a></footer><script src="./routes.js"></script><script>
-    const route = routeBySlug[new URLSearchParams(location.search).get("slug")] || curatedRoutes[0];
-    document.title = `${route.title} — Пешком.Москва`;
-    document.querySelector('meta[name="description"]').content = route.description;
-    document.querySelector('link[rel="canonical"]').href = `${location.origin}${location.pathname}?slug=${route.slug}`;
-    document.querySelector("#routeDetail").innerHTML = `<div class="article-image-wrap"><img class="article-image" src="${routeImages[route.slug]}" alt="${route.title}" width="1200" height="675" decoding="async" referrerpolicy="no-referrer" onerror="this.parentElement.classList.add('is-broken')" /></div><div class="article-card-body"><div class="article-card-top"><span class="article-tag">${route.tags.join(" · ")}</span><span class="article-number">${route.distance} км</span></div><h1>${route.title}</h1><p>${route.description}</p><div class="article-facts"><span><b>Старт</b> ${route.start.replace("metro-", "м. ")}</span><span><b>Остановки</b> ${route.stops.join(" · ")}</span></div><div class="article-actions"><a class="article-primary" href="./?start=${route.start}&distance=${route.distance}&theme=${route.theme}&anchor=${route.anchor}">Построить маршрут</a><a class="article-secondary" href="./routes.html">Другие прогулки</a></div></div>`;
-    const structuredData = document.createElement("script");
-    structuredData.type = "application/ld+json";
-    structuredData.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "TouristTrip", name: route.title, description: route.description, url: location.href });
-    document.head.append(structuredData);
-  </script><script defer src="./sw-register.js"></script></body>
-</html>
+<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Готовая прогулка — Пешком.Москва</title><link rel="stylesheet" href="./styles.css"></head><body class="articles-page"><header class="articles-header"><a class="articles-brand" href="./">Пешком.Москва</a><a class="back-link" href="./routes/">Все прогулки</a></header><main class="articles-main"><article id="routeDetail" class="article-card"></article></main><footer class="site-footer"><a href="./privacy/">Приватность</a><a href="./routes/">Все прогулки</a></footer><script src="./routes.js"></script><script>
+const slug = new URLSearchParams(location.search).get("slug");
+const route = routeBySlug[slug];
+const card = document.querySelector("#routeDetail");
+if (!route) card.innerHTML = '<div class="article-card-body"><h1>Прогулка не найдена</h1><a class="article-primary" href="./routes/">Все прогулки</a></div>';
+else card.innerHTML = `<div class="article-card-body"><h1>${route.title}</h1><p>${route.description}</p><p>Старт: м. ${startNames[route.start] || route.start} · около ${route.distance} км</p><ol>${route.stops.map((stop) => `<li>${stop}</li>`).join("")}</ol><div class="article-actions"><a class="article-primary" href="./?start=${route.start}&distance=${route.distance}&theme=${route.theme}&anchor=${route.anchor}">Построить маршрут</a><a class="article-secondary" href="./routes/">Другие прогулки</a></div></div>`;
+</script><script defer src="./sw-register.js"></script></body></html>

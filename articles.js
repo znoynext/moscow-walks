@@ -176,7 +176,7 @@ function renderArticles(filter = "all") {
     const meta = articleMeta[articleIndex];
     const imageSource = stableArticleImages[articleIndex] || meta.image;
     const mapUrl = `https://yandex.ru/maps/?pt=${meta.lon},${meta.lat}&z=16&l=map`;
-    const routeUrl = `./?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
+    const routeUrl = `../?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
     <article id="article-${articleSlugs[articleIndex]}" class="article-card">
       <div class="article-image-wrap"><img class="article-image" src="${imageSource}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" width="1200" height="675" referrerpolicy="no-referrer" onerror="this.hidden=true; this.nextElementSibling.hidden=false" /><div class="article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}" hidden><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articleIndex + 1).padStart(2, "0")}</span></div>

@@ -1,26 +1,5 @@
 <!doctype html>
 <html lang="ru">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Приватность — Пешком.Москва</title>
-    <meta name="robots" content="index, follow" />
-    <link rel="canonical" href="https://znoynext.github.io/moscow-walks/privacy/" />
-    <link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" />
-    <link rel="stylesheet" href="../styles.css" />
-  </head>
-  <body class="articles-page">
-    <header class="articles-header"><a class="articles-brand" href="../">Пешком.Москва</a></header>
-    <main class="articles-main">
-      <article class="article-card">
-        <p class="eyebrow">Приватность</p>
-        <h1>Как работают данные</h1>
-        <p>Пешком.Москва не требует регистрации и не отправляет историю маршрутов на сервер. Параметры сохраняются только в localStorage и URL браузера.</p>
-        <p>Геолокация запрашивается только после нажатия кнопки и используется для построения текущей прогулки. Адресный поиск отправляет введённый запрос в OpenStreetMap Nominatim. Линия маршрута запрашивается у публичного пешеходного OSRM-сервиса.</p>
-        <p>Встроенная аналитика отключена по умолчанию. Сайт может принимать совместимую реализацию <code>window.analytics.track</code> без передачи персональных идентификаторов.</p>
-      </article>
-    </main>
-    <footer class="site-footer"><a href="../">К конструктору</a><a href="https://github.com/znoynext/moscow-walks">Вопрос о приватности</a></footer>
-    <script defer src="../sw-register.js"></script>
-  </body>
+  <head><meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" /><title>Приватность — Пешком.Москва</title><meta name="robots" content="index, follow" /><link rel="canonical" href="https://znoynext.github.io/moscow-walks/privacy/" /><link rel="icon" href="../assets/favicon.svg" type="image/svg+xml" /><link rel="stylesheet" href="../styles.css" /></head>
+  <body class="articles-page"><header class="articles-header"><a class="articles-brand" href="../">Пешком.Москва</a></header><main class="articles-main"><article class="article-card"><div class="article-card-body"><p class="eyebrow">Приватность</p><h1>Как работают данные</h1><p>Пешком.Москва не требует регистрации и не отправляет историю маршрутов на сервер. Параметры конструктора сохраняются только в localStorage и URL браузера.</p><p>Геолокация запрашивается только после нажатия «Начать от меня» или «Идти по маршруту». Координаты используются в браузере для старта маршрута и навигации; они не отправляются на сервер Пешком.Москва. Наблюдение за координатами и обработчики ориентации прекращаются при остановке навигации и уходе со страницы.</p><p>Введённые адреса отправляются в публичный сервис OpenStreetMap Nominatim для поиска. Точки маршрута отправляются в публичный пешеходный OSRM для построения линии. Эти сервисы могут обрабатывать сетевой адрес и параметры запроса по собственным правилам.</p><p>Сайт может работать как PWA: service worker кэширует оболочку страниц для офлайн-режима. Тайлы OpenStreetMap service worker не перехватывает и не скачивает заранее.</p><p>Встроенная аналитика отключена по умолчанию. При наличии совместимого <code>window.analytics.track</code> сайт может передавать обезличенные события без персональных идентификаторов.</p></div></article></main><footer class="site-footer"><a href="../">К конструктору</a><a href="https://github.com/znoynext/moscow-walks">Вопрос о приватности</a></footer><script defer src="../sw-register.js"></script></body>
 </html>

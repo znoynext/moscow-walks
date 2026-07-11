@@ -42,8 +42,9 @@ test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /routeImages/);
   assert.match(fs.readFileSync("routes.html", "utf8"), /routeGrid/);
   const routePage = fs.readFileSync("route.html", "utf8");
-  assert.match(routePage, /TouristTrip/);
-  assert.doesNotMatch(routePage, /insertAdjacentHTML\("beforeend", `<script/);
+  assert.match(routePage, /id="routeDetail"/);
+  assert.match(routePage, /startNames\[route\.start\]/);
+  assert.doesNotMatch(routePage, /route\.start\.replace\("metro-"/);
   const inlineScript = routePage.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
   assert.ok(inlineScript);
   assert.doesNotThrow(() => new Function(inlineScript));
@@ -53,7 +54,7 @@ test("SEO route catalogue and privacy surface exist", () => {
 test("catalogue cards keep their content inside a padded body", () => {
   assert.match(fs.readFileSync("areas.html", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
   assert.match(fs.readFileSync("routes.html", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
-  assert.match(fs.readFileSync("route.html", "utf8"), /<div class="article-image-wrap">[\s\S]*?<div class="article-card-body"><div class="article-card-top">/);
+  assert.match(fs.readFileSync("route.html", "utf8"), /id="routeDetail"/);
   assert.match(fs.readFileSync("styles.css", "utf8"), /\.article-card-body \{[\s\S]*?min-width: 0;/);
 });
 
@@ -64,13 +65,19 @@ test("quality scripts are part of CI", () => {
   assert.match(workflow, /check-performance/);
 });
 
-test("service worker refreshes deployed files without a hard reload", () => {
+test("service worker updates manually and does not intercept map tiles", () => {
   const registration = fs.readFileSync("sw-register.js", "utf8");
   const worker = fs.readFileSync("sw.js", "utf8");
   assert.match(registration, /updateViaCache: "none"/);
   assert.match(registration, /registration\.update\(\)/);
-  assert.match(registration, /controllerchange/);
-  assert.match(worker, /cache: "no-store"/);
+  assert.match(registration, /Доступна новая версия/);
+  assert.match(registration, /SKIP_WAITING/);
+  assert.doesNotMatch(registration, /location\.reload/);
+  assert.doesNotMatch(worker, /cache: "no-store"/);
+  assert.match(worker, /tile\.openstreetmap\.org/);
+  assert.match(worker, /return;/);
+  assert.match(worker, /SHELL_CACHE/);
+  assert.match(worker, /RUNTIME_CACHE/);
   assert.match(worker, /ignoreSearch: true/);
   for (const page of ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html"]) {
     assert.match(fs.readFileSync(page, "utf8"), /<script defer src="\.\/sw-register\.js"><\/script>/);

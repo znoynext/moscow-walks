@@ -10,6 +10,11 @@ const HISTORY_KEY = "moscow-walks-history";
 const RATING_KEY = "moscow-walks-ratings";
 const REQUEST_TIMEOUT_MS = 15000;
 const ROUTE_TOLERANCE = 0.35;
+const SERVICE_CACHE_TTL = { osrm: 5 * 60 * 1000, nominatim: 10 * 60 * 1000 };
+const serviceState = {
+  osrm: { cache: new Map(), inFlight: null, controller: null, generation: 0, lastError: null },
+  nominatim: { cache: new Map(), inFlight: null, controller: null, generation: 0, nextAt: 0, lastError: null },
+};
 // Moscow and the nearest suburbs. Coordinates are [latitude, longitude].
 const MAP_BOUNDS = [[55.52, 37.15], [55.98, 38.15]];
 const MAP_VIEW = [55.7539, 37.6208];
@@ -433,8 +438,8 @@ function init() {
   elements.themeToggle?.addEventListener("click", toggleTheme);
   elements.clearHistoryButton?.addEventListener("click", clearHistory);
   elements.ratingButtons?.forEach((button) => button.addEventListener("click", () => rateCurrentRoute(Number(button.dataset.rating))));
-  requestUserLocation({ automatic: true });
   analytics.track("planner_view");
+  window.addEventListener("pagehide", () => stopNavigation({ silent: true }), { once: true });
 }
 
 function markSettingsChanged() {
@@ -637,14 +642,13 @@ function toggleLocationTracking() {
   requestUserLocation();
 }
 
-function requestUserLocation({ automatic = false } = {}) {
+function requestUserLocation() {
   if (!navigator.geolocation) {
     elements.locationStatus.textContent = t("locationDenied");
     analytics.track("location_error", { reason: "unsupported" });
     return;
   }
 
-  if (automatic && (pickedStart || elements.startSearch?.value.trim())) return;
   elements.locateButton.disabled = true;
   analytics.track("location_requested");
   navigator.geolocation.getCurrentPosition(
@@ -655,7 +659,7 @@ function requestUserLocation({ automatic = false } = {}) {
       if (elements.startSearch) elements.startSearch.value = "";
       elements.locationStatus.textContent = currentLanguage === "en" ? "Start set to your location." : "Старт установлен по вашему местоположению.";
       analytics.track("location_success");
-      if (!automatic) markSettingsChanged();
+      markSettingsChanged();
     },
     () => {
       elements.locateButton.disabled = false;
@@ -852,20 +856,16 @@ async function generateAndRender({ alternative = false } = {}) {
     const targetKm = targetDistanceKm();
     const theme = new FormData(elements.form).get("theme");
     const searchedStart = await resolveSearchPoint(elements.startSearch?.value, "Старт из поиска", "search");
+    if (elements.startSearch?.value.trim() && !searchedStart && !pickedStart && !userPosition) {
+      elements.routeStatus.textContent = "Не удалось найти адрес. Проверьте запрос и попробуйте ещё раз.";
+      return;
+    }
     const start = pickedStart || userPosition || searchedStart || selectedStart;
     const anchor = (await resolveSearchPoint(elements.anchorSearch?.value, "Место из поиска", "search")) || selectedAnchor;
 
     if (run !== latestRun) return;
-    let candidate = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
-    let walking = await buildWalkingRoute(candidate);
-    for (let attempt = 1; attempt < 3 && walking && !isRouteDistanceAcceptable(walking.distanceKm, targetKm); attempt += 1) {
-      const alternativeRoute = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed: variantSeed + attempt * 17 });
-      const alternativeWalking = await buildWalkingRoute(alternativeRoute);
-      if (alternativeWalking && Math.abs(alternativeWalking.distanceKm - targetKm) < Math.abs(walking.distanceKm - targetKm)) {
-        candidate = alternativeRoute;
-        walking = alternativeWalking;
-      }
-    }
+    const candidate = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
+    const walking = await buildWalkingRoute(candidate);
     currentRoute = candidate;
 
     if (run !== latestRun) return;
@@ -882,7 +882,13 @@ async function generateAndRender({ alternative = false } = {}) {
     scrollToResult();
   } catch (error) {
     console.warn("Не удалось построить маршрут", error);
-    elements.routeStatus.textContent = t("routeError");
+    elements.routeStatus.textContent = error?.service === "nominatim"
+      ? "Не удалось найти адрес. Проверьте запрос и попробуйте ещё раз."
+      : error?.service === "osrm"
+        ? "Не удалось проложить пеший маршрут. Попробуйте ещё раз."
+        : !navigator.onLine
+          ? "Нет соединения с интернетом. Проверьте сеть и попробуйте ещё раз."
+          : t("routeError");
     showToast(t("tryAgain"));
     analytics.track("route_build_error", { message: error instanceof Error ? error.message : "unknown" });
   } finally {
@@ -911,7 +917,7 @@ async function resolveSearchPoint(query, note, area) {
       bounded: "1",
       addressdetails: "0",
     });
-    const response = await fetchWithTimeout(`${NOMINATIM_URL}?${params.toString()}`, {
+    const response = await requestPublicService("nominatim", `${NOMINATIM_URL}?${params.toString()}`, {
       headers: { Accept: "application/json" },
     });
     if (!response.ok) return null;
@@ -1057,9 +1063,9 @@ async function requestWalkingRoute(stops) {
     continue_straight: "false",
   });
 
-  for (const baseUrl of OSRM_FOOT_URLS) {
+  for (const baseUrl of OSRM_FOOT_URLS.slice(0, 1)) {
     try {
-      const response = await fetchWithTimeout(`${baseUrl}${coords}?${params.toString()}`);
+      const response = await requestPublicService("osrm", `${baseUrl}${coords}?${params.toString()}`);
       if (!response.ok) continue;
       const data = await response.json();
       const walkingRoute = data.routes?.[0];
@@ -1081,24 +1087,8 @@ async function buildWalkingRoute(route) {
   if (route.length < 2) return null;
 
   const fullRoute = await requestWalkingRoute(route);
-  if (fullRoute) return { source: "pedestrian", ...fullRoute };
-
-  // A multi-stop request can fail even when every individual leg is routable.
-  // Retry leg by leg, but never draw a straight line between places.
-  const legs = [];
-  for (let index = 1; index < route.length; index += 1) {
-    const leg = await requestWalkingRoute([route[index - 1], route[index]]);
-    if (!leg) return null;
-    legs.push(leg);
-  }
-
-  const coordinates = legs.flatMap((leg, index) => index === 0 ? leg.coordinates : leg.coordinates.slice(1));
-  return {
-    source: "pedestrian",
-    distanceKm: legs.reduce((sum, leg) => sum + leg.distanceKm, 0),
-    durationMin: legs.reduce((sum, leg) => sum + leg.durationMin, 0),
-    coordinates,
-  };
+  if (!fullRoute) throw serviceState.osrm.lastError || Object.assign(new Error("OSRM route unavailable"), { service: "osrm" });
+  return { source: "pedestrian", ...fullRoute };
 }
 
 function renderRoute(route, walking) {
@@ -1122,7 +1112,6 @@ function renderRoute(route, walking) {
   renderStops(route);
   renderFallbackMap(walking.coordinates, route);
   renderLeafletRoute(route, walking.coordinates);
-  if (userPosition && !isNavigationMode) startNavigation();
   elements.itinerary.classList.remove("updated");
   void elements.itinerary.offsetWidth;
   elements.itinerary.classList.add("updated");
@@ -1541,13 +1530,45 @@ function showToast(message) {
   showToast.timer = window.setTimeout(() => elements.toast.classList.remove("visible"), 2600);
 }
 
-async function fetchWithTimeout(url, options = {}) {
+async function requestPublicService(service, url, options = {}) {
+  const state = serviceState[service];
+  const cached = state.cache.get(url);
+  if (cached && cached.expiresAt > Date.now()) return cached.response.clone();
+  if (state.inFlight) {
+    if (state.inFlight.url === url) return state.inFlight.promise.then((response) => response.clone());
+    state.controller?.abort();
+  }
+  const generation = ++state.generation;
+  if (service === "nominatim") {
+    const wait = Math.max(0, state.nextAt - Date.now());
+    state.nextAt = Math.max(state.nextAt, Date.now()) + 1000;
+    if (wait) await new Promise((resolve) => window.setTimeout(resolve, wait));
+  }
   const controller = new AbortController();
-  const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  try {
-    return await fetch(url, { ...options, signal: controller.signal });
-  } finally {
-    window.clearTimeout(timeout);
+  state.controller = controller;
+  const promise = (async () => {
+    let lastError;
+    for (let attempt = 0; attempt < 2; attempt += 1) {
+      try {
+        const timeout = window.setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+        const response = await fetch(url, { ...options, signal: controller.signal });
+        window.clearTimeout(timeout);
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        state.cache.set(url, { response: response.clone(), expiresAt: Date.now() + SERVICE_CACHE_TTL[service] });
+        return response;
+      } catch (error) {
+        lastError = Object.assign(error, { service });
+        if (controller.signal.aborted || attempt === 1) break;
+        await new Promise((resolve) => window.setTimeout(resolve, 250));
+      }
+    }
+    state.lastError = lastError;
+    throw lastError;
+  })();
+  state.inFlight = { url, promise };
+  try { return await promise; }
+  finally {
+    if (generation === state.generation) { state.inFlight = null; state.controller = null; }
   }
 }
 
