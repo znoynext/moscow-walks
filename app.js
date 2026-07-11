@@ -44,8 +44,8 @@ function writeStorage(key, value) {
 
 const translations = {
   ru: {
-    heroTitle: "Соберите прогулку по Москве под своё настроение",
-    heroNote: "Выберите старт, время и формат — получите готовый маршрут через интересные места с картой, длиной и удобным финишем.",
+    heroTitle: "Пешеходные маршруты по Москве",
+    heroNote: "Выберите старт, длину и настроение — соберём маршрут для прогулки по Москве.",
     freeBadge: "Бесплатно",
     noRegistration: "Без регистрации",
     secondsBadge: "Маршрут за несколько секунд",
@@ -85,9 +85,10 @@ const translations = {
     stopNavigation: "Остановить навигацию",
     navigationOn: "Навигация включена",
     share: "Поделиться маршрутом",
-    guideEyebrow: "Прогулки без подготовки",
-    guideTitle: "Идея для вечера, свидания или выходного",
-    guideText: "Выберите старт, длину и настроение. Walk Moscow соберёт прогулку через интересные места Москвы, покажет расстояние и время в пути.",
+    guideEyebrow: "Маршрут без подготовки",
+    guideTitle: "Где погулять в Москве",
+    guideText: "Пешком.Москва помогает составить маршрут для прогулки по городу. Выберите точку старта, желаемую длину и настроение — сервис предложит пешеходный маршрут через интересные места Москвы.",
+    guideExtra: "Маршрут подойдёт для самостоятельной прогулки, знакомства с новым районом, встречи с друзьями или необычного свидания.",
     howItWorks: "Как строится маршрут",
     howItWorksText: "",
     mapData: "Прогулка начинается здесь",
@@ -110,8 +111,8 @@ const translations = {
     toRoute: "К маршруту",
   },
   en: {
-    heroTitle: "Build a Moscow walk for your mood",
-    heroNote: "Choose a start, time and style — get a ready walking route through interesting places with a map, distance and an easy finish.",
+    heroTitle: "Walking routes in Moscow",
+    heroNote: "Choose a start, distance and mood — we will build a route for your walk in Moscow.",
     freeBadge: "Free",
     noRegistration: "No sign-up",
     secondsBadge: "A walk in seconds",
@@ -151,9 +152,10 @@ const translations = {
     stopNavigation: "Stop navigation",
     navigationOn: "Navigation is on",
     share: "Share this walk",
-    guideEyebrow: "Walks without planning",
-    guideTitle: "An easy idea for an evening or weekend",
-    guideText: "Choose a start, distance and mood. Walk Moscow creates a route through interesting places, with distance and walking time included.",
+    guideEyebrow: "A route without planning",
+    guideTitle: "Where to walk in Moscow",
+    guideText: "Пешком.Москва helps you plan a walk around the city. Choose a start, distance and mood, and the service will suggest a walking route through interesting places in Moscow.",
+    guideExtra: "The route works for a solo walk, getting to know a new district, meeting friends or an unusual date.",
     howItWorks: "How it works",
     howItWorksText: "",
     mapData: "Your walk starts here",
@@ -519,13 +521,13 @@ function fillHints() {
 
 function applyLanguage() {
   document.documentElement.lang = currentLanguage;
-  document.title = currentLanguage === "en" ? "Walk Moscow — walking routes in Moscow" : "Walk Moscow — пешие маршруты по Москве";
-  document.querySelector('meta[name="description"]')?.setAttribute("content", currentLanguage === "en" ? "Build a free walking route in Moscow with landmarks, a map and estimated walking time." : "Бесплатный генератор пеших маршрутов по Москве с картой, достопримечательностями и расчётом времени.");
+  document.title = currentLanguage === "en" ? "Walking routes in Moscow | Пешком.Москва" : "Где погулять в Москве — пешеходные маршруты | Пешком.Москва";
+  document.querySelector('meta[name="description"]')?.setAttribute("content", currentLanguage === "en" ? "Create a walking route in Moscow by choosing a start, distance and mood." : "Генератор пешеходных маршрутов по Москве. Выберите точку старта, длину и настроение прогулки — получите готовый маршрут через интересные места.");
   document.querySelector('meta[property="og:locale"]')?.setAttribute("content", currentLanguage === "en" ? "en_US" : "ru_RU");
-  document.querySelector('meta[property="og:title"]')?.setAttribute("content", currentLanguage === "en" ? "Walk Moscow — walking routes in Moscow" : "Walk Moscow — прогулки по Москве");
-  document.querySelector('meta[property="og:description"]')?.setAttribute("content", currentLanguage === "en" ? "Free walking routes in Moscow with landmarks, a map and estimated walking time." : "Бесплатные пешие маршруты по Москве с картой, интересными местами и расчётом времени.");
+  document.querySelector('meta[property="og:title"]')?.setAttribute("content", currentLanguage === "en" ? "Пешком.Москва — walking routes in Moscow" : "Пешком.Москва — пешеходные маршруты по Москве");
+  document.querySelector('meta[property="og:description"]')?.setAttribute("content", currentLanguage === "en" ? "Choose a start, distance and mood to get a walking route in Moscow." : "Выберите старт, длину и настроение — получите маршрут для прогулки по Москве.");
   document.querySelector('meta[name="twitter:title"]')?.setAttribute("content", document.title);
-  document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", currentLanguage === "en" ? "Build a free Moscow walk in seconds." : "Соберите бесплатную прогулку по Москве за несколько секунд.");
+  document.querySelector('meta[name="twitter:description"]')?.setAttribute("content", currentLanguage === "en" ? "Create a Moscow walking route by start, distance and mood." : "Создайте маршрут для прогулки по Москве по старту, длине и настроению.");
   document.querySelectorAll("[data-i18n]").forEach((node) => {
     const key = node.dataset.i18n;
     if (translations[currentLanguage][key]) node.textContent = t(key);
@@ -1445,7 +1447,7 @@ function openNavigation() {
 function buildShareText() {
   const title = elements.routeTitle.textContent || t("shareTitle");
   const stops = currentRoute.map((stop, index) => `${index + 1}. ${localizedPlaceName(stop.name)}`).join("\n");
-  return `${title}\n${formatDistance(currentSummary.distanceKm)} · ${formatDuration(currentSummary.durationMin)}\n\n${stops}\n\nWalk Moscow`;
+  return `${title}\n${formatDistance(currentSummary.distanceKm)} · ${formatDuration(currentSummary.durationMin)}\n\n${stops}\n\nПешком.Москва`;
 }
 
 function formatDistance(distance) {

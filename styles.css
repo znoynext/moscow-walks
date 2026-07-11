@@ -680,7 +680,7 @@ button:disabled {
   font-size: clamp(25px, 3vw, 36px);
 }
 
-.guide > p,
+.guide-copy,
 .guide details {
   color: var(--muted);
   font-size: 16px;
@@ -691,8 +691,13 @@ button:disabled {
   grid-column: 2;
 }
 
+.guide-copy p,
 .guide details p {
   margin-top: 12px;
+}
+
+.guide-copy p:first-child {
+  margin-top: 0;
 }
 
 .site-footer {
@@ -1372,7 +1377,7 @@ ol {
   height: 100%;
   place-items: center;
   color: rgba(255, 255, 255, 0.72);
-  content: "Walk Moscow";
+  content: "Пешком.Москва";
   font-size: 14px;
   font-weight: 800;
   letter-spacing: 0.08em;

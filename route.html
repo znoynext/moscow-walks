@@ -2,12 +2,12 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Прогулка по Москве — Walk Moscow</title><meta name="description" content="Готовая пешая прогулка по Москве." />
+    <title>Прогулка по Москве — Пешком.Москва</title><meta name="description" content="Готовая пешая прогулка по Москве." />
     <link rel="canonical" href="https://znoynext.github.io/moscow-walks/route.html" /><link rel="stylesheet" href="./styles.css" />
   </head>
-  <body class="articles-page"><header class="articles-header"><a class="articles-brand" href="./">Walk Moscow</a><a class="back-link" href="./routes.html">Все прогулки</a></header><main class="articles-main"><article id="routeDetail" class="article-card"></article></main><footer class="site-footer"><a href="./privacy.html">Приватность</a><a href="mailto:walkmoscow@example.com?subject=Walk%20Moscow%20feedback">Обратная связь</a></footer><script src="./routes.js"></script><script>
+  <body class="articles-page"><header class="articles-header"><a class="articles-brand" href="./">Пешком.Москва</a><a class="back-link" href="./routes.html">Все прогулки</a></header><main class="articles-main"><article id="routeDetail" class="article-card"></article></main><footer class="site-footer"><a href="./privacy.html">Приватность</a><a href="mailto:walkmoscow@example.com?subject=%D0%9F%D0%B5%D1%88%D0%BA%D0%BE%D0%BC.%D0%9C%D0%BE%D1%81%D0%BA%D0%B2%D0%B0%20feedback">Обратная связь</a></footer><script src="./routes.js"></script><script>
     const route = routeBySlug[new URLSearchParams(location.search).get("slug")] || curatedRoutes[0];
-    document.title = `${route.title} — Walk Moscow`;
+    document.title = `${route.title} — Пешком.Москва`;
     document.querySelector('meta[name="description"]').content = route.description;
     document.querySelector('link[rel="canonical"]').href = `${location.origin}${location.pathname}?slug=${route.slug}`;
     document.querySelector("#routeDetail").innerHTML = `<div class="article-card-body"><div class="article-card-top"><span class="article-tag">${route.tags.join(" · ")}</span><span class="article-number">${route.distance} км</span></div><h1>${route.title}</h1><p>${route.description}</p><div class="article-facts"><span><b>Старт</b> ${route.start.replace("metro-", "м. ")}</span><span><b>Остановки</b> ${route.stops.join(" · ")}</span></div><div class="article-actions"><a class="article-primary" href="./?start=${route.start}&distance=${route.distance}&theme=${route.theme}&anchor=${route.anchor}">Построить маршрут</a><a class="article-secondary" href="./routes.html">Другие прогулки</a></div></div>`;

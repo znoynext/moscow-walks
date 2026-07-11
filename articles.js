@@ -191,7 +191,7 @@ function renderArticles(filter = "all") {
 
 function applyArticleLanguage() {
   document.documentElement.lang = articleLanguage;
-  document.title = articleLanguage === "en" ? "Walk Moscow — things to see in Moscow" : "Walk Moscow — что посмотреть в Москве";
+  document.title = articleLanguage === "en" ? "Things to see in Moscow | Пешком.Москва" : "Что посмотреть в Москве | Пешком.Москва";
   const description = articleLanguage === "en" ? "Things to see in Moscow: 24 landmarks, parks, museums and walking ideas with short descriptions, maps and official links." : "Что посмотреть в Москве: 24 достопримечательности, парки, музеи и красивые маршруты с краткими описаниями, картой и официальными ссылками.";
   document.querySelector('meta[name="description"]')?.setAttribute("content", description);
   document.querySelector('meta[property="og:title"]')?.setAttribute("content", document.title);
