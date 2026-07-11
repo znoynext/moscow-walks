@@ -329,6 +329,7 @@ let map;
 let markersLayer;
 let routeLayer;
 let progressLayer;
+let guideLayer;
 let currentRoute = [];
 let currentWalkingLine = [];
 let currentSummary = { distanceKm: 0, durationMin: 0, calories: 0 };
@@ -553,6 +554,7 @@ function applyLanguage() {
     option.textContent = WALK_DURATION_LABELS[option.value]?.[currentLanguage] || option.value;
   });
   syncCustomDistance();
+  renderMapGuide();
   if (currentRoute.length) {
     elements.routeTitle.textContent = buildRouteTitle(currentRoute);
     elements.routeArea.textContent = localizedArea(routeArea(currentRoute));
@@ -604,6 +606,8 @@ function initMap() {
   markersLayer = L.layerGroup().addTo(map);
   routeLayer = L.layerGroup().addTo(map);
   progressLayer = L.layerGroup().addTo(map);
+  guideLayer = L.layerGroup().addTo(map);
+  renderMapGuide();
   map.on("click", (event) => {
     if (isPickingStart) setPickedStart(event.latlng);
   });

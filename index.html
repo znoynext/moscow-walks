@@ -137,6 +137,11 @@
       <section class="workspace" id="routeResult" aria-label="Результат маршрута">
         <div class="map-panel">
           <div id="map" class="map" role="application" aria-label="Интерактивная карта пешего маршрута"></div>
+          <div class="map-guide-legend" aria-label="Обозначения на карте">
+            <span><i class="map-guide-dot map-guide-dot--metro"></i>Метро</span>
+            <span><i class="map-guide-dot map-guide-dot--park"></i>Парки</span>
+            <span><i class="map-guide-dot map-guide-dot--sight"></i>Достопримечательности</span>
+          </div>
           <svg id="fallbackMap" class="fallback-map" viewBox="0 0 1000 720" role="img" aria-label="Схема маршрута"></svg>
         </div>
 
@@ -209,7 +214,9 @@
 
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="./api-config.js"></script>
-    <script defer src="./app.js?v=2026-07-11-7"></script>
+    <script defer src="./map-places.js"></script>
+    <script defer src="./map-guide.js"></script>
+    <script defer src="./app.js?v=2026-07-11-8"></script>
     <script defer src="./sw-register.js"></script>
   </body>
 </html>
