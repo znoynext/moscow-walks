@@ -2,7 +2,7 @@
   "name": "walk-moscow",
   "private": true,
   "scripts": {
-    "check": "node --check app.js && node --check articles.js && node --check routes.js && node --check scripts/validate-data.js",
+    "check": "node --check app.js && node --check articles.js && node --check routes.js && node --check sw.js && node --check sw-register.js && node --check scripts/validate-data.js",
     "validate-data": "node scripts/validate-data.js",
     "check-links": "node scripts/check-links.js",
     "check-performance": "node scripts/check-performance.js",

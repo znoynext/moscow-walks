@@ -61,3 +61,16 @@ test("quality scripts are part of CI", () => {
   assert.match(workflow, /check-links/);
   assert.match(workflow, /check-performance/);
 });
+
+test("service worker refreshes deployed files without a hard reload", () => {
+  const registration = fs.readFileSync("sw-register.js", "utf8");
+  const worker = fs.readFileSync("sw.js", "utf8");
+  assert.match(registration, /updateViaCache: "none"/);
+  assert.match(registration, /registration\.update\(\)/);
+  assert.match(registration, /controllerchange/);
+  assert.match(worker, /cache: "no-store"/);
+  assert.match(worker, /ignoreSearch: true/);
+  for (const page of ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html"]) {
+    assert.match(fs.readFileSync(page, "utf8"), /<script defer src="\.\/sw-register\.js"><\/script>/);
+  }
+});

@@ -1645,14 +1645,6 @@ function toRad(value) {
 
 init();
 
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-11-7").catch((error) => {
-      console.warn("Service worker не зарегистрирован", error);
-    });
-  });
-}
-
 window.MoscowWalksCore = {
   estimateCalories,
   buildRoute: (options) => buildRoute(options),

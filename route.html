@@ -15,5 +15,5 @@
     structuredData.type = "application/ld+json";
     structuredData.textContent = JSON.stringify({ "@context": "https://schema.org", "@type": "TouristTrip", name: route.title, description: route.description, url: location.href });
     document.head.append(structuredData);
-  </script></body>
+  </script><script defer src="./sw-register.js"></script></body>
 </html>

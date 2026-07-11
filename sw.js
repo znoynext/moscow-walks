@@ -1,4 +1,4 @@
-const CACHE_NAME = "moscow-walks-v16";
+const CACHE_NAME = "moscow-walks-v17";
 const APP_SHELL = [
   "./",
   "./index.html",
@@ -13,6 +13,7 @@ const APP_SHELL = [
   "./privacy.html",
   "./areas.html",
   "./manifest.webmanifest",
+  "./sw-register.js",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css",
   "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js",
 ];
@@ -57,13 +58,13 @@ self.addEventListener("fetch", (event) => {
 
 async function networkFirst(request, fallbackUrl) {
   try {
-    const response = await fetch(request);
+    const response = await fetch(new Request(request, { cache: "no-store" }));
     if (response.ok) {
       const cache = await caches.open(CACHE_NAME);
       await cache.put(request, response.clone());
     }
     return response;
   } catch (error) {
-    return (await caches.match(request)) || (fallbackUrl ? await caches.match(fallbackUrl) : new Response("Offline", { status: 503, statusText: "Offline" }));
+    return (await caches.match(request, { ignoreSearch: true })) || (fallbackUrl ? await caches.match(fallbackUrl) : new Response("Offline", { status: 503, statusText: "Offline" }));
   }
 }

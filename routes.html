@@ -34,5 +34,6 @@
       document.querySelectorAll(".article-filter").forEach((button) => button.addEventListener("click", () => selectFilter(button.dataset.filter)));
       selectFilter(areaFilters[location.hash.slice(1)] || "all");
     </script>
+    <script defer src="./sw-register.js"></script>
   </body>
 </html>
