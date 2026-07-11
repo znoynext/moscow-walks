@@ -31,6 +31,18 @@ test("map cannot zoom out past the Moscow overview scale", () => {
   assert.match(app, /setView\(MAP_VIEW, MAP_INITIAL_ZOOM\)/);
 });
 
+test("map guide filters and follows the catalogue automatically", () => {
+  const guide = fs.readFileSync("map-guide.js", "utf8");
+  const places = fs.readFileSync("map-places.js", "utf8");
+  assert.match(html, /data-map-filter="metro"/);
+  assert.match(html, /data-map-filter="park"/);
+  assert.match(html, /data-map-filter="sight"/);
+  assert.match(guide, /const attractions = pois\.map\(guidePlaceFromPoi\)/);
+  assert.match(guide, /\.filter\(\(place\) => mapGuideFilters\[place\.type\]\)/);
+  assert.match(places, /const metroStations =/);
+  assert.ok((places.match(/"line":"/g) || []).length >= 100);
+});
+
 test("share URL keeps custom search and distance state", () => {
   assert.match(app, /customDistance/);
   assert.match(app, /startSearch/);

@@ -1,25 +1,65 @@
+const mapGuideFilters = { metro: true, park: true, sight: true };
+
+function guidePlaceFromPoi(place) {
+  const meta = mapPlaceMeta[place.id] || {};
+  const type = place.themes?.includes("green") ? "park" : "sight";
+  return {
+    id: `guide-${place.id}`,
+    type,
+    name: place.name,
+    nameEn: place.name,
+    description: place.note || "Интересное место для прогулки по Москве.",
+    descriptionEn: place.note || "An interesting place to discover on a walk through Moscow.",
+    image: meta.image || DEFAULT_MAP_PLACE_IMAGE,
+    article: articleSlugByPoint[place.id],
+    lat: place.lat,
+    lon: place.lon,
+  };
+}
+
+function getMapGuidePlaces() {
+  const attractions = pois.map(guidePlaceFromPoi);
+  const metro = metroStations.map((station) => ({
+    ...station,
+    type: "metro",
+    nameEn: station.name,
+    description: `Станция линии «${station.line}» рядом с местами для прогулок из каталога.`,
+    descriptionEn: `${station.line} line station near places from the walking catalogue.`,
+    image: DEFAULT_MAP_PLACE_IMAGE,
+  }));
+  return [...metro, ...attractions];
+}
+
 window.renderMapGuide = function renderMapGuide() {
   if (!map || !window.L || !guideLayer) return;
   guideLayer.clearLayers();
-  mapPlaces.forEach((place) => {
-    const name = currentLanguage === "en" ? place.nameEn : place.name;
-    const description = currentLanguage === "en" ? place.descriptionEn : place.description;
-    const article = place.article ? ` <a class="map-popup-link" href="./articles.html#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
-    const imageAlt = escapeHtml(name);
-    const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
-    L.marker([place.lat, place.lon], { icon: createGuideIcon(place.type), keyboard: true, title: name })
-      .bindPopup(popup, { maxWidth: 240 })
-      .addTo(guideLayer);
-  });
+  getMapGuidePlaces()
+    .filter((place) => mapGuideFilters[place.type])
+    .forEach((place) => {
+      const name = currentLanguage === "en" ? place.nameEn : place.name;
+      const description = currentLanguage === "en" ? place.descriptionEn : place.description;
+      const article = place.article ? ` <a class="map-popup-link" href="./articles.html#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
+      const imageAlt = escapeHtml(name);
+      const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
+      L.marker([place.lat, place.lon], { icon: createGuideIcon(place.type, name), keyboard: true, title: name })
+        .bindPopup(popup, { maxWidth: 240 })
+        .addTo(guideLayer);
+    });
 };
-
-window.createGuideIcon = function createGuideIcon(type) {
+function createGuideIcon(type, name) {
   const symbols = { metro: "M", park: "✦", sight: "•" };
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
-    html: `<span aria-hidden="true">${symbols[type] || "•"}</span>`,
+    html: `<span aria-hidden="true">${symbols[type] || "•"}</span><b>${escapeHtml(name)}</b>`,
     iconSize: [24, 24],
     iconAnchor: [12, 12],
     popupAnchor: [0, -12],
   });
-};
+}
+
+document.querySelectorAll("[data-map-filter]").forEach((input) => {
+  input.addEventListener("change", () => {
+    mapGuideFilters[input.dataset.mapFilter] = input.checked;
+    window.renderMapGuide();
+  });
+});

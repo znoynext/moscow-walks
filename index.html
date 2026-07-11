@@ -137,10 +137,10 @@
       <section class="workspace" id="routeResult" aria-label="Результат маршрута">
         <div class="map-panel">
           <div id="map" class="map" role="application" aria-label="Интерактивная карта пешего маршрута"></div>
-          <div class="map-guide-legend" aria-label="Обозначения на карте">
-            <span><i class="map-guide-dot map-guide-dot--metro"></i>Метро</span>
-            <span><i class="map-guide-dot map-guide-dot--park"></i>Парки</span>
-            <span><i class="map-guide-dot map-guide-dot--sight"></i>Достопримечательности</span>
+          <div class="map-guide-legend" aria-label="Фильтры объектов на карте">
+            <label><input type="checkbox" data-map-filter="metro" checked /> <i class="map-guide-dot map-guide-dot--metro"></i>Метро</label>
+            <label><input type="checkbox" data-map-filter="park" checked /> <i class="map-guide-dot map-guide-dot--park"></i>Парки</label>
+            <label><input type="checkbox" data-map-filter="sight" checked /> <i class="map-guide-dot map-guide-dot--sight"></i>Достопримечательности</label>
           </div>
           <svg id="fallbackMap" class="fallback-map" viewBox="0 0 1000 720" role="img" aria-label="Схема маршрута"></svg>
         </div>

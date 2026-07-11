@@ -655,10 +655,18 @@ button:disabled {
   font-weight: 750;
 }
 
-.map-guide-legend span {
+.map-guide-legend label {
   display: inline-flex;
   align-items: center;
   gap: 5px;
+  cursor: pointer;
+}
+
+.map-guide-legend input {
+  width: 13px;
+  height: 13px;
+  margin: 0;
+  accent-color: var(--accent);
 }
 
 .map-guide-dot {
@@ -673,8 +681,24 @@ button:disabled {
 .map-guide-dot--sight { background: #ce4a3b; }
 
 .map-guide-marker {
-  display: grid;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: max-content !important;
+  min-width: 24px;
+  height: 24px;
   place-items: center;
+  border: 0;
+  background: transparent !important;
+  box-shadow: none;
+}
+
+.map-guide-marker > span {
+  display: grid;
+  flex: 0 0 24px;
+  place-items: center;
+  width: 24px;
+  height: 24px;
   border: 2px solid #fff;
   border-radius: 50%;
   color: #fff;
@@ -683,9 +707,21 @@ button:disabled {
   font-weight: 900;
 }
 
-.map-guide-marker--metro { background: #4478ce; }
-.map-guide-marker--park { background: #4f9a68; }
-.map-guide-marker--sight { background: #ce4a3b; }
+.map-guide-marker b {
+  padding: 3px 6px;
+  border-radius: 6px;
+  color: #18202a;
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 3px 10px rgba(31, 36, 40, 0.16);
+  font-size: 10px;
+  font-weight: 850;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.map-guide-marker--metro > span { background: #4478ce; }
+.map-guide-marker--park > span { background: #4f9a68; }
+.map-guide-marker--sight > span { background: #ce4a3b; }
 
 .map-guide-popup {
   min-width: 190px;
