@@ -33,3 +33,7 @@ const routeImages = {
   "sparrow-hills-view": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Sparrow_Hills.jpg/1280px-Sparrow_Hills.jpg",
   "pokrovka-chistye": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Patriarch_Ponds.jpg/1280px-Patriarch_Ponds.jpg",
 };
+
+if (typeof module !== "undefined") {
+  module.exports = { curatedRoutes, routeBySlug, routeImages };
+}

@@ -1,9 +1,17 @@
 {
   "name": "Пешком.Москва",
   "short_name": "Пешком.Москва",
+  "id": "/moscow-walks/",
   "start_url": "./",
+  "scope": "./",
+  "lang": "ru",
   "display": "standalone",
   "background_color": "#0f1115",
   "theme_color": "#0f1115",
-  "description": "Генератор пешеходных маршрутов по Москве."
+  "description": "Генератор пешеходных маршрутов по Москве.",
+  "icons": [
+    { "src": "./assets/icon-192.svg", "sizes": "192x192", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./assets/icon-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "./assets/icon-maskable-512.svg", "sizes": "512x512", "type": "image/svg+xml", "purpose": "maskable" }
+  ]
 }

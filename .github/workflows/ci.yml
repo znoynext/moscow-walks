@@ -12,6 +12,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
+      - run: npm run generate-route-pages && git diff --exit-code
       - run: npm run check
       - run: npm run validate-data
       - run: npm run check-links

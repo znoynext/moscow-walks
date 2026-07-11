@@ -5,6 +5,7 @@ const test = require("node:test");
 const html = fs.readFileSync("index.html", "utf8");
 const app = fs.readFileSync("app.js", "utf8");
 const routes = fs.readFileSync("routes.js", "utf8");
+const { curatedRoutes } = require("../routes.js");
 
 test("P0 form offers every required start method", () => {
   assert.match(html, /id="startSearch"/);
@@ -58,6 +59,7 @@ test("catalogue cards keep their content inside a padded body", () => {
 
 test("quality scripts are part of CI", () => {
   const workflow = fs.readFileSync(".github/workflows/ci.yml", "utf8");
+  assert.match(workflow, /generate-route-pages/);
   assert.match(workflow, /check-links/);
   assert.match(workflow, /check-performance/);
 });
@@ -73,4 +75,42 @@ test("service worker refreshes deployed files without a hard reload", () => {
   for (const page of ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html"]) {
     assert.match(fs.readFileSync(page, "utf8"), /<script defer src="\.\/sw-register\.js"><\/script>/);
   }
+});
+
+test("public HTML has no placeholder contacts and keeps the public brand", () => {
+  const publicPages = ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", ...curatedRoutes.map((route) => `routes/${route.slug}.html`)];
+  for (const page of publicPages) {
+    const source = fs.readFileSync(page, "utf8");
+    assert.doesNotMatch(source, /@example\.com/i);
+    assert.match(source, /Пешком\.Москва/);
+    assert.doesNotMatch(source, /Walk Moscow/i);
+  }
+});
+
+test("every curated route has an indexed static page and sitemap entry", () => {
+  const sitemap = fs.readFileSync("sitemap.xml", "utf8");
+  assert.equal(new Set(curatedRoutes.map((route) => route.slug)).size, curatedRoutes.length);
+  for (const route of curatedRoutes) {
+    const filename = `routes/${route.slug}.html`;
+    const source = fs.readFileSync(filename, "utf8");
+    const url = `https://znoynext.github.io/moscow-walks/${filename}`;
+    assert.match(source, new RegExp(`<link rel="canonical" href="${url}"`));
+    assert.match(source, /<h1>/);
+    assert.equal((source.match(/<h1(?:\s|>)/g) || []).length, 1);
+    assert.match(source, /<title>[^<]+<\/title>/);
+    assert.match(source, /<meta name="description" content="[^"]+"/);
+    assert.match(source, /"@type":"TouristTrip"/);
+    assert.match(sitemap, new RegExp(url));
+  }
+});
+
+test("manifest references existing local PWA icons", () => {
+  const manifest = JSON.parse(fs.readFileSync("manifest.webmanifest", "utf8"));
+  assert.equal(manifest.id, "/moscow-walks/");
+  assert.equal(manifest.scope, "./");
+  assert.equal(manifest.lang, "ru");
+  assert.ok(manifest.icons.length >= 3);
+  for (const icon of manifest.icons) assert.ok(fs.existsSync(icon.src.replace(/^\.\//, "")));
+  assert.ok(fs.existsSync("assets/favicon.svg"));
+  assert.ok(fs.existsSync("assets/social-preview.svg"));
 });
