@@ -23,6 +23,11 @@ test("P0 time presets and factual-distance guard are present", () => {
   assert.match(app, /buildWalkingRoute\(candidate\)/);
 });
 
+test("map opens at the Moscow overview scale", () => {
+  assert.match(app, /const MAP_INITIAL_ZOOM = 10;/);
+  assert.match(app, /setView\(MAP_VIEW, MAP_INITIAL_ZOOM\)/);
+});
+
 test("share URL keeps custom search and distance state", () => {
   assert.match(app, /customDistance/);
   assert.match(app, /startSearch/);

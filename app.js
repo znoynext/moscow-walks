@@ -14,6 +14,7 @@ const ROUTE_TOLERANCE = 0.35;
 const MAP_BOUNDS = [[55.52, 37.15], [55.98, 38.15]];
 const MAP_VIEW = [55.7539, 37.6208];
 const MAP_MIN_ZOOM = 10;
+const MAP_INITIAL_ZOOM = 10;
 const WALK_DURATION_LABELS = {
   "3": { ru: "45 минут · около 3 км", en: "45 minutes · about 3 km" },
   "4": { ru: "1 час · около 4 км", en: "1 hour · about 4 km" },
@@ -587,7 +588,7 @@ function initMap() {
     maxBoundsViscosity: 1,
     minZoom: MAP_MIN_ZOOM,
     maxZoom: 19,
-  }).setView(MAP_VIEW, 12);
+  }).setView(MAP_VIEW, MAP_INITIAL_ZOOM);
 
   L.control.zoom({ position: "bottomright" }).addTo(map);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
