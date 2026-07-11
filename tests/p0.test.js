@@ -10,7 +10,11 @@ test("P0 form offers every required start method", () => {
   assert.match(html, /id="startSearch"/);
   assert.match(html, /id="pickOnMapButton"/);
   assert.match(html, /id="locateButton"/);
+  assert.match(html, /id="navigationModeButton"/);
   assert.match(app, /function setPickedStart/);
+  assert.match(app, /navigator\.geolocation\.watchPosition/);
+  assert.match(app, /DeviceOrientationEvent/);
+  assert.match(app, /function renderNavigationProgress/);
 });
 
 test("P0 time presets and factual-distance guard are present", () => {
