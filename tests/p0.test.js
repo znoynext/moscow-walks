@@ -144,6 +144,13 @@ test("a built route keeps the map and its walking line in view", () => {
   assert.match(app, /color: "#ff5f4d",\s*weight: 7/);
 });
 
+test("map point cards do not pan the map", () => {
+  const guide = fs.readFileSync("map-guide.js", "utf8");
+  assert.match(guide, /className: "map-guide-leaflet-popup", autoPan: false, keepInView: false/);
+  assert.match(app, /maxWidth:260,autoPan:!1/);
+  assert.match(app, /\{autoPan:!1\}/);
+});
+
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);

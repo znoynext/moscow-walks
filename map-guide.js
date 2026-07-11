@@ -78,7 +78,7 @@ window.renderMapGuide = function renderMapGuide(force = false) {
       const category = place.type === "metro" ? (currentLanguage === "en" ? "Metro" : "Метро") : place.type === "park" ? (currentLanguage === "en" ? "Park" : "Парк") : (currentLanguage === "en" ? "Landmark" : "Достопримечательность");
       const popup = `<div class="map-guide-popup"><span class="route-popup-category">${category}</span><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
       L.marker([place.lat, place.lon], { icon: createGuideIcon(place.type, name), keyboard: true, title: name })
-        .bindPopup(popup, { maxWidth: 220, className: "map-guide-leaflet-popup" })
+        .bindPopup(popup, { maxWidth: 220, className: "map-guide-leaflet-popup", autoPan: false, keepInView: false })
         .addTo(guideLayer);
     });
 };

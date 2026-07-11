@@ -833,7 +833,7 @@ async function generateAndRender({ alternative = false } = {}) {
   }
 }
 function scrollToResult() {
-  const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+  const reduceMotion=window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
   document.querySelector(".map")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
 async function resolveSearchPoint(query, note, area) {
@@ -1102,7 +1102,7 @@ function renderLeafletRoute(route, line) {
   routeLayer.clearLayers();
   progressLayer?.clearLayers();
   L.polyline(line, { color: "#fff", weight: 13, opacity: 0.9, lineCap: "round", lineJoin: "round" }).addTo(routeLayer);
-  const polyline = L.polyline(line, {
+  const polyline=L.polyline(line, {
     color: "#ff5f4d",
     weight: 7,
     opacity: 1,
@@ -1113,7 +1113,7 @@ function renderLeafletRoute(route, line) {
     L.marker([stop.lat, stop.lon], {
       icon: createMarkerIcon(index + 1, index === 0),
     })
-      .bindPopup(`<div class="route-popup"><span class="route-popup-number">${index + 1}</span><span class="route-popup-category">${escapeHtml(stop.themes?.[0] ? themeLabel(stop.themes[0]) : t("route"))}</span><strong>${articleLinkForStop(stop, true)}</strong><p>${escapeHtml(localizedNote(stop, index))}</p></div>`, { maxWidth: 260 })
+      .bindPopup(`<div class="route-popup"><span class="route-popup-number">${index + 1}</span><span class="route-popup-category">${escapeHtml(stop.themes?.[0] ? themeLabel(stop.themes[0]) : t("route"))}</span><strong>${articleLinkForStop(stop, true)}</strong><p>${escapeHtml(localizedNote(stop, index))}</p></div>`,{maxWidth:260,autoPan:!1})
       .addTo(markersLayer);
   });
   map.fitBounds(polyline.getBounds(), { padding: [36, 36], maxZoom: 16 });
@@ -1124,7 +1124,7 @@ function renderLeafletStopsOnly(route) {
   routeLayer.clearLayers();
   route.forEach((stop, index) => {
     L.marker([stop.lat, stop.lon], { icon: createMarkerIcon(index + 1, index === 0) })
-      .bindPopup(`<strong>${index + 1}. ${articleLinkForStop(stop, true)}</strong><br>${escapeHtml(localizedNote(stop, index))}`)
+      .bindPopup(`<strong>${index + 1}. ${articleLinkForStop(stop, true)}</strong><br>${escapeHtml(localizedNote(stop, index))}`,{autoPan:!1})
       .addTo(markersLayer);
   });
   map.fitBounds(L.latLngBounds(route.map((stop) => [stop.lat, stop.lon])), { padding: [36, 36], maxZoom: 15 });
