@@ -31,15 +31,21 @@ test("share URL keeps custom search and distance state", () => {
 
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
+  assert.match(routes, /routeImages/);
   assert.match(fs.readFileSync("routes.html", "utf8"), /routeGrid/);
-  assert.match(fs.readFileSync("route.html", "utf8"), /TouristTrip/);
+  const routePage = fs.readFileSync("route.html", "utf8");
+  assert.match(routePage, /TouristTrip/);
+  assert.doesNotMatch(routePage, /insertAdjacentHTML\("beforeend", `<script/);
+  const inlineScript = routePage.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
+  assert.ok(inlineScript);
+  assert.doesNotThrow(() => new Function(inlineScript));
   assert.match(fs.readFileSync("privacy.html", "utf8"), /Геолокация/);
 });
 
 test("catalogue cards keep their content inside a padded body", () => {
-  assert.match(fs.readFileSync("areas.html", "utf8"), /<article class="article-card"><div class="article-card-body">/);
-  assert.match(fs.readFileSync("routes.html", "utf8"), /<article class="article-card"><div class="article-card-body">/);
-  assert.match(fs.readFileSync("route.html", "utf8"), /<div class="article-card-body"><div class="article-card-top">/);
+  assert.match(fs.readFileSync("areas.html", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
+  assert.match(fs.readFileSync("routes.html", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
+  assert.match(fs.readFileSync("route.html", "utf8"), /<div class="article-image-wrap">[\s\S]*?<div class="article-card-body"><div class="article-card-top">/);
   assert.match(fs.readFileSync("styles.css", "utf8"), /\.article-card-body \{[\s\S]*?min-width: 0;/);
 });
 

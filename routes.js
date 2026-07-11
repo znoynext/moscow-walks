@@ -16,3 +16,20 @@ const curatedRoutes = [
 ];
 
 const routeBySlug = Object.fromEntries(curatedRoutes.map((route) => [route.slug, route]));
+
+const routeImages = {
+  "red-square-classic": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b9/Red_Square%2C_Moscow%2C_Russia.jpg/1280px-Red_Square%2C_Moscow%2C_Russia.jpg",
+  "gorky-waterfront": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/c6/Gorky_Park_%282013-07-16%29_01.jpg/1280px-Gorky_Park_%282013-07-16%29_01.jpg",
+  "patriki-architecture": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Patriarch_Ponds.jpg/1280px-Patriarch_Ponds.jpg",
+  "vdnh-green": "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e7/Moscow_VDNKh_Armenia_Pavilion_asv2018-08_img1.jpg/1280px-Moscow_VDNKh_Armenia_Pavilion_asv2018-08_img1.jpg",
+  "arbat-prechistenka": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/ArbatMoscow.jpg/1280px-ArbatMoscow.jpg",
+  "kolomenskoye-park": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/Kolomenskoye%2C_Moscow%2C_Russia_-_30062345825.jpg/1280px-Kolomenskoye%2C_Moscow%2C_Russia_-_30062345825.jpg",
+  "zamoskvorechye-art": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d2/State_Tretyakov_Gallery_Moscow.jpg/1280px-State_Tretyakov_Gallery_Moscow.jpg",
+  "novodevichy-river": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/94/2024_Novodevichy_Convent_in_Moscow.jpg/1280px-2024_Novodevichy_Convent_in_Moscow.jpg",
+  "sokolniki-green": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b6/Sokolniki_Park%2C_Moskva%2C_Russia_%28Unsplash%29.jpg/1280px-Sokolniki_Park%2C_Moskva%2C_Russia_%28Unsplash%29.jpg",
+  "moscow-city-river": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/Moscow_International_Business_Centre%2C_Marc_2008.JPG/1280px-Moscow_International_Business_Centre%2C_Marc_2008.JPG",
+  "tsaritsyno-estate": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b8/Moscow%2C_Russia%2C_Tsaritsyno_Palace.jpg/1280px-Moscow%2C_Russia%2C_Tsaritsyno_Palace.jpg",
+  "bolshoi-boulevards": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/Teatro_Bolsh%C3%B3i%2C_Mosc%C3%BA%2C_Rusia%2C_2016-10-03%2C_DD_42-43_HDR.jpg/1280px-Teatro_Bolsh%C3%B3i%2C_Mosc%C3%BA%2C_Rusia%2C_2016-10-03%2C_DD_42-43_HDR.jpg",
+  "sparrow-hills-view": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b3/Sparrow_Hills.jpg/1280px-Sparrow_Hills.jpg",
+  "pokrovka-chistye": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Patriarch_Ponds.jpg/1280px-Patriarch_Ponds.jpg",
+};
