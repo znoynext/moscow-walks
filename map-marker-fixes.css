@@ -9,6 +9,22 @@
   display: block;
   width: 20px;
   height: 20px;
+  box-sizing: border-box;
+  padding: 3px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+  border-radius: 50%;
+  color: #fff;
+  background: #ce4a3b;
+  box-shadow: 0 2px 7px rgba(31, 36, 40, 0.38);
+}
+
+.map-guide-marker--metro > svg {
+  background: #4478ce;
+}
+
+.map-guide-marker--park > svg {
+  border-radius: 5px;
+  background: #4f9a68;
 }
 
 .walk-marker {

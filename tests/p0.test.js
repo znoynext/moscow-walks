@@ -102,13 +102,20 @@ test("Leaflet assets are pinned with integrity metadata", () => {
 
 test("map tiles keep their layout if the Leaflet CDN stylesheet is unavailable", () => {
   const fallback = fs.readFileSync("leaflet-fallback.css", "utf8");
+  const markerFixes = fs.readFileSync("map-marker-fixes.css", "utf8");
   const serviceWorker = fs.readFileSync("sw.js", "utf8");
-  assert.match(html, /href="\.\/leaflet-fallback\.css\?v=2026-07-11-3"/);
+  assert.match(html, /href="\.\/leaflet-fallback\.css\?v=2026-07-11-4"/);
+  assert.match(html, /href="\.\/map-marker-fixes\.css\?v=2026-07-11-2"/);
   assert.match(fallback, /\.leaflet-tile[\s\S]*?position:\s*absolute/);
   assert.match(fallback, /\.leaflet-tile-loaded[\s\S]*?visibility:\s*inherit/);
   assert.match(fallback, /\.leaflet-tile-pane\s*\{\s*z-index:\s*200/);
   assert.match(fallback, /\.leaflet-overlay-pane\s*\{\s*z-index:\s*400/);
   assert.match(fallback, /\.leaflet-marker-pane\s*\{\s*z-index:\s*600/);
+  assert.match(fallback, /\.leaflet-popup-content-wrapper[\s\S]*?background:\s*#fff/);
+  assert.match(fallback, /\.leaflet-popup-tip-container/);
+  assert.match(markerFixes, /\.map-guide-marker > svg[\s\S]*?background:\s*#ce4a3b/);
+  assert.match(markerFixes, /\.map-guide-marker--metro > svg/);
+  assert.match(markerFixes, /\.map-guide-marker--park > svg/);
   assert.doesNotMatch(fallback, /\.leaflet-container \.leaflet-overlay-pane svg\s*\{[\s\S]*?width:\s*100%/);
   assert.match(serviceWorker, /\.\/leaflet-fallback\.css/);
 });
