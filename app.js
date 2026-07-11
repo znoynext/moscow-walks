@@ -1292,7 +1292,7 @@ init();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-11-2").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-3").catch((error) => {
       console.warn("Service worker не зарегистрирован", error);
     });
   });

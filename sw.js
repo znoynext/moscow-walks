@@ -1,4 +1,4 @@
-const CACHE_NAME = "moscow-walks-v9";
+const CACHE_NAME = "moscow-walks-v10";
 const APP_SHELL = [
   "./",
   "./index.html",

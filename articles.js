@@ -194,3 +194,11 @@ document.querySelectorAll(".article-filter").forEach((button) => button.addEvent
 document.querySelector("#articleSearch")?.addEventListener("input", () => renderArticles(document.querySelector(".article-filter.is-active")?.dataset.filter || "all"));
 applyArticleTheme();
 applyArticleLanguage();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-3").catch(() => {
+      // The catalog remains usable when service workers are unavailable.
+    });
+  });
+}
