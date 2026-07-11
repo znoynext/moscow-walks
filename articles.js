@@ -213,7 +213,7 @@ applyArticleLanguage();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-11-3").catch(() => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-4").catch(() => {
       // The catalog remains usable when service workers are unavailable.
     });
   });
