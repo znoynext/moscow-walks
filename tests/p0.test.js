@@ -44,6 +44,8 @@ test("map guide filters and follows the catalogue automatically", () => {
   assert.match(guide, /zoom >= 15/);
   assert.match(guide, /function isInsideGardenRing/);
   assert.doesNotMatch(guide, /loading="lazy"/);
+  assert.match(guide, /Special:FilePath/);
+  assert.match(guide, /className: "map-guide-leaflet-popup"/);
   assert.match(places, /const metroStations =/);
   assert.ok((places.match(/"line":"/g) || []).length >= 100);
 });

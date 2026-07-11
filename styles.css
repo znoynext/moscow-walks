@@ -685,8 +685,8 @@ button:disabled {
   align-items: center;
   gap: 4px;
   width: max-content !important;
-  min-width: 20px;
-  height: 20px;
+  min-width: 14px;
+  height: 14px;
   place-items: center;
   border: 0;
   background: transparent !important;
@@ -695,25 +695,25 @@ button:disabled {
 
 .map-guide-marker > span {
   display: grid;
-  flex: 0 0 20px;
+  flex: 0 0 14px;
   place-items: center;
-  width: 20px;
-  height: 20px;
-  border: 1.5px solid #fff;
+  width: 14px;
+  height: 14px;
+  border: 1px solid #fff;
   border-radius: 50%;
   color: #fff;
   box-shadow: 0 5px 14px rgba(31, 36, 40, 0.3);
-  font-size: 9px;
+  font-size: 7px;
   font-weight: 900;
 }
 
 .map-guide-marker b {
   padding: 2px 4px;
-  border-radius: 5px;
+  border-radius: 4px;
   color: #18202a;
   background: rgba(255, 255, 255, 0.9);
   box-shadow: 0 3px 10px rgba(31, 36, 40, 0.16);
-  font-size: 9px;
+  font-size: 8px;
   font-weight: 850;
   line-height: 1.1;
   white-space: nowrap;
@@ -731,6 +731,21 @@ button:disabled {
   width: 190px;
   min-width: 0;
   color: #18202a;
+}
+
+.map-guide-leaflet-popup .leaflet-popup-content-wrapper {
+  border: 1px solid rgba(24, 32, 42, 0.08);
+  border-radius: 12px;
+  box-shadow: 0 12px 28px rgba(24, 32, 42, 0.2);
+}
+
+.map-guide-leaflet-popup .leaflet-popup-content {
+  width: auto !important;
+  margin: 9px 11px;
+}
+
+.map-guide-leaflet-popup .leaflet-popup-tip {
+  box-shadow: 2px 2px 5px rgba(24, 32, 42, 0.08);
 }
 
 .map-guide-popup img {

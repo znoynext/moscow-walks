@@ -1,4 +1,11 @@
 const mapGuideFilters = { metro: true, park: true, sight: true };
+const MAP_PLACE_FALLBACK_IMAGE = "https://commons.wikimedia.org/wiki/Special:FilePath/Red_Square%2C_Moscow%2C_Russia.jpg?width=640";
+
+function resolveMapImage(source) {
+  if (!source) return MAP_PLACE_FALLBACK_IMAGE;
+  const match = source.match(/\/commons\/thumb\/[^/]+\/[^/]+\/([^/]+)\/\d+px-/);
+  return match ? `https://commons.wikimedia.org/wiki/Special:FilePath/${match[1]}?width=640` : source;
+}
 
 function guidePlaceFromPoi(place) {
   const meta = mapPlaceMeta[place.id] || {};
@@ -10,7 +17,7 @@ function guidePlaceFromPoi(place) {
     nameEn: place.name,
     description: place.note || "Интересное место для прогулки по Москве.",
     descriptionEn: place.note || "An interesting place to discover on a walk through Moscow.",
-    image: meta.image || DEFAULT_MAP_PLACE_IMAGE,
+    image: resolveMapImage(meta.image),
     article: articleSlugByPoint[place.id],
     score: place.score || 0,
     lat: place.lat,
@@ -31,7 +38,7 @@ function getMapGuidePlaces() {
     nameEn: station.name,
     description: `Станция линии «${station.line}» рядом с местами для прогулок из каталога.`,
     descriptionEn: `${station.line} line station near places from the walking catalogue.`,
-    image: DEFAULT_MAP_PLACE_IMAGE,
+    image: MAP_PLACE_FALLBACK_IMAGE,
   }));
   return [...metro, ...attractions];
 }
@@ -62,9 +69,9 @@ window.renderMapGuide = function renderMapGuide() {
       const description = currentLanguage === "en" ? place.descriptionEn : place.description;
       const article = place.article ? ` <a class="map-popup-link" href="./articles.html#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
       const imageAlt = escapeHtml(name);
-      const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_MAP_PLACE_IMAGE}'"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
+      const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${MAP_PLACE_FALLBACK_IMAGE}'"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
       L.marker([place.lat, place.lon], { icon: createGuideIcon(place.type, name), keyboard: true, title: name })
-        .bindPopup(popup, { maxWidth: 240 })
+        .bindPopup(popup, { maxWidth: 220, className: "map-guide-leaflet-popup" })
         .addTo(guideLayer);
     });
 };
@@ -73,9 +80,9 @@ function createGuideIcon(type, name) {
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
     html: `<span aria-hidden="true">${symbols[type] || "•"}</span><b>${escapeHtml(name)}</b>`,
-    iconSize: [20, 20],
-    iconAnchor: [10, 10],
-    popupAnchor: [0, -10],
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -7],
   });
 }
 
