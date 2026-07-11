@@ -689,8 +689,8 @@ async function generateAndRender({ alternative = false } = {}) {
     if (run !== latestRun) return;
     let candidate = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
     let walking = await buildWalkingRoute(candidate);
-    if (walking && Math.abs(walking.distanceKm - targetKm) / targetKm > ROUTE_TOLERANCE) {
-      const alternativeRoute = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed: variantSeed + 17 });
+    for (let attempt = 1; attempt < 3 && walking && !isRouteDistanceAcceptable(walking.distanceKm, targetKm); attempt += 1) {
+      const alternativeRoute = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed: variantSeed + attempt * 17 });
       const alternativeWalking = await buildWalkingRoute(alternativeRoute);
       if (alternativeWalking && Math.abs(alternativeWalking.distanceKm - targetKm) < Math.abs(walking.distanceKm - targetKm)) {
         candidate = alternativeRoute;
@@ -1293,6 +1293,10 @@ function formatCalories(calories) {
   return `${calories} ${currentLanguage === "ru" ? "ккал" : "kcal"}`;
 }
 
+function isRouteDistanceAcceptable(actualKm, targetKm) {
+  return Number.isFinite(actualKm) && Number.isFinite(targetKm) && targetKm > 0 && Math.abs(actualKm - targetKm) / targetKm <= ROUTE_TOLERANCE;
+}
+
 function buildShareUrl() {
   const params = new URLSearchParams({
     start: elements.start.value,
@@ -1485,6 +1489,7 @@ window.MoscowWalksCore = {
   routeArea,
   roughRouteDistance,
   targetDistanceKm,
+  isRouteDistanceAcceptable,
   validateCatalogueData,
 };
 

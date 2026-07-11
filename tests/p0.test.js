@@ -31,3 +31,9 @@ test("SEO route catalogue and privacy surface exist", () => {
   assert.match(fs.readFileSync("route.html", "utf8"), /TouristTrip/);
   assert.match(fs.readFileSync("privacy.html", "utf8"), /Геолокация/);
 });
+
+test("quality scripts are part of CI", () => {
+  const workflow = fs.readFileSync(".github/workflows/ci.yml", "utf8");
+  assert.match(workflow, /check-links/);
+  assert.match(workflow, /check-performance/);
+});
