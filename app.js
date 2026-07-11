@@ -16,7 +16,7 @@ const serviceState = {
   nominatim: { cache: new Map(), inFlight: null, controller: null, generation: 0, nextAt: 0, lastError: null },
 };
 // Moscow and the nearest suburbs. Coordinates are [latitude, longitude].
-const MAP_BOUNDS = [[55.52, 37.15], [55.98, 38.15]];
+const MAP_BOUNDS = [[55.57, 37.35], [55.90, 37.90]];
 const MAP_VIEW = [55.7539, 37.6208];
 const MAP_MIN_ZOOM = 12;
 const MAP_INITIAL_ZOOM = 12;

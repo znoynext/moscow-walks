@@ -26,6 +26,7 @@ test("P0 time presets and factual-distance guard are present", () => {
 
 test("map cannot zoom out past the Moscow overview scale", () => {
   assert.match(app, /const MAP_MIN_ZOOM = 12;/);
+  assert.match(app, /const MAP_BOUNDS = \[\[55\.57, 37\.35\], \[55\.90, 37\.90\]\];/);
   assert.match(app, /minZoom: MAP_MIN_ZOOM/);
   assert.match(app, /const MAP_INITIAL_ZOOM = 12;/);
   assert.match(app, /setView\(MAP_VIEW, MAP_INITIAL_ZOOM\)/);
