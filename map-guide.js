@@ -24,7 +24,7 @@ function getMapGuidePlaces() {
     counts[station.name] = (counts[station.name] || 0) + 1;
     return counts;
   }, {});
-  const metro = metroStations.map((station) => ({
+  const metro = metroStations.filter(isInsideGardenRing).map((station) => ({
     ...station,
     type: "metro",
     isHub: stationNames[station.name] > 1 || station.line === "Кольцевая",
@@ -34,6 +34,14 @@ function getMapGuidePlaces() {
     image: DEFAULT_MAP_PLACE_IMAGE,
   }));
   return [...metro, ...attractions];
+}
+
+function isInsideGardenRing(station) {
+  const latRadius = 0.027;
+  const lonRadius = 0.047;
+  const latDistance = (station.lat - 55.755) / latRadius;
+  const lonDistance = (station.lon - 37.62) / lonRadius;
+  return latDistance ** 2 + lonDistance ** 2 <= 1;
 }
 
 function visibleGuidePlaces(places) {
@@ -54,7 +62,7 @@ window.renderMapGuide = function renderMapGuide() {
       const description = currentLanguage === "en" ? place.descriptionEn : place.description;
       const article = place.article ? ` <a class="map-popup-link" href="./articles.html#article-${place.article}">${currentLanguage === "en" ? "Read more" : "Подробнее"}</a>` : "";
       const imageAlt = escapeHtml(name);
-      const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" loading="lazy" referrerpolicy="no-referrer" onerror="this.hidden=true"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
+      const popup = `<div class="map-guide-popup"><img src="${place.image}" alt="${imageAlt}" referrerpolicy="no-referrer" onerror="this.onerror=null;this.src='${DEFAULT_MAP_PLACE_IMAGE}'"><strong>${escapeHtml(name)}</strong><p>${escapeHtml(description)}</p>${article}</div>`;
       L.marker([place.lat, place.lon], { icon: createGuideIcon(place.type, name), keyboard: true, title: name })
         .bindPopup(popup, { maxWidth: 240 })
         .addTo(guideLayer);
@@ -65,9 +73,9 @@ function createGuideIcon(type, name) {
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
     html: `<span aria-hidden="true">${symbols[type] || "•"}</span><b>${escapeHtml(name)}</b>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -12],
+    iconSize: [20, 20],
+    iconAnchor: [10, 10],
+    popupAnchor: [0, -10],
   });
 }
 

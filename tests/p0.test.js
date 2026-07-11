@@ -41,6 +41,8 @@ test("map guide filters and follows the catalogue automatically", () => {
   assert.match(guide, /\.filter\(\(place\) => mapGuideFilters\[place\.type\]\)/);
   assert.match(guide, /function visibleGuidePlaces/);
   assert.match(guide, /zoom >= 15/);
+  assert.match(guide, /function isInsideGardenRing/);
+  assert.doesNotMatch(guide, /loading="lazy"/);
   assert.match(places, /const metroStations =/);
   assert.ok((places.match(/"line":"/g) || []).length >= 100);
 });
