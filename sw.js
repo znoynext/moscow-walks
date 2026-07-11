@@ -1,4 +1,4 @@
-const SHELL_CACHE = "moscow-walks-shell-v22";
+const SHELL_CACHE = "moscow-walks-shell-v24";
 const RUNTIME_CACHE = "moscow-walks-runtime-v1";
 const APP_SHELL = [
   "./", "./index.html", "./articles/", "./routes/", "./areas/", "./privacy/",

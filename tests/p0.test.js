@@ -119,7 +119,7 @@ test("walking routes use a backup service when the primary router is unavailable
 
 test("walking routes optimize stop order on the pedestrian network", () => {
   const optimizer = fs.readFileSync("route-optimizer.js", "utf8");
-  assert.match(html, /route-optimizer\.js/);
+  assert.match(html, /route-optimizer\.js\?v=2026-07-11-1/);
   assert.match(optimizer, /roundtrip:\s*"false"/);
   assert.match(optimizer, /source:\s*"first"/);
   assert.match(optimizer, /destination:\s*"any"/);
