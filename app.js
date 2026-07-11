@@ -834,7 +834,7 @@ async function generateAndRender({ alternative = false } = {}) {
 }
 function scrollToResult() {
   const reduceMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
-  elements.itinerary?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+  document.querySelector(".map")?.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 }
 async function resolveSearchPoint(query, note, area) {
   const text = (query || "").trim().slice(0, 120);
@@ -1101,10 +1101,10 @@ function renderLeafletRoute(route, line) {
   markersLayer.clearLayers();
   routeLayer.clearLayers();
   progressLayer?.clearLayers();
-  const polylineUnderlay = L.polyline(line, { color: "#fff", weight: 10, opacity: 0.86, lineCap: "round", lineJoin: "round" }).addTo(routeLayer);
+  L.polyline(line, { color: "#fff", weight: 13, opacity: 0.9, lineCap: "round", lineJoin: "round" }).addTo(routeLayer);
   const polyline = L.polyline(line, {
-    color: "#c84f3d",
-    weight: 5,
+    color: "#ff5f4d",
+    weight: 7,
     opacity: 1,
     lineCap: "round",
     lineJoin: "round",

@@ -128,6 +128,11 @@ test("walking routes optimize stop order on the pedestrian network", () => {
   assert.match(app, /window\.requestOptimizedWalkingRoute\?\.\(route\)/);
 });
 
+test("a built route keeps the map and its walking line in view", () => {
+  assert.match(app, /document\.querySelector\("\.map"\)\?\.scrollIntoView/);
+  assert.match(app, /color: "#ff5f4d",\s*weight: 7/);
+});
+
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);
