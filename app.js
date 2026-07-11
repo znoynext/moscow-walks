@@ -6,13 +6,15 @@ const ROUTE_STATE_KEY = "moscow-walks-route-state";
 const LANGUAGE_KEY = "moscow-walks-language";
 const THEME_KEY = "moscow-walks-theme";
 const REQUEST_TIMEOUT_MS = 15000;
+const ROUTE_TOLERANCE = 0.35;
 // Moscow and a small surrounding area. Coordinates are [latitude, longitude].
 const MAP_BOUNDS = [[55.45, 37.0], [56.05, 38.35]];
 const MAP_VIEW = [55.7539, 37.6208];
 const MAP_MIN_ZOOM = 10;
 const WALK_DURATION_LABELS = {
   "3": { ru: "45 минут · около 3 км", en: "45 minutes · about 3 km" },
-  "5": { ru: "1 час 15 минут · около 5 км", en: "1 hour 15 minutes · about 5 km" },
+  "4": { ru: "1 час · около 4 км", en: "1 hour · about 4 km" },
+  "6": { ru: "1,5 часа · около 6 км", en: "1.5 hours · about 6 km" },
   "8": { ru: "2 часа · около 8 км", en: "2 hours · about 8 km" },
   "12": { ru: "3 часа · около 12 км", en: "3 hours · about 12 km" },
 };
@@ -327,6 +329,8 @@ const elements = {
   start: document.querySelector("#startSelect"),
   startSearch: document.querySelector("#startSearch"),
   distance: document.querySelector("#distanceSelect"),
+  customDistance: document.querySelector("#customDistance"),
+  pickOnMapButton: document.querySelector("#pickOnMapButton"),
   anchor: document.querySelector("#anchorSelect"),
   anchorFields: document.querySelector("#anchorFields"),
   addAnchorButton: document.querySelector("#addAnchorButton"),
@@ -358,6 +362,9 @@ const elements = {
 
 let userPosition = null;
 let userLocationMarker = null;
+let pickedStart = null;
+let pickedStartMarker = null;
+let isPickingStart = false;
 
 function point(id, name, lat, lon, area, themes, score, note) {
   return { id, name, lat, lon, area, themes, score, note };
@@ -366,6 +373,7 @@ function point(id, name, lat, lon, area, themes, score, note) {
 function init() {
   if (!elements.form || !elements.start || !elements.distance) return;
   fillSelects();
+  fillHints();
   if (elements.locateButton) elements.locateButton.textContent = t("useLocation");
   if (userPosition) userPosition.name = t("yourLocation");
   restoreRouteState();
@@ -373,6 +381,7 @@ function init() {
   applyLanguage();
   initMap();
   elements.form.addEventListener("change", (event) => {
+    if (event.target === elements.distance) syncCustomDistance();
     syncAnchorOptions();
     updateAnchorControls();
     markSettingsChanged();
@@ -384,6 +393,8 @@ function init() {
   elements.copyButton?.addEventListener("click", copyRoute);
   elements.navigationButton?.addEventListener("click", openNavigation);
   elements.locateButton?.addEventListener("click", toggleLocationTracking);
+  elements.pickOnMapButton?.addEventListener("click", toggleMapPicking);
+  elements.customDistance?.addEventListener("input", markSettingsChanged);
   elements.addAnchorButton?.addEventListener("click", addAnchorField);
   elements.anchorFields?.addEventListener("click", (event) => {
     const removeButton = event.target.closest("[data-remove-anchor]");
@@ -420,6 +431,19 @@ function fillSelects() {
   if (selectedStart) elements.start.value = selectedStart;
   syncAnchorOptions();
   updateAnchorControls();
+}
+
+function targetDistanceKm() {
+  if (elements.distance.value !== "custom") return Number(elements.distance.value);
+  const value = Number(elements.customDistance?.value);
+  return Number.isFinite(value) && value >= 1 && value <= 25 ? value : 4;
+}
+
+function syncCustomDistance() {
+  if (!elements.customDistance) return;
+  const isCustom = elements.distance.value === "custom";
+  elements.customDistance.hidden = !isCustom;
+  elements.customDistance.disabled = !isCustom;
 }
 
 function getSelectedAnchorIds() {
@@ -494,6 +518,7 @@ function applyLanguage() {
   [...elements.distance.options].forEach((option) => {
     option.textContent = WALK_DURATION_LABELS[option.value]?.[currentLanguage] || option.value;
   });
+  syncCustomDistance();
   if (currentRoute.length) {
     elements.routeTitle.textContent = buildRouteTitle(currentRoute);
     elements.routeArea.textContent = localizedArea(routeArea(currentRoute));
@@ -544,7 +569,36 @@ function initMap() {
 
   markersLayer = L.layerGroup().addTo(map);
   routeLayer = L.layerGroup().addTo(map);
+  map.on("click", (event) => {
+    if (isPickingStart) setPickedStart(event.latlng);
+  });
   elements.fallbackMap.classList.add("hidden");
+}
+
+function toggleMapPicking() {
+  if (!map || !window.L) {
+    elements.locationStatus.textContent = currentLanguage === "en" ? "The map is still loading. Try again in a moment." : "Карта ещё загружается. Попробуйте через секунду.";
+    return;
+  }
+  isPickingStart = !isPickingStart;
+  elements.pickOnMapButton?.setAttribute("aria-pressed", String(isPickingStart));
+  elements.pickOnMapButton?.classList.toggle("is-active", isPickingStart);
+  elements.pickOnMapButton.textContent = isPickingStart
+    ? (currentLanguage === "en" ? "Tap a point on the map" : "Нажмите на точку на карте")
+    : (currentLanguage === "en" ? "Pick a point on the map" : "Выбрать точку на карте");
+  elements.locationStatus.textContent = isPickingStart ? (currentLanguage === "en" ? "Tap the map to set your start." : "Нажмите на карту, чтобы задать старт.") : "";
+}
+
+function setPickedStart(latlng) {
+  pickedStart = point("map-start", currentLanguage === "en" ? "Selected point" : "Выбранная точка", latlng.lat, latlng.lng, "custom", ["classic"], 100, "");
+  if (!pickedStartMarker) pickedStartMarker = L.circleMarker([latlng.lat, latlng.lng], { radius: 8, color: "#fff", weight: 3, fillColor: "#ce4a3b", fillOpacity: 1 }).addTo(map);
+  else pickedStartMarker.setLatLng([latlng.lat, latlng.lng]);
+  isPickingStart = false;
+  elements.pickOnMapButton?.setAttribute("aria-pressed", "false");
+  elements.pickOnMapButton?.classList.remove("is-active");
+  elements.pickOnMapButton.textContent = currentLanguage === "en" ? "Pick a point on the map" : "Выбрать точку на карте";
+  elements.locationStatus.textContent = currentLanguage === "en" ? "Start set from the map." : "Старт задан точкой на карте.";
+  markSettingsChanged();
 }
 
 function toggleLocationTracking() {
@@ -614,17 +668,26 @@ async function generateAndRender({ alternative = false } = {}) {
   analytics.track(alternative ? "route_alternative_requested" : "route_build_started");
 
   try {
-    const selectedStart = userPosition || starts.find((item) => item.id === elements.start.value) || starts[0];
+    const selectedStart = pickedStart || userPosition || starts.find((item) => item.id === elements.start.value) || starts[0];
     const selectedAnchors = getSelectedAnchorIds().map((id) => pois.find((item) => item.id === id)).filter(Boolean);
     const selectedAnchor = selectedAnchors[0];
-    const targetKm = Number(elements.distance.value);
+    const targetKm = targetDistanceKm();
     const theme = new FormData(elements.form).get("theme");
     const start = (await resolveSearchPoint(elements.startSearch?.value, "Старт из поиска", "search")) || selectedStart;
     const anchor = (await resolveSearchPoint(elements.anchorSearch?.value, "Место из поиска", "search")) || selectedAnchor;
 
     if (run !== latestRun) return;
-    currentRoute = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
-    const walking = await buildWalkingRoute(currentRoute);
+    let candidate = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed });
+    let walking = await buildWalkingRoute(candidate);
+    if (walking && Math.abs(walking.distanceKm - targetKm) / targetKm > ROUTE_TOLERANCE) {
+      const alternativeRoute = buildRoute({ start, targetKm, anchor, anchors: anchor ? selectedAnchors : [], theme, variantSeed: variantSeed + 17 });
+      const alternativeWalking = await buildWalkingRoute(alternativeRoute);
+      if (alternativeWalking && Math.abs(alternativeWalking.distanceKm - targetKm) < Math.abs(walking.distanceKm - targetKm)) {
+        candidate = alternativeRoute;
+        walking = alternativeWalking;
+      }
+    }
+    currentRoute = candidate;
 
     if (run !== latestRun) return;
     if (!walking) {
@@ -1180,6 +1243,7 @@ function buildShareUrl() {
     lang: currentLanguage,
     mode: currentTheme,
   });
+  if (elements.customDistance?.value) params.set("customDistance", elements.customDistance.value);
   if (elements.anchor?.value) params.set("anchor", elements.anchor.value);
   const selectedAnchors = getSelectedAnchorIds();
   if (selectedAnchors.length) params.set("anchors", selectedAnchors.join(","));
@@ -1192,6 +1256,7 @@ function persistRouteState() {
   const state = {
     start: elements.start.value,
     distance: elements.distance.value,
+    customDistance: elements.customDistance?.value || "",
     theme: new FormData(elements.form).get("theme") || "classic",
     anchor: elements.anchor?.value || "",
     anchors: getSelectedAnchorIds(),
@@ -1220,7 +1285,9 @@ function restoreRouteState() {
   }
 
   if (starts.some((item) => item.id === state.start)) elements.start.value = state.start;
-  if (["3", "5", "8", "12"].includes(state.distance)) elements.distance.value = state.distance;
+  if (["3", "4", "6", "8", "12", "custom"].includes(state.distance)) elements.distance.value = state.distance;
+  if (elements.customDistance && state.customDistance) elements.customDistance.value = state.customDistance;
+  syncCustomDistance();
   const savedAnchors = String(state.anchors || state.anchor || "").split(",").filter((id) => pois.some((item) => item.id === id));
   while (document.querySelectorAll(".anchor-select").length < savedAnchors.length) addAnchorField();
   document.querySelectorAll(".anchor-select").forEach((select, index) => { select.value = savedAnchors[index] || ""; });
@@ -1347,7 +1414,7 @@ init();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-11-4").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-5").catch((error) => {
       console.warn("Service worker не зарегистрирован", error);
     });
   });
@@ -1359,4 +1426,17 @@ window.MoscowWalksCore = {
   currentRoute: () => currentRoute.slice(),
   routeArea,
   roughRouteDistance,
+  targetDistanceKm,
+  validateCatalogueData,
 };
+
+function validateCatalogueData(catalogue = { starts, pois, routespace }) {
+  const errors = [];
+  const ids = new Set();
+  [...catalogue.starts, ...catalogue.pois].forEach((place) => {
+    if (!place.id || ids.has(place.id)) errors.push(`Duplicate or missing place id: ${place.id || "(empty)"}`);
+    ids.add(place.id);
+    if (!place.name || !Number.isFinite(place.lat) || !Number.isFinite(place.lon) || place.lat < 55.45 || place.lat > 56.05 || place.lon < 37 || place.lon > 38.35) errors.push(`Invalid place: ${place.id}`);
+  });
+  return errors;
+}
