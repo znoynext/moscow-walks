@@ -7,6 +7,7 @@ const ROUTE_STATE_KEY = "moscow-walks-route-state";
 const LANGUAGE_KEY = "moscow-walks-language";
 const THEME_KEY = "moscow-walks-theme";
 const HISTORY_KEY = "moscow-walks-history";
+const RATING_KEY = "moscow-walks-ratings";
 const REQUEST_TIMEOUT_MS = 15000;
 const ROUTE_TOLERANCE = 0.35;
 // Moscow and a small surrounding area. Coordinates are [latitude, longitude].
@@ -362,6 +363,8 @@ const elements = {
   themeToggle: document.querySelector("#themeToggle"),
   historyList: document.querySelector("#historyList"),
   clearHistoryButton: document.querySelector("#clearHistoryButton"),
+  ratingButtons: document.querySelectorAll("#ratingButtons [data-rating]"),
+  ratingStatus: document.querySelector("#ratingStatus"),
 };
 
 let userPosition = null;
@@ -411,6 +414,7 @@ function init() {
   elements.languageToggle?.addEventListener("click", toggleLanguage);
   elements.themeToggle?.addEventListener("click", toggleTheme);
   elements.clearHistoryButton?.addEventListener("click", clearHistory);
+  elements.ratingButtons?.forEach((button) => button.addEventListener("click", () => rateCurrentRoute(Number(button.dataset.rating))));
   analytics.track("planner_view");
 }
 
@@ -990,6 +994,17 @@ function loadHistoryEntry(entry) {
 
 function clearHistory() { writeStorage(HISTORY_KEY, "[]"); renderHistory(); }
 
+function rateCurrentRoute(rating) {
+  if (!currentRoute.length || rating < 1 || rating > 5) return;
+  const ratings = (() => { try { return JSON.parse(readStorage(RATING_KEY) || "{}"); } catch (error) { return {}; } })();
+  const key = currentRoute.map((stop) => stop.id).join(",");
+  ratings[key] = { rating, createdAt: new Date().toISOString() };
+  writeStorage(RATING_KEY, JSON.stringify(ratings));
+  elements.ratingButtons?.forEach((button) => button.classList.toggle("is-selected", Number(button.dataset.rating) <= rating));
+  if (elements.ratingStatus) elements.ratingStatus.textContent = currentLanguage === "en" ? "Thanks — your rating is saved on this device." : "Спасибо — оценка сохранена на этом устройстве.";
+  analytics.track("route_rated", { rating });
+}
+
 function renderUnroutableRoute(route) {
   const area = routeArea(route);
   elements.totalDistance.textContent = "—";
@@ -1457,7 +1472,7 @@ init();
 
 if ("serviceWorker" in navigator) {
   window.addEventListener("load", () => {
-    navigator.serviceWorker.register("./sw.js?v=2026-07-11-6").catch((error) => {
+    navigator.serviceWorker.register("./sw.js?v=2026-07-11-7").catch((error) => {
       console.warn("Service worker не зарегистрирован", error);
     });
   });

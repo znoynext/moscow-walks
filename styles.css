@@ -210,6 +210,11 @@ button {
 .history-item { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 42px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 9px; color: var(--ink); background: var(--field); text-align: left; cursor: pointer; }
 .history-item span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
 .history-item small { flex: 0 0 auto; color: var(--soft); font-size: 11px; }
+.route-feedback { margin-top: 18px; padding-top: 16px; border-top: 1px solid var(--line); }
+.route-feedback h3 { margin: 0 0 8px; font-size: 14px; }
+.rating-buttons { display: flex; gap: 2px; }
+.rating-buttons button { min-width: 32px; min-height: 32px; border: 0; color: var(--soft); background: transparent; cursor: pointer; font-size: 22px; }
+.rating-buttons button:hover, .rating-buttons button.is-selected { color: var(--accent); }
 
 .site-nav a,
 .back-link,

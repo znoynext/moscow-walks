@@ -49,6 +49,7 @@
             <nav class="site-nav" aria-label="Навигация">
               <a href="./articles.html" data-i18n="articlesLink">Что посмотреть</a>
               <a href="./routes.html">Готовые прогулки</a>
+              <a href="./areas.html">Районы и метро</a>
             </nav>
           </div>
           <div class="utility-actions">
@@ -154,6 +155,11 @@
             <div class="saved-walks-head"><h3 id="savedWalksTitle">Мои прогулки</h3><button id="clearHistoryButton" class="text-button" type="button">Очистить</button></div>
             <div id="historyList" class="history-list"><p class="field-hint">Построенные маршруты появятся здесь.</p></div>
           </section>
+          <section class="route-feedback" aria-labelledby="feedbackTitle">
+            <h3 id="feedbackTitle">Как вам прогулка?</h3>
+            <div id="ratingButtons" class="rating-buttons" role="group" aria-label="Оценка маршрута"><button type="button" data-rating="1" aria-label="1 из 5">★</button><button type="button" data-rating="2" aria-label="2 из 5">★</button><button type="button" data-rating="3" aria-label="3 из 5">★</button><button type="button" data-rating="4" aria-label="4 из 5">★</button><button type="button" data-rating="5" aria-label="5 из 5">★</button></div>
+            <p id="ratingStatus" class="field-hint" role="status"></p>
+          </section>
         </section>
       </section>
     </main>
@@ -197,6 +203,6 @@
 
     <script defer src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script defer src="./api-config.js"></script>
-    <script defer src="./app.js?v=2026-07-11-6"></script>
+    <script defer src="./app.js?v=2026-07-11-7"></script>
   </body>
 </html>
