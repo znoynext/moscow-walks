@@ -80,9 +80,9 @@ function createGuideIcon(type, name) {
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
     html: `<span aria-hidden="true">${symbols[type] || "•"}</span><b>${escapeHtml(name)}</b>`,
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -7],
+    iconSize: [16, 16],
+    iconAnchor: [8, 8],
+    popupAnchor: [0, -8],
   });
 }
 

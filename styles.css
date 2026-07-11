@@ -681,38 +681,42 @@ button:disabled {
 .map-guide-dot--sight { background: #ce4a3b; }
 
 .map-guide-marker {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  width: max-content !important;
-  min-width: 14px;
-  height: 14px;
-  place-items: center;
+  position: relative;
+  display: block;
+  width: 16px !important;
+  height: 16px;
+  min-width: 16px;
   border: 0;
   background: transparent !important;
   box-shadow: none;
 }
 
 .map-guide-marker > span {
+  position: absolute;
+  inset: 0;
   display: grid;
-  flex: 0 0 14px;
   place-items: center;
-  width: 14px;
-  height: 14px;
-  border: 1px solid #fff;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.95);
   border-radius: 50%;
   color: #fff;
-  box-shadow: 0 5px 14px rgba(31, 36, 40, 0.3);
-  font-size: 7px;
+  box-shadow: 0 2px 7px rgba(31, 36, 40, 0.38);
+  font-size: 8px;
   font-weight: 900;
 }
 
 .map-guide-marker b {
-  padding: 2px 4px;
-  border-radius: 4px;
+  position: absolute;
+  top: -5px;
+  left: 21px;
+  display: block;
+  padding: 2px 5px;
+  border: 1px solid rgba(24, 32, 42, 0.08);
+  border-radius: 5px;
   color: #18202a;
   background: rgba(255, 255, 255, 0.9);
-  box-shadow: 0 3px 10px rgba(31, 36, 40, 0.16);
+  box-shadow: 0 2px 7px rgba(31, 36, 40, 0.14);
   font-size: 8px;
   font-weight: 850;
   line-height: 1.1;
@@ -724,7 +728,7 @@ button:disabled {
 }
 
 .map-guide-marker--metro > span { background: #4478ce; }
-.map-guide-marker--park > span { background: #4f9a68; }
+.map-guide-marker--park > span { border-radius: 5px; background: #4f9a68; }
 .map-guide-marker--sight > span { background: #ce4a3b; }
 
 .map-guide-popup {
