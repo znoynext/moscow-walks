@@ -415,6 +415,7 @@ function init() {
   elements.themeToggle?.addEventListener("click", toggleTheme);
   elements.clearHistoryButton?.addEventListener("click", clearHistory);
   elements.ratingButtons?.forEach((button) => button.addEventListener("click", () => rateCurrentRoute(Number(button.dataset.rating))));
+  requestUserLocation({ automatic: true });
   analytics.track("planner_view");
 }
 
@@ -601,6 +602,8 @@ function toggleMapPicking() {
 
 function setPickedStart(latlng) {
   pickedStart = point("map-start", currentLanguage === "en" ? "Selected point" : "Выбранная точка", latlng.lat, latlng.lng, "custom", ["classic"], 100, "");
+  if (elements.startSearch) elements.startSearch.value = "";
+  userPosition = null;
   if (!pickedStartMarker) pickedStartMarker = L.circleMarker([latlng.lat, latlng.lng], { radius: 8, color: "#fff", weight: 3, fillColor: "#ce4a3b", fillOpacity: 1 }).addTo(map);
   else pickedStartMarker.setLatLng([latlng.lat, latlng.lng]);
   isPickingStart = false;
@@ -612,21 +615,28 @@ function setPickedStart(latlng) {
 }
 
 function toggleLocationTracking() {
+  requestUserLocation();
+}
+
+function requestUserLocation({ automatic = false } = {}) {
   if (!navigator.geolocation) {
     elements.locationStatus.textContent = t("locationDenied");
     analytics.track("location_error", { reason: "unsupported" });
     return;
   }
 
+  if (automatic && (pickedStart || elements.startSearch?.value.trim())) return;
   elements.locateButton.disabled = true;
   analytics.track("location_requested");
   navigator.geolocation.getCurrentPosition(
     (position) => {
       elements.locateButton.disabled = false;
       if (!updateUserPosition(position)) return;
+      pickedStart = null;
+      if (elements.startSearch) elements.startSearch.value = "";
       elements.locationStatus.textContent = currentLanguage === "en" ? "Start set to your location." : "Старт установлен по вашему местоположению.";
       analytics.track("location_success");
-      markSettingsChanged();
+      if (!automatic) markSettingsChanged();
     },
     () => {
       elements.locateButton.disabled = false;
@@ -683,7 +693,8 @@ async function generateAndRender({ alternative = false } = {}) {
     const selectedAnchor = selectedAnchors[0];
     const targetKm = targetDistanceKm();
     const theme = new FormData(elements.form).get("theme");
-    const start = (await resolveSearchPoint(elements.startSearch?.value, "Старт из поиска", "search")) || selectedStart;
+    const searchedStart = await resolveSearchPoint(elements.startSearch?.value, "Старт из поиска", "search");
+    const start = pickedStart || userPosition || searchedStart || selectedStart;
     const anchor = (await resolveSearchPoint(elements.anchorSearch?.value, "Место из поиска", "search")) || selectedAnchor;
 
     if (run !== latestRun) return;
