@@ -100,6 +100,15 @@ test("Leaflet assets are pinned with integrity metadata", () => {
   assert.match(html, /leaflet\.js" integrity="sha256-[^"]+" crossorigin="anonymous"/);
 });
 
+test("map tiles keep their layout if the Leaflet CDN stylesheet is unavailable", () => {
+  const fallback = fs.readFileSync("leaflet-fallback.css", "utf8");
+  const serviceWorker = fs.readFileSync("sw.js", "utf8");
+  assert.match(html, /href="\.\/leaflet-fallback\.css"/);
+  assert.match(fallback, /\.leaflet-tile[\s\S]*?position:\s*absolute/);
+  assert.match(fallback, /\.leaflet-tile-loaded[\s\S]*?visibility:\s*inherit/);
+  assert.match(serviceWorker, /\.\/leaflet-fallback\.css/);
+});
+
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);
