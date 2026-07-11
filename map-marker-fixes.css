@@ -5,13 +5,10 @@
   min-height: 20px;
 }
 
-.map-guide-marker > span {
-  inset: 0;
+.map-guide-marker > svg {
+  display: block;
   width: 20px;
   height: 20px;
-}
-
-.map-guide-marker b {
 }
 
 .walk-marker {

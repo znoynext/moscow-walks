@@ -86,7 +86,7 @@ function createGuideIcon(type, name) {
   const symbols = { metro: "<path d='M5 19h14M7 19V5h10v14M9 8h6M9 12h6'/>", park: "<path d='M12 21V9m0 4-4-4m4 1 4-5M5 21h14'/>", sight: "<circle cx='12' cy='12' r='5'/>" };
   return L.divIcon({
     className: `map-guide-marker map-guide-marker--${type}`,
-    html: `<span aria-hidden="true"><svg viewBox="0 0 24 24">${symbols[type] || symbols.sight}</svg></span><b>${escapeHtml(name)}</b>`,
+    html: `<svg viewBox="0 0 24 24" aria-label="${escapeHtml(name)}">${symbols[type] || symbols.sight}</svg>`,
     iconSize: [20, 20],
     iconAnchor: [10, 10],
     popupAnchor: [0, -10],
