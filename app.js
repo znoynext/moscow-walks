@@ -547,22 +547,23 @@ function initMap() {
   if (!window.L) {
     return;
   }
-  map = L.map("map", {
-    zoomControl: false,
-    scrollWheelZoom: true,
-    maxBounds: MAP_BOUNDS,
-    maxBoundsViscosity: 1,
-    minZoom: MAP_MIN_ZOOM,
-    maxZoom: 19,
-  }).setView(MAP_VIEW, MAP_INITIAL_ZOOM);
+  map=L.map("map", {
+    zoomControl:!1,
+    scrollWheelZoom:!0,
+    maxBounds:MAP_BOUNDS,
+    maxBoundsViscosity:1,
+    minZoom:MAP_MIN_ZOOM,
+    maxZoom:19,
+    autoPanOnFocus:!1,
+  }).setView(MAP_VIEW,MAP_INITIAL_ZOOM);
   L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
     maxZoom: 19,
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
   }).addTo(map);
-  markersLayer = L.layerGroup().addTo(map);
-  routeLayer = L.layerGroup().addTo(map);
-  progressLayer = L.layerGroup().addTo(map);
-  guideLayer = L.layerGroup().addTo(map);
+  markersLayer=L.layerGroup().addTo(map);
+  routeLayer=L.layerGroup().addTo(map);
+  progressLayer=L.layerGroup().addTo(map);
+  guideLayer=L.layerGroup().addTo(map);
   renderMapGuide();
   map.on("zoomend", renderMapGuide);
   map.on("click", (event) => {
