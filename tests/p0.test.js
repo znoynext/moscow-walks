@@ -23,8 +23,10 @@ test("P0 time presets and factual-distance guard are present", () => {
   assert.match(app, /buildWalkingRoute\(candidate\)/);
 });
 
-test("map opens at the Moscow overview scale", () => {
-  assert.match(app, /const MAP_INITIAL_ZOOM = 10;/);
+test("map cannot zoom out past the Moscow overview scale", () => {
+  assert.match(app, /const MAP_MIN_ZOOM = 10;/);
+  assert.match(app, /minZoom: MAP_MIN_ZOOM/);
+  assert.match(app, /const MAP_INITIAL_ZOOM = 12;/);
   assert.match(app, /setView\(MAP_VIEW, MAP_INITIAL_ZOOM\)/);
 });
 
