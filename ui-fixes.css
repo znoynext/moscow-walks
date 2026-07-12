@@ -151,3 +151,20 @@
     display: none;
   }
 }
+
+.sw-update-notice {
+  position: fixed;
+  z-index: 1000;
+  right: 1rem;
+  bottom: 1rem;
+  padding: .7rem 1rem;
+  border-radius: 999px;
+  color: #fff;
+  background: #18231f;
+  box-shadow: 0 8px 30px #0003;
+  font: inherit;
+}
+
+.sw-update-notice__button {
+  margin-left: .5rem;
+}

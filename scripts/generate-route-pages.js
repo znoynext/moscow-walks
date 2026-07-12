@@ -38,6 +38,7 @@ function routePage(route) {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://*.tile.openstreetmap.org https://upload.wikimedia.org https://commons.wikimedia.org https://images.unsplash.com; connect-src 'self' https://nominatim.openstreetmap.org https://routing.openstreetmap.de https://router.project-osrm.org; font-src 'self'; manifest-src 'self'; worker-src 'self'; form-action 'self'; upgrade-insecure-requests" />
     <title>${escapeHtml(route.title)} — Пешком.Москва</title>
     <meta name="description" content="${escapeHtml(route.description)}" />
     <meta name="robots" content="index, follow" />
@@ -58,8 +59,9 @@ function routePage(route) {
   </head>
   <body class="articles-page">
     <header class="articles-header"><a class="articles-brand" href="../../">Пешком.Москва</a><a class="back-link" href="../../routes/">Все прогулки</a></header>
-    <main class="articles-main"><article class="article-card"><div class="article-image-wrap"><img class="article-image" src="${escapeHtml(image)}" alt="${escapeHtml(route.title)}" width="1200" height="675" decoding="async" referrerpolicy="no-referrer" onerror="this.parentElement.classList.add('is-broken')" /></div><div class="article-card-body"><div class="article-card-top"><span class="article-tag">${route.tags.map(escapeHtml).join(" · ")}</span><span class="article-number">${route.distance} км</span></div><h1>${escapeHtml(route.title)}</h1><p>${escapeHtml(route.description)}</p><div class="article-facts"><span><b>Старт</b> м. ${escapeHtml(startNames[route.start] || route.start)}</span><span><b>Длина</b> около ${route.distance} км</span></div><h2>Точки маршрута</h2><ol>${stops}</ol><div class="article-actions"><a class="article-primary" href="../../?start=${encodeURIComponent(route.start)}&amp;distance=${route.distance}&amp;theme=${encodeURIComponent(route.theme)}&amp;anchor=${encodeURIComponent(route.anchor)}">Открыть в конструкторе</a><a class="article-secondary" href="../../routes/">Другие прогулки</a></div></div></article></main>
+    <main class="articles-main"><article class="article-card"><div class="article-image-wrap"><img class="article-image" src="${escapeHtml(image)}" alt="${escapeHtml(route.title)}" width="1200" height="675" decoding="async" referrerpolicy="no-referrer" data-image-fallback /></div><div class="article-card-body"><div class="article-card-top"><span class="article-tag">${route.tags.map(escapeHtml).join(" · ")}</span><span class="article-number">${route.distance} км</span></div><h1>${escapeHtml(route.title)}</h1><p>${escapeHtml(route.description)}</p><div class="article-facts"><span><b>Старт</b> м. ${escapeHtml(startNames[route.start] || route.start)}</span><span><b>Длина</b> около ${route.distance} км</span></div><h2>Точки маршрута</h2><ol>${stops}</ol><div class="article-actions"><a class="article-primary" href="../../?start=${encodeURIComponent(route.start)}&amp;distance=${route.distance}&amp;theme=${encodeURIComponent(route.theme)}&amp;anchor=${encodeURIComponent(route.anchor)}">Открыть в конструкторе</a><a class="article-secondary" href="../../routes/">Другие прогулки</a></div></div></article></main>
     <footer class="site-footer"><a href="../../privacy/">Приватность</a><a href="../../routes/">Все прогулки</a></footer>
+    <script src="../../image-fallbacks.js"></script>
     <script defer src="../../sw-register.js"></script>
   </body>
 </html>

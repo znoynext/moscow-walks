@@ -155,17 +155,19 @@ test("map point cards do not pan the map", () => {
 test("SEO route catalogue and privacy surface exist", () => {
   assert.match(routes, /curatedRoutes/);
   assert.match(routes, /routeImages/);
-  assert.match(fs.readFileSync("routes.html", "utf8"), /routeGrid/);
+  const routesPage = fs.readFileSync("routes.html", "utf8");
+  assert.match(routesPage, /routeGrid/);
+  assert.match(routesPage, /routes-page\.js/);
   const routePage = fs.readFileSync("route.html", "utf8");
   assert.match(routePage, /id="routeDetail"/);
-  assert.match(routePage, /startNames\[route\.start\]/);
+  assert.match(routePage, /route-detail\.js/);
   assert.doesNotMatch(routePage, /\.innerHTML\s*=/);
-  assert.match(routePage, /Object\.hasOwn\(routeBySlug, slug\)/);
-  assert.match(routePage, /document\.createElement\("script"\)/);
-  assert.doesNotMatch(routePage, /route\.start\.replace\("metro-"/);
-  const inlineScript = routePage.match(/<script>\s*([\s\S]*?)<\/script>/)?.[1];
-  assert.ok(inlineScript);
-  assert.doesNotThrow(() => new Function(inlineScript));
+  assert.doesNotMatch(routePage, /<script>\s*[\s\S]*?<\/script>/);
+  const routeDetail = fs.readFileSync("route-detail.js", "utf8");
+  assert.match(routeDetail, /Object\.hasOwn\(routeBySlug, slug\)/);
+  assert.match(routeDetail, /startNames\[route\.start\]/);
+  assert.match(routeDetail, /document\.createElement\("script"\)/);
+  assert.doesNotMatch(routeDetail, /route\.start\.replace\("metro-"/);
   assert.match(fs.readFileSync("privacy.html", "utf8"), /Геолокация/);
 });
 
@@ -184,9 +186,43 @@ test("article search has an accessible empty state", () => {
   assert.match(articleJs, /setAttribute\("aria-pressed", String\(isActive\)\)/);
 });
 
+test("article build links preserve both clean and legacy catalogue URLs", () => {
+  const articleJs = fs.readFileSync("articles.js", "utf8");
+  const routesPage = fs.readFileSync("routes-page.js", "utf8");
+  assert.match(articleJs, /window\.location\.pathname\.endsWith\("\/articles\/"\) \? "\.\.\/" : "\.\/"/);
+  assert.match(articleJs, /const routeUrl = `\$\{plannerPath\}\?start=metro-okhotny/);
+  assert.match(routesPage, /window\.location\.pathname\.endsWith\("\/routes\/"\) \? "\.\.\/" : "\.\/"/);
+  assert.match(routesPage, /href="\$\{routePlannerPath\}\?start=/);
+});
+
+test("public pages restrict executable content and keep image fallbacks functional", () => {
+  const pages = ["index.html", "articles.html", "routes.html", "route.html", "areas.html", "privacy.html", "offline.html"];
+  for (const page of pages) {
+    const source = fs.readFileSync(page, "utf8");
+    assert.match(source, /Content-Security-Policy/);
+    assert.match(source, /object-src 'none'/);
+    assert.match(source, /script-src 'self' https:\/\/unpkg\.com/);
+    assert.doesNotMatch(source, /script-src 'self'[^;]*'unsafe-inline'/);
+    assert.doesNotMatch(source, /\son(?:error|click|load)=/i);
+  }
+  const generated = fs.readFileSync("scripts/generate-route-pages.js", "utf8");
+  const fallback = fs.readFileSync("image-fallbacks.js", "utf8");
+  const registration = fs.readFileSync("sw-register.js", "utf8");
+  const worker = fs.readFileSync("sw.js", "utf8");
+  assert.match(generated, /Content-Security-Policy/);
+  assert.match(generated, /data-image-fallback/);
+  assert.match(fallback, /document\.addEventListener\("error"/);
+  assert.match(fallback, /image\.complete && !image\.naturalWidth/);
+  assert.match(registration, /sw-update-notice/);
+  assert.doesNotMatch(registration, /\.style\./);
+  assert.match(worker, /\.\/image-fallbacks\.js/);
+  assert.match(worker, /\.\/routes-page\.js/);
+  assert.match(worker, /\.\/route-detail\.js/);
+});
+
 test("catalogue cards keep their content inside a padded body", () => {
   assert.match(fs.readFileSync("areas.html", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
-  assert.match(fs.readFileSync("routes.html", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
+  assert.match(fs.readFileSync("routes-page.js", "utf8"), /<article class="article-card"><div class="article-image-wrap">[\s\S]*?<div class="article-card-body">/);
   assert.match(fs.readFileSync("route.html", "utf8"), /id="routeDetail"/);
   assert.match(fs.readFileSync("styles.css", "utf8"), /\.article-card-body \{[\s\S]*?min-width: 0;/);
 });

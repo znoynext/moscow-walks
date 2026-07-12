@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; base-uri 'self'; object-src 'none'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline' https://unpkg.com; img-src 'self' data: https://*.tile.openstreetmap.org https://upload.wikimedia.org https://commons.wikimedia.org https://images.unsplash.com; connect-src 'self' https://nominatim.openstreetmap.org https://routing.openstreetmap.de https://router.project-osrm.org; font-src 'self'; manifest-src 'self'; worker-src 'self'; form-action 'self'; upgrade-insecure-requests" />
     <meta name="robots" content="noindex, follow" />
     <title>Готовая прогулка — Пешком.Москва</title>
     <link rel="icon" href="./assets/favicon.svg" type="image/svg+xml" />
@@ -14,70 +15,7 @@
     <main class="articles-main"><article id="routeDetail" class="article-card"></article></main>
     <footer class="site-footer"><a href="./privacy/">Приватность</a><a href="./routes/">Все прогулки</a></footer>
     <script src="./routes.js"></script>
-    <script>
-      const slug = new URLSearchParams(location.search).get("slug");
-      const route = Object.hasOwn(routeBySlug, slug) ? routeBySlug[slug] : null;
-      const card = document.querySelector("#routeDetail");
-      const body = document.createElement("div");
-      body.className = "article-card-body";
-      card.append(body);
-
-      function addTextElement(tagName, text, className) {
-        const element = document.createElement(tagName);
-        element.textContent = text;
-        if (className) element.className = className;
-        body.append(element);
-        return element;
-      }
-
-      if (!route) {
-        addTextElement("h1", "Прогулка не найдена");
-        const back = addTextElement("a", "Все прогулки", "article-primary");
-        back.href = "./routes/";
-      } else {
-        document.title = `${route.title} — Пешком.Москва`;
-        addTextElement("h1", route.title);
-        addTextElement("p", route.description);
-        addTextElement("p", `Старт: м. ${startNames[route.start] || route.start} · около ${route.distance} км`);
-
-        const stops = document.createElement("ol");
-        route.stops.forEach((stop) => {
-          const item = document.createElement("li");
-          item.textContent = stop;
-          stops.append(item);
-        });
-        body.append(stops);
-
-        const actions = document.createElement("div");
-        actions.className = "article-actions";
-        const params = new URLSearchParams({ start: route.start, distance: route.distance, theme: route.theme, anchor: route.anchor });
-        const build = document.createElement("a");
-        build.className = "article-primary";
-        build.href = `./?${params.toString()}`;
-        build.textContent = "Построить маршрут";
-        const other = document.createElement("a");
-        other.className = "article-secondary";
-        other.href = "./routes/";
-        other.textContent = "Другие прогулки";
-        actions.append(build, other);
-        body.append(actions);
-
-        const structuredData = document.createElement("script");
-        structuredData.type = "application/ld+json";
-        structuredData.textContent = JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "TouristTrip",
-          name: route.title,
-          description: route.description,
-          touristType: "Пешеходная прогулка",
-          itinerary: {
-            "@type": "ItemList",
-            itemListElement: route.stops.map((name, index) => ({ "@type": "ListItem", position: index + 1, name })),
-          },
-        }).replace(/</g, "\\u003c");
-        document.head.append(structuredData);
-      }
-    </script>
+    <script src="./route-detail.js"></script>
     <script defer src="./sw-register.js"></script>
   </body>
 </html>

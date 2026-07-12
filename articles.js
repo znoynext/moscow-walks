@@ -164,6 +164,7 @@ const articleParams = new URLSearchParams(window.location.search);
 let articleLanguage = articleParams.get("lang") === "en" || (articleParams.get("lang") !== "ru" && readArticleStorage(ARTICLE_LANGUAGE_KEY) === "en") ? "en" : "ru";
 let articleTheme = readArticleStorage(ARTICLE_THEME_KEY) === "light" ? "light" : "dark";
 const initialArticleSearch = (articleParams.get("search") || "").slice(0, 100);
+const plannerPath = window.location.pathname.endsWith("/articles/") ? "../" : "./";
 
 function at(key) { return articleTranslations[articleLanguage][key] || articleTranslations.ru[key] || key; }
 
@@ -183,10 +184,10 @@ function renderArticles(filter = "all") {
     const meta = articleMeta[articleIndex];
     const imageSource = stableArticleImages[articleIndex] || meta.image;
     const mapUrl = `https://yandex.ru/maps/?pt=${meta.lon},${meta.lat}&z=16&l=map`;
-    const routeUrl = `../?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
+    const routeUrl = `${plannerPath}?start=metro-okhotny&distance=5&anchor=${meta.anchor}`;
     return `
     <article id="article-${articleSlugs[articleIndex]}" class="article-card">
-      <div class="article-image-wrap"><img class="article-image" src="${imageSource}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" width="1200" height="675" referrerpolicy="no-referrer" onerror="this.hidden=true; this.nextElementSibling.hidden=false" /><div class="article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}" hidden><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articleIndex + 1).padStart(2, "0")}</span></div>
+      <div class="article-image-wrap"><img class="article-image" src="${imageSource}" alt="${articleLanguage === "en" ? item.en : item.title}" loading="lazy" decoding="async" width="1200" height="675" referrerpolicy="no-referrer" data-image-fallback /><div class="article-image-placeholder" role="img" aria-label="${articleLanguage === "en" ? item.en : item.title}" hidden><span aria-hidden="true">${item.category === "parks" ? "✦" : item.category === "museums" ? "◈" : "⌂"}</span></div><span class="article-number">${String(articleIndex + 1).padStart(2, "0")}</span></div>
       <div class="article-card-body"><div class="article-card-top"><span class="article-tag">${articleLanguage === "en" ? item.enTags : item.tags}</span></div>
       <h2>${articleLanguage === "en" ? item.en : item.title}</h2>
       <p>${articleLanguage === "en" ? item.enText : item.text}</p>
