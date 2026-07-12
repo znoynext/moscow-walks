@@ -67,8 +67,9 @@
           <div class="field-pair">
             <label class="field">
               <span data-i18n="start">Откуда начать?</span>
-              <select id="startSelect" name="start"></select>
-              <div class="search-with-action"><input id="startSearch" name="startSearch" type="search" list="placeHints" autocomplete="street-address" maxlength="120" placeholder="Адрес или место" /><button id="locateButton" class="field-action" type="button" aria-label="Определить моё местоположение"><span class="icon icon-locate" aria-hidden="true"></span></button></div>
+              <select id="startSelect" name="start" aria-describedby="startChoiceHint"></select>
+              <div class="search-with-action"><input id="startSearch" name="startSearch" type="search" list="placeHints" autocomplete="street-address" maxlength="120" placeholder="Адрес или место" aria-describedby="startChoiceHint" /><button id="locateButton" class="field-action" type="button" aria-label="Определить моё местоположение"><span class="icon icon-locate" aria-hidden="true"></span></button></div>
+              <span id="startChoiceHint" class="field-hint">Станция или адрес — используем только один вариант.</span>
               <button id="pickOnMapButton" class="location-button" type="button" aria-pressed="false">Выбрать точку на карте</button>
               <span id="locationStatus" class="location-status" role="status" aria-live="polite"></span>
             </label>
@@ -223,6 +224,7 @@
     <script defer src="./map-guide.js?v=2026-07-12-1"></script>
     <script defer src="./map-controls.js"></script>
     <script defer src="./app.js?v=2026-07-12-2"></script>
+    <script defer src="./start-choice.js?v=2026-07-12-1"></script>
     <script defer src="./route-optimizer.js?v=2026-07-11-1"></script>
     <script defer src="./sw-register.js"></script>
   </body>

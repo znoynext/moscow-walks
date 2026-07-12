@@ -9,10 +9,12 @@ const { curatedRoutes } = require("../routes.js");
 
 test("P0 form offers every required start method", () => {
   assert.match(html, /id="startSearch"/);
+  assert.match(html, /id="startChoiceHint"/);
   assert.match(html, /id="pickOnMapButton"/);
   assert.match(html, /id="locateButton"/);
   assert.match(html, /id="navigationModeButton"/);
   assert.match(app, /function setPickedStart/);
+  assert.match(html, /src="\.\/start-choice\.js/);
   assert.match(app, /navigator\.geolocation\.watchPosition/);
   assert.match(app, /DeviceOrientationEvent/);
   assert.match(app, /function renderNavigationProgress/);
